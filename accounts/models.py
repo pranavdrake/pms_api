@@ -44,7 +44,7 @@ class CustomUser(AbstractUser):
     """User model."""
     department = models.ForeignKey(Department,null= True, blank = True, on_delete=models.SET_NULL)
     is_account_manager = models.BooleanField(default=False)
-        
+
     username = None
     email = models.EmailField(_('email address'), unique=True)
 

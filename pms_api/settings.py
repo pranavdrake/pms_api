@@ -28,7 +28,6 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = "accounts.CustomUser" 
-AUTH_GROUP_MODEL = "accounts.Department" 
 
 # Application definition
 
@@ -40,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
+    'reservations',
     'crispy_forms',
     "crispy_bootstrap5",
     'rest_framework',
