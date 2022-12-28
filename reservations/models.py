@@ -81,7 +81,7 @@ class Room(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return self.room_number + ' ' + self.property.property_name
+        return str(self.room_number) + ' ' + self.property.property_name
 
 class RoomDiscrepancy(models.Model):
     FRONT_OFFICE_STATUS_CHOICES = [
