@@ -1,7 +1,7 @@
 from django.db import models
 from django_countries.fields import CountryField
 from django.core.exceptions import ValidationError
-from accounts.models import CustomUser
+import accounts.models 
 from simple_history.models import HistoricalRecords
 from djmoney.models.fields import MoneyField
 
@@ -359,8 +359,12 @@ class Package(models.Model):
         if(self.begin_sell_date and self.end_sell_date):
             if self.begin_sell_date >  self.end_sell_date:
                 raise ValidationError("Begin Sell Date cannot be more than end sell date")
-            elif self.percentage > 100:
+
+        if self.percentage:   
+            if self.percentage > 100:
                 raise ValidationError("Percentage cannot be more than 100")
+            elif self.percentage < 0:
+                raise ValidationError("Percentage cannot be negative")
 
         if self.base_price:
             if self.base_price < 0:
@@ -369,7 +373,7 @@ class Package(models.Model):
         if(self.tax_percentage):
             if self.tax_percentage < 0:
                 raise ValidationError("Tax Percentage cannot be negative")
-            elif self.percentage > 100:
+            elif self.tax_percentage > 100:
                 raise ValidationError("Tax Percentage cannot be more than 100")
 
     def save(self, *args, **kwargs):
@@ -407,9 +411,9 @@ class RateCode(models.Model):
     begin_sell_date = models.DateField()
     end_sell_date = models.DateField()
     package = models.ForeignKey(Package, null=True, blank=True, on_delete=models.SET_NULL, related_name='rate_codes')
-    extras = models.ManyToManyField(Extra, blank=True, null= True)
-    transaction_code = models.ForeignKey(TransactionCode, on_delete=models.CASCADE)
-    package_transaction_code = models.ForeignKey(TransactionCode, null=True, blank=True, on_delete=models.SET_NULL, related_name='package_transaction_codes')
+    extras = models.ManyToManyField(Extra, blank=True)
+    transaction_code = models.ForeignKey(TransactionCode, on_delete=models.CASCADE, related_name='rate_codes')
+    package_transaction_code = models.ForeignKey(TransactionCode, null=True, blank=True, on_delete=models.SET_NULL, related_name='package_rate_codes')
     room_types = models.ManyToManyField(RoomType)
     DAYS_APPLICABLE = [
     ('M', 'Monday'),
@@ -430,5 +434,46 @@ class RateCode(models.Model):
     house_use = models.BooleanField(default = False,blank=True, null= True)
     history = HistoricalRecords()
 
+    def clean(self):
+        if(self.begin_sell_date and self.end_sell_date):
+            if self.begin_sell_date >  self.end_sell_date:
+                raise ValidationError("Begin Sell Date cannot be more than end sell date")
+
+        if self.discount_amount:
+            if self.discount_amount < 0:
+                raise ValidationError("Discount Amount cannot be negative")
+
+        if(self.discount_percentage):
+            if self.discount_percentage < 0:
+                raise ValidationError("Discount Percentage cannot be negative")
+            elif self.discount_percentage > 100:
+                raise ValidationError("Discount Percentage cannot be more than 100")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.rate_code
+
+class RateCodeRoomRate(models.Model):
+    rate_code = models.ForeignKey(RateCode, on_delete=models.CASCADE, related_name= 'rate_code_room_rates')
+    room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE, related_name= 'rate_code_room_rates')
+    adult_price_1 = models.DecimalField(max_digits=5, decimal_places=2)
+    adult_price_2 = models.DecimalField(max_digits=5, decimal_places=2)
+    adult_price_3 = models.DecimalField(max_digits=5, decimal_places=2)
+    extra_adult_price = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null= True)
+    extra_child_price = models.DecimalField(max_digits=5, decimal_places=2,blank=True, null= True)
+
+    def clean(self):
+
+        if self.adult_price_1 or self.adult_price_2 or self.adult_price_3 or self.extra_adult_price or self.extra_child_price:
+            if self.adult_price_1 < 0 or self.adult_price_2 < 0 or self.adult_price_3 < 0  or self.extra_adult_price < 0 or self.extra_child_price < 0:
+                raise ValidationError("Price cannot be negative")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return  'Room Rate for' + self.rate_code 
