@@ -1,7 +1,7 @@
 from django.db import models
 from django_countries.fields import CountryField
 from django.core.exceptions import ValidationError
-from accounts.models import CustomUser
+import accounts.models 
 from simple_history.models import HistoricalRecords
 from djmoney.models.fields import MoneyField
 
@@ -81,7 +81,7 @@ class Room(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return self.room_number + ' ' + self.property.property_name
+        return str(self.room_number) + ' ' + self.property.property_name
 
 class RoomDiscrepancy(models.Model):
     FRONT_OFFICE_STATUS_CHOICES = [
@@ -223,76 +223,9 @@ class Commission(models.Model):
     commission_code = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank = True, null  =True)
     commission_percentage = models.DecimalField(max_digits=5, decimal_places=2)
-
+    history = HistoricalRecords()
     def __str__(self):
         return self.commission_code
-        
-
-class PreferenceGroup(models.Model):
-    preference_group = models.CharField(max_length=255, unique = True)
-    description = models.TextField(blank = True, null  =True)
-
-    def __str__(self):
-        return self.preference_group
-
-class Preference(models.Model):
-    preference_group = models.ForeignKey(PreferenceGroup, on_delete=models.CASCADE,related_name='preferences')
-    preference = models.CharField(max_length=255)
-    description = models.TextField(blank = True, null=True)
-
-    def __str__(self):
-        return self.preference
-
-class RateClass(models.Model):
-    rate_class = models.CharField(max_length=255, unique= True)
-    description = models.TextField(blank = True, null=True)
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.rate_class
-
-
-class RateCategory(models.Model):
-    rate_class = models.ForeignKey(RateClass, on_delete=models.CASCADE,related_name='rate_categories')
-    rate_category = models.CharField(max_length=255, unique= True)
-    description = models.TextField(blank = True, null=True)
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.rate_category
-
-class MarketGroup(models.Model):
-    market_group = models.CharField(max_length=255, unique= True)
-    description = models.TextField(blank = True, null=True)
-
-    def __str__(self):
-        return self.market_group
-
-class MarketCode(models.Model):
-    market_group = models.ForeignKey(MarketGroup, on_delete=models.CASCADE,related_name='market_codes')
-    market_code = models.CharField(max_length=255, unique= True)
-    description = models.TextField(blank = True, null=True)
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.market_code
-
-class SourceGroup(models.Model):
-    source_group = models.CharField(max_length=255, unique= True)
-    description = models.TextField(blank = True, null=True)
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.source_group
-
-class Source(models.Model):
-    source_group = models.ForeignKey(SourceGroup, on_delete=models.CASCADE, related_name='sources')
-    source_code = models.CharField(max_length=255, unique= True)
-    description = models.TextField(blank = True, null=True)
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.source_code
 
 class PickupDropDetails(models.Model):
     TYPE_CHOICES = [
@@ -306,10 +239,241 @@ class PickupDropDetails(models.Model):
     carrier_code = models.CharField(max_length=255)
     transport_type = models.CharField(max_length=255)
     remarks = models.TextField(blank = True, null=True)
-
+    history = HistoricalRecords()
     def __str__(self):
         return self.type + 'on' + str(self.date) + + 'at'+ str(self.time)
 
     class Meta:
         verbose_name  = 'Pickup / Drop Details'
         verbose_name_plural  = 'Pickup / Drop Details'
+
+class PreferenceGroup(models.Model):
+    preference_group = models.CharField(max_length=255, unique = True)
+    description = models.TextField(blank = True, null  =True)
+    history = HistoricalRecords()
+    def __str__(self):
+        return self.preference_group
+
+class Preference(models.Model):
+    preference_group = models.ForeignKey(PreferenceGroup, on_delete=models.CASCADE,related_name='preferences')
+    preference = models.CharField(max_length=255)
+    description = models.TextField(blank = True, null=True)
+    history = HistoricalRecords()
+    def __str__(self):
+        return self.preference
+
+
+class MarketGroup(models.Model):
+    market_group = models.CharField(max_length=255, unique= True)
+    description = models.TextField(blank = True, null=True)
+    history = HistoricalRecords()
+    def __str__(self):
+        return self.market_group
+
+class MarketCode(models.Model):
+    market_group = models.ForeignKey(MarketGroup, on_delete=models.CASCADE,related_name='market_codes')
+    market_code = models.CharField(max_length=255, unique= True)
+    description = models.TextField(blank = True, null=True)
+    is_active = models.BooleanField(default=True)
+    history = HistoricalRecords()
+    def __str__(self):
+        return self.market_code
+
+class SourceGroup(models.Model):
+    source_group = models.CharField(max_length=255, unique= True)
+    description = models.TextField(blank = True, null=True)
+    is_active = models.BooleanField(default=True)
+    history = HistoricalRecords()
+    def __str__(self):
+        return self.source_group
+
+class Source(models.Model):
+    source_group = models.ForeignKey(SourceGroup, on_delete=models.CASCADE, related_name='sources')
+    source_code = models.CharField(max_length=255, unique= True)
+    description = models.TextField(blank = True, null=True)
+    is_active = models.BooleanField(default=True)
+    history = HistoricalRecords()
+    def __str__(self):
+        return self.source_code
+
+
+
+class TransactionCode(models.Model):
+    transaction_code = models.CharField(max_length=255)
+    description = models.TextField(blank = True, null=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name= 'transaction_codes')
+    sub_group = models.ForeignKey(SubGroup, on_delete=models.CASCADE, related_name= 'transaction_codes')
+    base_rate = models.DecimalField(max_digits=8, decimal_places=2)
+    tax_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    discount_allowed = models.BooleanField(default=False)
+    is_allowance = models.BooleanField(default=False)
+    allowance_code = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+    commission_service_charge_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return self.transaction_code
+
+class PackageGroup(models.Model):
+    package_group = models.CharField(max_length=255, unique= True)
+    description = models.TextField(blank= True, null= True)
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return self.package_group
+
+class Package(models.Model):
+
+    
+    package_group = models.ForeignKey(PackageGroup, on_delete=models.CASCADE, related_name= 'packages')
+    package_code = models.CharField(max_length=255, unique= True)
+    description = models.TextField(blank= True, null= True)
+    begin_sell_date = models.DateField()
+    end_sell_date = models.DateField()
+    base_price = models.DecimalField(max_digits=8, decimal_places=2)
+    tax_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    tax_amount = models.DecimalField(max_digits=8, decimal_places=2)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    is_active = models.BooleanField()
+    CALCULATION_RULE_CHOICES = (
+    ('flat_rate', 'Flat Rate'),
+    ('per_adult', 'Per Adult'),
+    )
+    calculation_rule = models.CharField(max_length=20, choices=CALCULATION_RULE_CHOICES)
+    POSTING_RHYTHM_CHOICES = (
+    ('post_every_night', 'Post Every Night'),
+    ('post_on_arrival_night', 'Post on Arrival Night'),
+    ('post_last_night', 'Post Last Night'),
+    ('post_every_night_except_arrival_night', 'Post Every Night Except Arrival Night'),
+    )
+    posting_rhythm = models.CharField(max_length=50, choices=POSTING_RHYTHM_CHOICES)
+    RATE_INCLUSION_CHOICES = (
+    ('included_in_rate', 'Included in Rate'),
+    ('add_rate_separate_line', 'Add Rate Separate Line'),
+    )
+    rate_inclusion = models.CharField(max_length=50, choices=RATE_INCLUSION_CHOICES)
+    transaction_code = models.ForeignKey(TransactionCode, on_delete=models.CASCADE, related_name='packages')
+    history = HistoricalRecords()
+
+    def clean(self):
+        if(self.begin_sell_date and self.end_sell_date):
+            if self.begin_sell_date >  self.end_sell_date:
+                raise ValidationError("Begin Sell Date cannot be more than end sell date")
+
+        if self.percentage:   
+            if self.percentage > 100:
+                raise ValidationError("Percentage cannot be more than 100")
+            elif self.percentage < 0:
+                raise ValidationError("Percentage cannot be negative")
+
+        if self.base_price:
+            if self.base_price < 0:
+                raise ValidationError("Base Price cannot be negative")
+
+        if(self.tax_percentage):
+            if self.tax_percentage < 0:
+                raise ValidationError("Tax Percentage cannot be negative")
+            elif self.tax_percentage > 100:
+                raise ValidationError("Tax Percentage cannot be more than 100")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        self.tax_amount = (self.tax_percentage/100) * self.base_price 
+        self.total_amount = self.base_price + self.tax_amount
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.package_code
+
+class RateClass(models.Model):
+    rate_class = models.CharField(max_length=255, unique= True)
+    description = models.TextField(blank = True, null=True)
+    is_active = models.BooleanField(default=True)
+    history = HistoricalRecords()
+    def __str__(self):
+        return self.rate_class
+
+class RateCategory(models.Model):
+    rate_class = models.ForeignKey(RateClass, on_delete=models.CASCADE,related_name='rate_categories')
+    rate_category = models.CharField(max_length=255, unique= True)
+    description = models.TextField(blank = True, null=True)
+    is_active = models.BooleanField(default=True)
+    history = HistoricalRecords()
+    def __str__(self):
+        return self.rate_category
+
+class RateCode(models.Model):
+    rate_category = models.ForeignKey(RateCategory, on_delete=models.CASCADE,related_name='rate_codes')
+    rate_code = models.CharField(max_length=200, unique = True)
+    description = models.TextField(blank = True, null=True)
+    market = models.ForeignKey(MarketCode,null=True, blank=True, on_delete=models.SET_NULL, related_name='rate_codes')
+    source = models.ForeignKey(Source,null=True, blank=True, on_delete=models.SET_NULL, related_name='rate_codes')
+    begin_sell_date = models.DateField()
+    end_sell_date = models.DateField()
+    package = models.ForeignKey(Package, null=True, blank=True, on_delete=models.SET_NULL, related_name='rate_codes')
+    extras = models.ManyToManyField(Extra, blank=True)
+    transaction_code = models.ForeignKey(TransactionCode, on_delete=models.CASCADE, related_name='rate_codes')
+    package_transaction_code = models.ForeignKey(TransactionCode, null=True, blank=True, on_delete=models.SET_NULL, related_name='package_rate_codes')
+    room_types = models.ManyToManyField(RoomType)
+    DAYS_APPLICABLE = [
+    ('M', 'Monday'),
+    ('T', 'Tuesday'),
+    ('W', 'Wednesday'),
+    ('TH', 'Thursday'),
+    ('F', 'Friday'),
+    ('SA', 'Saturday'),
+    ('SU', 'Sunday')
+    ]
+    days_applicable = models.CharField(max_length=2, choices=DAYS_APPLICABLE, blank=True, null= True)
+    print_rate = models.BooleanField(default = True)
+    day_use = models.BooleanField(default = False)
+    discount = models.BooleanField(default = False)
+    discount_amount = models.DecimalField(decimal_places=2, max_digits=10,blank=True, null= True)
+    discount_percentage = models.DecimalField(decimal_places=2, max_digits=10,blank=True, null= True )
+    complimentary = models.BooleanField(default = False,blank=True, null= True)
+    house_use = models.BooleanField(default = False,blank=True, null= True)
+    history = HistoricalRecords()
+
+    def clean(self):
+        if(self.begin_sell_date and self.end_sell_date):
+            if self.begin_sell_date >  self.end_sell_date:
+                raise ValidationError("Begin Sell Date cannot be more than end sell date")
+
+        if self.discount_amount:
+            if self.discount_amount < 0:
+                raise ValidationError("Discount Amount cannot be negative")
+
+        if(self.discount_percentage):
+            if self.discount_percentage < 0:
+                raise ValidationError("Discount Percentage cannot be negative")
+            elif self.discount_percentage > 100:
+                raise ValidationError("Discount Percentage cannot be more than 100")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.rate_code
+
+class RateCodeRoomRate(models.Model):
+    rate_code = models.ForeignKey(RateCode, on_delete=models.CASCADE, related_name= 'rate_code_room_rates')
+    room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE, related_name= 'rate_code_room_rates')
+    adult_price_1 = models.DecimalField(max_digits=5, decimal_places=2)
+    adult_price_2 = models.DecimalField(max_digits=5, decimal_places=2)
+    adult_price_3 = models.DecimalField(max_digits=5, decimal_places=2)
+    extra_adult_price = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null= True)
+    extra_child_price = models.DecimalField(max_digits=5, decimal_places=2,blank=True, null= True)
+
+    def clean(self):
+
+        if self.adult_price_1 or self.adult_price_2 or self.adult_price_3 or self.extra_adult_price or self.extra_child_price:
+            if self.adult_price_1 < 0 or self.adult_price_2 < 0 or self.adult_price_3 < 0  or self.extra_adult_price < 0 or self.extra_child_price < 0:
+                raise ValidationError("Price cannot be negative")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return  'Room Rate for' + self.rate_code 
