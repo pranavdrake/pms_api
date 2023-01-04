@@ -170,3 +170,31 @@ class GuestProfile(models.Model):
     def __str__(self):
         return  self.first_name + ' ' + self.last_name
 
+class IDDetails(models.Model):
+    guest = models.ForeignKey(GuestProfile, on_delete=models.CASCADE, related_name= 'id_details')
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    ID_TYPE_CHOICES = (
+        ('A', 'Adhaar'),
+        ('P', 'Passport'),
+        ('PN', 'Pan'),
+    )
+    id_type = models.CharField(max_length=10, choices=ID_TYPE_CHOICES)
+    issue_place = models.CharField(max_length=100)
+    id_file = models.FileField(upload_to='guest_ids/')
+    id_number = models.CharField(max_length=100)
+    issue_date = models.DateField()
+    expiry_date = models.DateField()
+
+    def clean(self):
+
+        if self.issue_date or self.expiry_date:
+            if self.issue_date > self.expiry_date:
+                raise ValidationError("Issue Date cannot be grater than Expiry Date")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return  self.first_name + ' ' + self.last_name
