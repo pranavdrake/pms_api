@@ -2,7 +2,7 @@ from django.contrib import admin
 from accounts.models import CustomUser
 from .forms import CustomUserCreationForm
 from django.contrib.auth.admin import UserAdmin
-from .models import Department
+from .models import *
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
 # Register your models here.
@@ -28,3 +28,6 @@ class UserAdmin(DjangoUserAdmin):
     ordering = ('email',)
 
 admin.site.register(Department)
+admin.site.register(Account)
+admin.site.register(VIP)
+admin.site.register(GuestProfile)
