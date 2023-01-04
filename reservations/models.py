@@ -123,7 +123,7 @@ def validate_max_number_of_overbooked_rooms(value):
         raise ValidationError('Number of overbooked rooms cannot be greated than Overbooking Limit')
 
 class RoomTypeInventory(models.Model):
-    room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE, related_name= 'inventories')
+    room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE, related_name= 'inventory')
     number_of_available_rooms = models.PositiveSmallIntegerField()
     number_of_overbooked_rooms = models.PositiveSmallIntegerField(validators=[validate_max_number_of_overbooked_rooms])
     date = models.DateField()
