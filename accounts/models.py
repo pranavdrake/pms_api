@@ -5,6 +5,7 @@ from django_countries.fields import CountryField
 from reservations.models import RateCode, Commission, Room, Preference
 from django.core.exceptions import ValidationError
 from simple_history.models import HistoricalRecords
+from datetime import date
 
 class Department(models.Model):
     name = models.CharField(max_length=100)
@@ -135,6 +136,7 @@ class GuestProfile(models.Model):
     address_line_1 = models.CharField(max_length=255,blank = True, null = True)
     address_line_2 = models.CharField(max_length=255, blank = True, null = True)
     country = CountryField(blank = True, null = True)
+    state = models.CharField(max_length=255,  blank = True, null = True)
     city = models.CharField(max_length=255,  blank = True, null = True)
     postal_code = models.CharField(max_length=255, blank = True, null = True)
     gst_id = models.CharField(max_length=255, blank = True, null = True)
@@ -143,8 +145,8 @@ class GuestProfile(models.Model):
     nationality = CountryField(blank = True, null = True)
     dob = models.DateField(blank = True, null = True)
     phone_number = models.CharField(max_length=255, blank = True, null = True)
-    email = models.EmailField( blank = True, null = True )
-    notes = models.TextField( blank = True, null = True)
+    email = models.EmailField(blank = True, null = True)
+    notes = models.TextField(blank = True, null = True)
     guest_preferences = models.ManyToManyField(Preference, blank = True)
     negotiated_rate = models.ForeignKey(RateCode, blank = True, null = True, on_delete=models.SET_NULL, related_name= 'negotiated_rate_guest_profiles')
     guest_type = models.CharField(blank = True, null = True, max_length=10, choices=GUEST_TYPE_CHOICES)
@@ -155,6 +157,44 @@ class GuestProfile(models.Model):
     is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
+    def clean(self):
+
+        if self.dob:
+            if self.dob > date.today:
+                raise ValidationError("Please enter a valid date of birth")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return  self.first_name + ' ' + self.last_name
 
+class IDDetails(models.Model):
+    guest = models.ForeignKey(GuestProfile, on_delete=models.CASCADE, related_name= 'id_details')
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    ID_TYPE_CHOICES = (
+        ('A', 'Adhaar'),
+        ('P', 'Passport'),
+        ('PN', 'Pan'),
+    )
+    id_type = models.CharField(max_length=10, choices=ID_TYPE_CHOICES)
+    issue_place = models.CharField(max_length=100)
+    id_file = models.FileField(upload_to='guest_ids/')
+    id_number = models.CharField(max_length=100)
+    issue_date = models.DateField()
+    expiry_date = models.DateField()
+
+    def clean(self):
+
+        if self.issue_date or self.expiry_date:
+            if self.issue_date > self.expiry_date:
+                raise ValidationError("Issue Date cannot be grater than Expiry Date")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return  self.first_name + ' ' + self.last_name
