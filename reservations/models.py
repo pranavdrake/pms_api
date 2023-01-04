@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 import accounts.models 
 from simple_history.models import HistoricalRecords
 from djmoney.models.fields import MoneyField
-
+from datetime import *
 # Create your models here.
 class Property(models.Model):
     property_name = models.CharField(max_length=250)
@@ -477,3 +477,86 @@ class RateCodeRoomRate(models.Model):
 
     def __str__(self):
         return  'Room Rate for' + self.rate_code 
+
+
+class PaymentType(models.Model):
+    payment_type_code = models.CharField(max_length=255 ,unique=True)
+    description = models.TextField(blank= True, null= True)
+    transaction_code = models.ForeignKey(TransactionCode, on_delete=models.CASCADE, related_name='PaymentTypes') 
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return self.payment_type_code
+
+class RoomMove(models.Model):
+    from_room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='room_moves_from')
+    to_room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='room_moves_to')
+    reason_code = models.ForeignKey(Reason,on_delete=models.CASCADE, related_name='room_moves')
+    reason_text = models.TextField(blank=True, null=True)
+    history = HistoricalRecords()
+    def clean(self):
+
+            if self.from_room == self.to_room:
+                raise ValidationError("From Room and Moved Room should be not same")
+
+    def __str__(self):
+        return self.from_room
+
+class AdjustTransaction(models.Model):
+    ADJUST_BY = [
+    ('percentage', 'Percentage'),
+    ('amount', 'Amount'),
+    ]
+    adjust_by = models.CharField(max_length=100, choices=ADJUST_BY, blank=False, null= False)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    reason = models.ForeignKey(Reason,on_delete=models.CASCADE, related_name='adjust_Transaction')
+    reason_text = models.TextField(blank=True, null=True)
+    reference = models.ForeignKey("accounts.CustomUser",on_delete=models.CASCADE, related_name='adjust_Transaction_user',default='')
+    history = HistoricalRecords()
+    
+    
+    def __str__(self):
+        return self.adjust_by
+
+class TicketCategory(models.Model):
+    ticket_category_code = models.CharField(max_length=255, unique= True)
+    description = models.TextField(blank = True, null=True)
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return self.ticket_category_code 
+
+class Ticket(models.Model):
+    PRIORITY_CHOICES = [
+        ('urgent', 'Urgent'),
+        ('high', 'High'),
+        ('medium', 'Medium'),
+        ('low', 'Low')
+    ]
+    STATUS_CHOICES = [
+        ('resolved', 'Resolved'),
+        ('Unsolved', 'Unsolved')
+    ] 
+    room = models.ForeignKey(Room, on_delete=models.CASCADE,related_name='room_tickets')
+    area = models.TextField(blank = True, null=True)
+    category = models.ForeignKey(TicketCategory, on_delete=models.CASCADE,related_name='category_tickets')
+    priority = models.CharField(max_length=255, choices=PRIORITY_CHOICES)
+    Subject = models.CharField( max_length=255, blank = False, null=False)
+    description = models.CharField(max_length=255, blank = True, null=True)
+    # file_upload = models.FileField(_(""), upload_to=None, max_length=100)
+    status = models.CharField(max_length=255, choices=STATUS_CHOICES)
+    agent = models.ForeignKey("accounts.CustomUser", on_delete=models.CASCADE,related_name='user_tickets')
+    sla_date_and_time = models.DateTimeField()
+    history = HistoricalRecords()
+
+    def clean(self):
+        today = datetime.datetime.now()
+        if today > self.sla_date_and_time:
+                raise ValidationError("SLA date time cannot be lesser then Current date time ")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+
+    def __str__(self):
+        return  self.sla_date_and_time
