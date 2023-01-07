@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 from django_countries.fields import CountryField
-from reservations.models import RateCode, Commission, Room, Preference
+from reservations.models import RateCode, Commission, Room, Preference, MarketCode, Source
 from django.core.exceptions import ValidationError
 from simple_history.models import HistoricalRecords
 from datetime import date
@@ -160,7 +160,7 @@ class GuestProfile(models.Model):
     def clean(self):
 
         if self.dob:
-            if self.dob > date.today:
+            if self.dob > date.today():
                 raise ValidationError("Please enter a valid date of birth")
 
     def save(self, *args, **kwargs):
@@ -170,7 +170,7 @@ class GuestProfile(models.Model):
     def __str__(self):
         return  self.first_name + ' ' + self.last_name
 
-class IDDetails(models.Model):
+class IDDetail(models.Model):
     guest = models.ForeignKey(GuestProfile, on_delete=models.CASCADE, related_name= 'id_details')
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -181,10 +181,11 @@ class IDDetails(models.Model):
     )
     id_type = models.CharField(max_length=10, choices=ID_TYPE_CHOICES)
     issue_place = models.CharField(max_length=100)
-    id_file = models.FileField(upload_to='guest_ids/')
+    id_file = models.FileField(upload_to='guest_ids/',null=True)
     id_number = models.CharField(max_length=100)
     issue_date = models.DateField()
     expiry_date = models.DateField()
+    history = HistoricalRecords()
 
     def clean(self):
 
@@ -198,3 +199,107 @@ class IDDetails(models.Model):
 
     def __str__(self):
         return  self.first_name + ' ' + self.last_name
+
+class Booker(models.Model):
+    account= models.ForeignKey(Account,on_delete=models.CASCADE,related_name='bookers')
+    name = models.TextField(blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    phone_number = models.CharField(max_length=255, blank=True, null=True)
+    address_line_1 = models.CharField(max_length=255,blank = True, null = True)
+    address_line_2 = models.CharField(max_length=255, blank = True, null = True)
+    country = CountryField(blank = True, null = True)
+    city = models.CharField(max_length=255,  blank = True, null = True)
+    state = models.CharField(max_length=255, blank=True, null=True)
+    postal_code = models.PositiveIntegerField()
+    is_active = models.BooleanField(default=True)
+    history = HistoricalRecords()
+    
+    def __str__(self):
+        return self.name
+
+class VisaDetail(models.Model):
+    # Reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE,related_name='wail_list')
+    visa_number= models.TextField(blank=True, null=True)
+    guest= models.ForeignKey(GuestProfile,on_delete=models.CASCADE,related_name='visa_details')
+    issue_date = models.DateField()
+    expiry_date = models.DateField()
+    visa_file = models.FileField(upload_to='visa_files/',null=True) 
+    history = HistoricalRecords()
+
+    def clean(self):
+        if self.issue_date > self.expiry_date:
+                raise ValidationError("Expiry date should be greater than Issue_date")
+
+    def __str__(self):
+        return self.visa_number
+
+class MembershipType(models.Model):
+    membership_type = models.CharField(max_length=255 ,blank = False, null=False,unique=True)
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return  self.membership_type
+    
+class MembershipLevel(models.Model):
+    membership_level = models.CharField(max_length=255 ,blank = False, null=False,unique=True)
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return  self.membership_level
+
+class Membership (models.Model):
+    guest = models.ForeignKey("accounts.GuestProfile", on_delete=models.CASCADE,related_name='guest_profiles')
+    membership_type = models.ForeignKey(MembershipType, on_delete=models.CASCADE,related_name='membership_types')
+    membership_level = models.ForeignKey(MembershipLevel, on_delete=models.CASCADE,related_name='membership_levels')
+    id_number = models.CharField(max_length=255 ,blank = False, null=False,unique=True)
+    name_on_card = models.CharField(max_length=255)
+    joining_date = models.DateField() 
+    expiry_date = models.DateField()
+
+    def clean(self):
+        if self.joining_date > self.expiry_date:
+            raise ValidationError("Joining Date cannot be more than Expiry Date")
+    
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name_on_card
+
+class PasserBy(models.Model):
+    # Salutation choices
+    MR = 'Mr.'
+    MS = 'Ms.'
+    MRS = 'Mrs.'
+    DR = 'Dr.'
+    PROF = 'Prof.'
+    CAPT = 'Capt.'
+    WG_CDR = 'Wg Cdr'
+    MAJOR = 'Major'
+    COLONEL = 'Colonel'
+    SALUTATION_CHOICES = [
+        (MR, 'Mr.'),
+        (MS, 'Ms.'),
+        (MRS, 'Mrs.'),
+        (DR, 'Dr.'),
+        (PROF, 'Prof.'),
+        (CAPT, 'Capt.'),
+        (WG_CDR, 'Wg Cdr'),
+        (MAJOR, 'Major'),
+        (COLONEL, 'Colonel'),
+    ]
+    first_name = models.CharField(max_length=100,null=True, blank=True)
+    last_name = models.CharField(max_length=100 ,null=True, blank=True)
+    salutation = models.CharField(max_length=10,null=True, blank=True ,choices=SALUTATION_CHOICES)
+    phone_number = models.CharField(max_length=255, blank = True, null = True)
+    email = models.EmailField(blank = True, null = True)
+    market_code = models.ForeignKey(MarketCode,blank = True, null = True, on_delete=models.SET_NULL, related_name='passers_by')
+    source_code = models.ForeignKey(Source,blank = True, null = True, on_delete=models.SET_NULL, related_name='passers_by')
+    history = HistoricalRecords()
+   
+    def __str__(self):
+        return  self.first_name + ' ' + self.last_name
+
+    class Meta:
+        verbose_name_plural = 'Passers By'
