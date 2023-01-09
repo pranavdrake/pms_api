@@ -1545,4 +1545,3 @@ class Reinstate(models.Model):
 
     def __str__(self):
         return 'Reinstate ID:' + self.id 
-
