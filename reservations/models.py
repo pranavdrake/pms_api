@@ -701,15 +701,16 @@ class GroupReservation(models.Model):
             if self.cut_off_date <= date.today():
                 raise ValidationError("Cut Off Date cannot be less than Current Date")
 
-        if self.total_rooms:
+        # deleted
+        # if self.total_rooms:
             
-            current_date = self.arrival_date
-            while current_date <= self.departure_date:
-                if RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date):
-                    inv  = RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date)
-                    if((self.total_rooms > inv.number_of_available_rooms) and (inv.number_of_overbooked_rooms >= Overbooking.objects.first().overbooking_limit)):
-                        raise ValidationError("The number of rooms are more than the number of available rooms in the inventory for the arrival and departure dates.")
-                    current_date += timedelta(days=1)
+        #     current_date = self.arrival_date
+        #     while current_date <= self.departure_date:
+        #         if RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date):
+        #             inv  = RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date)
+        #             if((self.total_rooms > inv.number_of_available_rooms) and (inv.number_of_overbooked_rooms >= Overbooking.objects.first().overbooking_limit)):
+        #                 raise ValidationError("The number of rooms are more than the number of available rooms in the inventory for the arrival and departure dates.")
+        #             current_date += timedelta(days=1)
 
         if self.rate:
             if self.rate < 0:
@@ -724,7 +725,7 @@ class GroupReservation(models.Model):
 
 
     def __str__(self):
-        return 'Group Reservation ID:' + self.id +' ' + self.group_name.account_name
+        return 'Group Reservation ID:' + str(self.id) +' ' + self.group_name.account_name #changed
 
 class GroupReservationRoomType(models.Model):
 
