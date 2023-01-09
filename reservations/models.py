@@ -611,15 +611,16 @@ class Ticket(models.Model):
     history = HistoricalRecords()
 
     def clean(self):
-        today = datetime.datetime.now()
+        today = datetime.now()  # changed
         if today > self.sla_date_and_time:
                 raise ValidationError("SLA date time cannot be lesser then Current date time ")
 
     def save(self, *args, **kwargs):
         self.full_clean()
+        super().save(*args, **kwargs)  # changed
 
     def __str__(self):
-        return  self.room.room_number + ' ' + str(self.id)
+        return  str(self.room.room_number) + ' ' + str(self.id)  # changed
 
 
 class SharingID(models.Model):
@@ -628,7 +629,7 @@ class SharingID(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return  self.sharing_id
+        return  str(self.sharing_id)  # changed
 
 class ReservationType(models.Model):
     reservation_type = models.CharField(max_length=100)
@@ -766,7 +767,7 @@ class CardDetail(models.Model):
     card_number = CardNumberField(_('card number'))
     expiry = CardExpiryField(_('expiration date'))
     cvv_cvc = SecurityCodeField(_('security code'))
-    masked_card_number = models.CharField(max_length=16,blank=False, null=True)
+    masked_card_number = models.CharField(max_length=16,blank=True, null=True) # changed
     masked_cvv_cvc = models.CharField(max_length=3, blank=True, null=True, default='XXX')
     history = HistoricalRecords()
 
