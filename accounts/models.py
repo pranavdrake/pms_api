@@ -97,7 +97,7 @@ class VIP(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return  self.vip_level + ' ' + self.vip_type
+        return  str(self.vip_level) + ' ' + self.vip_type
 
 class GuestProfile(models.Model):
     # Salutation choices
