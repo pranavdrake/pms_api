@@ -1,0 +1,42 @@
+Market Group,Description,Number,Status
+DAYUSE,DAYUSE,43,Active
+GDS,GDS,42,Active
+ADHOC,CORPORATEADHOC,41,Active
+WEB,THE OTERRA WEB,40,Active
+TA,TRAVELAGENTS,39,Active
+RETAIUFIT,RETAIUFIT,38,Active
+RESSOC,RESIDENTIAL SOCIAL,37,Active
+PROMO,PROMOTIONS,36,Active
+PKG,PACKAG ES,35,Active
+OTA,OTA,34,Active
+HOUSEUSE,HOUSEUSE,33,Active
+GOS,GOS,32,Active
+COMP,COMPLIMENTARY,31,Active
+RESWED,RESIDENTIALWEDDING,30,Active
+RESCON,RESIDENTIAL CONFERENCE,29,Active
+CVGR,CORPORATE CONTRACT,28,Active
+PKG,PACKAGES,27,Active
+OTA,OTA,26,Active
+HOUSEUSE,HOUSEUSE,25,Active
+GOS,GOS,24,Active
+COMP,COMPLIMENTARY,23,Active
+RESWED,RESIDENTIALWEDDING,22,Active
+CVGR,CORPORATE CONTRACT,21,Active
+F,Trade Show/Exhibit - F,20,Active
+A,Association - A,19,Active
+I,Incentive - I,18,Active
+c,Corporate Group- C,17,Active
+K,Package Leisure - K,16,Active
+s,Package-Seasonal- s,15,Active
+J,Package Weekend - J,14,Active
+w,Wholesale/FIT - W,13,Active
+B,Benchmark Rate - B,12,Active
+M,Gov/Dipl/Military - M,11,Active
+L,Corp Negotiated Local - L,10,Active
+p,Corp Neg KNR and BTA - p,9,Active
+G,Corp Regular - G,8,Active
+D,Discount - D,6,Active
+z,Group- Z,5,Active
+N,Complimentary - N,4,Active
+Q,Gov/Dipl/MilGroup - Q,3,Active
+v,Industry Programs - Y,2,Active
