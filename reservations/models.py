@@ -259,7 +259,7 @@ class PickupDropDetails(models.Model):
     remarks = models.TextField(blank = True, null=True)
     history = HistoricalRecords()
     def __str__(self):
-        return self.type + 'on' + str(self.date) + + 'at'+ str(self.time)
+        return self.type + 'on' + str(self.date) + ' ' + 'at'+ str(self.time) #changesd
 
     class Meta:
         verbose_name  = 'Pickup / Drop Details'
@@ -518,7 +518,7 @@ class RateCodeRoomRate(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return  'Room Rate for' + self.rate_code 
+        return  'Room Rate for' + str(self.rate_code) #changed
 
 
 class PaymentType(models.Model):
@@ -542,7 +542,7 @@ class RoomMove(models.Model):
                 raise ValidationError("From Room and Moved Room should be not same")
 
     def __str__(self):
-        return self.from_room
+        return str(self.from_room)  #changed
 
 class AdjustTransaction(models.Model):
     ADJUST_BY = [
