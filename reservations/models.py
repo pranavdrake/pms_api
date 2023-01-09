@@ -10,9 +10,11 @@ import pycountry
 from django.utils.translation import gettext as _
 # Create your models here.
 class Property(models.Model):
+    CURRENCY_CHOICES =[(currency.alpha_3, f"{currency.name} ({currency.alpha_3})") for currency in pycountry.currencies]
+
     property_name = models.CharField(max_length=250)
     country = CountryField()
-    currency = models.CharField(max_length=3)
+    currency = models.CharField(max_length=3,choices= CURRENCY_CHOICES)
     address = models.TextField()
     history = HistoricalRecords()
 
@@ -52,27 +54,27 @@ class RoomType(models.Model):
 class Room(models.Model):
 
     ROOM_STATUS_CHOICES = [
-        ('clean', 'Clean'),
-        ('inspected', 'Inspected'),
-        ('dirty', 'Dirty'),
-        ('out_of_order', 'Out of Order'),
-        ('out_of_service', 'Out of Service')
+        ('Clean', 'Clean'),
+        ('Inspected', 'Inspected'),
+        ('Dirty', 'Dirty'),
+        ('Out Of Order', 'Out Of Order'),
+        ('Out Of Service', 'Out Of Service')
     ]
 
     FRONT_OFFICE_STATUS_CHOICES = [
-        ('vacant', 'Vacant'),
-        ('occupied', 'Occupied')
+        ('Vacant', 'Vacant'),
+        ('Occupied', 'Occupied')
     ]
 
     RESERVATION_STATUS_CHOICES = [
-        ('assigned', 'Assigned'),
-        ('departed', 'Departed'),
-        ('stay_over', 'Stay Over'),
-        ('arrivals', 'Arrivals'),
-        ('not_reserved', 'Not Reserved'),
-        ('arrived', 'Arrived'),
-        ('due_out', 'Due Out'),
-        ('due_out_arrivals', 'Due Out / Arrivals')
+        ('Assigned', 'Assigned'),
+        ('Departed', 'Departed'),
+        ('Stay Over', 'Stay Over'),
+        ('Arrivals', 'Arrivals'),
+        ('Not Reserved', 'Not Reserved'),
+        ('Arrived', 'Arrived'),
+        ('Due Out', 'Due Out'),
+        ('Due Out / Arrivals', 'Due Out / Arrivals')
     ]
 
     floor = models.ForeignKey(Floor, on_delete=models.CASCADE, related_name= 'rooms')
@@ -284,6 +286,7 @@ class Preference(models.Model):
 class MarketGroup(models.Model):
     market_group = models.CharField(max_length=255, unique= True)
     description = models.TextField(blank = True, null=True)
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
     def __str__(self):
         return self.market_group
@@ -611,15 +614,16 @@ class Ticket(models.Model):
     history = HistoricalRecords()
 
     def clean(self):
-        today = datetime.datetime.now()
+        today = datetime.now()
         if today > self.sla_date_and_time:
                 raise ValidationError("SLA date time cannot be lesser then Current date time ")
 
     def save(self, *args, **kwargs):
         self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return  self.room.room_number + ' ' + str(self.id)
+        return  str(self.room.room_number) + ' ' + str(self.id)
 
 
 class SharingID(models.Model):
@@ -628,7 +632,7 @@ class SharingID(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return  self.sharing_id
+        return  str(self.sharing_id)
 
 class ReservationType(models.Model):
     reservation_type = models.CharField(max_length=100)
@@ -734,8 +738,6 @@ class GroupReservationRoomType(models.Model):
     number_of_rooms = models.PositiveIntegerField(default=0)
     number_of_picked_rooms = models.PositiveIntegerField(blank=True, null= True, default=0)
 
-
-
     def clean(self):
         if self.rate_amount:
             if self.rate_amount < 0:
@@ -766,7 +768,7 @@ class CardDetail(models.Model):
     card_number = CardNumberField(_('card number'))
     expiry = CardExpiryField(_('expiration date'))
     cvv_cvc = SecurityCodeField(_('security code'))
-    masked_card_number = models.CharField(max_length=16,blank=False, null=True)
+    masked_card_number = models.CharField(max_length=16,blank=True, null=True)
     masked_cvv_cvc = models.CharField(max_length=3, blank=True, null=True, default='XXX')
     history = HistoricalRecords()
 
@@ -1006,37 +1008,6 @@ class Transaction(models.Model):
     card = models.ForeignKey(CardDetail, null=True, blank = True, on_delete=models.SET_NULL, related_name='transactions')
 
     def clean(self):
-        
-        if self.pk is None:
-            # for creating instance 
-            if self.arrival_date:
-                if self.arrival_date > self.departure_date:
-                    raise ValidationError("Arrival Date cannot be more than Departure Date")
-                    
-                if self.arrival_date <= date.today():
-                    raise ValidationError("Arrival Date cannot be less than Current Date")
-
-            if self.departure_date:
-                if self.departure_date <= date.today():
-                    raise ValidationError("Departure Date cannot be less than Current Date")
-        else:
-            # for updating instance 
-            if self.arrival_date:
-                if self.arrival_date > self.departure_date:
-                    raise ValidationError("Arrival Date cannot be more than Departure Date")
-
-        if self.number_of_rooms:
-            current_date = self.arrival_date
-            while current_date <= self.departure_date:
-                if RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date):
-                    inv  = RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date)
-                    if((self.number_of_rooms > inv.number_of_available_rooms) and (inv.number_of_overbooked_rooms >= Overbooking.objects.first().overbooking_limit)):
-                        raise ValidationError("The number of rooms are more than the number of available rooms in the inventory for the arrival and departure dates.")
-                    current_date += timedelta(days=1)
-
-        if self.adults and self.children and self.number_of_rooms:
-            if self.adults + self.children > 3*self.number_of_rooms:
-                raise ValidationError("The sum of adults and children should be less than or equal to 3 in one room")
 
         if self.base_amount:
             if self.base_amount < 0:

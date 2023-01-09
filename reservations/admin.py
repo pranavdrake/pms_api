@@ -2,6 +2,8 @@ from django.contrib import admin
 from .models import *
 from simple_history.admin import SimpleHistoryAdmin
 # Register your models here.
+class CardDetailAdmin(SimpleHistoryAdmin):
+    exclude = ['masked_card_number','masked_cvv_cvc']
 
 admin.site.register(Property, SimpleHistoryAdmin)
 admin.site.register(Block, SimpleHistoryAdmin)
@@ -40,7 +42,7 @@ admin.site.register(SharingID, SimpleHistoryAdmin)
 admin.site.register(ReservationType, SimpleHistoryAdmin)
 admin.site.register(GroupReservation, SimpleHistoryAdmin)
 admin.site.register(GroupReservationRoomType, SimpleHistoryAdmin)
-admin.site.register(CardDetail, SimpleHistoryAdmin)
+admin.site.register(CardDetail, CardDetailAdmin)
 admin.site.register(Reservation, SimpleHistoryAdmin)
 admin.site.register(Folio, SimpleHistoryAdmin)
 admin.site.register(Invoice, SimpleHistoryAdmin)

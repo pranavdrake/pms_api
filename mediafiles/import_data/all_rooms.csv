@@ -1,0 +1,300 @@
+Floor,Room Number,Room Status,Room Type,FO Status,Reservation Status,ID,Added Time,Added User,Modified Time,Modified User
+16,1670,Inspected,PM,Vacant,Not Reserved,"78063000011895603",22-Dec-2022 19:21:18,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1669,Inspected,PM,Vacant,Not Reserved,"78063000002268170",01-Sep-2021 21:05:53,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1668,Inspected,PM,Vacant,Not Reserved,"78063000002268166",01-Sep-2021 21:05:53,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1667,Inspected,PM,Vacant,Not Reserved,"78063000002268162",01-Sep-2021 21:05:53,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1666,Inspected,PM,Vacant,Not Reserved,"78063000002268158",01-Sep-2021 21:05:53,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1665,Inspected,PM,Vacant,Not Reserved,"78063000002266273",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1664,Inspected,PM,Vacant,Not Reserved,"78063000002266269",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1663,Inspected,PM,Vacant,Not Reserved,"78063000002266265",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1662,Inspected,PM,Vacant,Not Reserved,"78063000002266261",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1661,Inspected,PM,Vacant,Not Reserved,"78063000002266257",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1660,Inspected,PM,Vacant,Not Reserved,"78063000002266253",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1659,Inspected,PM,Occupied,Stay Over,"78063000002266249",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1658,Inspected,PM,Occupied,Stay Over,"78063000002266245",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1657,Inspected,PM,Vacant,Not Reserved,"78063000002266241",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1656,Inspected,PM,Vacant,Not Reserved,"78063000002266237",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1655,Inspected,PM,Vacant,Not Reserved,"78063000002266233",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1654,Inspected,PM,Occupied,Not Reserved,"78063000002266229",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1653,Inspected,PM,Occupied,Not Reserved,"78063000002266225",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1652,Inspected,PM,Occupied,Not Reserved,"78063000002266221",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1651,Inspected,PM,Occupied,Not Reserved,"78063000002266217",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1650,Inspected,PM,Occupied,Not Reserved,"78063000002266213",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1649,Inspected,PM,Occupied,Not Reserved,"78063000002266209",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1648,Inspected,PM,Vacant,Not Reserved,"78063000002266205",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1647,Inspected,PM,Occupied,Not Reserved,"78063000002266201",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1646,Inspected,PM,Vacant,Not Reserved,"78063000002266197",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1645,Inspected,PM,Vacant,Not Reserved,"78063000002266193",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1644,Inspected,PM,Vacant,Not Reserved,"78063000002266189",01-Sep-2021 20:55:48,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1643,Inspected,PM,Occupied,Stay Over,"78063000002266173",01-Sep-2021 20:52:17,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1642,Inspected,PM,Occupied,Stay Over,"78063000002113047",13-Aug-2021 13:59:50,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1641,Inspected,PM,Occupied,Stay Over,"78063000002113043",13-Aug-2021 13:59:33,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+16,1640,Inspected,PM,Occupied,Stay Over,"78063000002113039",13-Aug-2021 13:59:13,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1127,Dirty,KCLB,Occupied,Stay Over,"78063000001221071",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1126,Dirty,KCLB,Occupied,Stay Over,"78063000001221067",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1125,Dirty,KCLB,Occupied,Stay Over,"78063000001221063",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1124,Dirty,KCLB,Occupied,Stay Over,"78063000001221059",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1123,Dirty,KCLB,Vacant,Arrivals,"78063000001221055",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1122,Inspected,KCLB,Vacant,Arrivals,"78063000001221051",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1121,Dirty,KCLB,Occupied,Stay Over,"78063000001221047",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1120,Dirty,KCLB,Occupied,Stay Over,"78063000001221043",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1119,Dirty,KCLB,Occupied,Stay Over,"78063000001221039",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1118,Dirty,KCLB,Occupied,Stay Over,"78063000001221035",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1117,Dirty,KCLB,Occupied,Stay Over,"78063000001221031",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1116,Dirty,KCLB,Occupied,Stay Over,"78063000001221027",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1115,Out Of Order,KCLB,Vacant,Not Reserved,"78063000001221023",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1106,Dirty,KCLB,Occupied,Stay Over,"78063000001221019",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1105,Clean,EXE,Vacant,Arrivals,"78063000001221015",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+11,1104,Dirty,KCLB,Occupied,Arrived,"78063000001221011",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1103,Inspected,KCLB,Vacant,Arrivals,"78063000001221007",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1102,Dirty,KCLB,Occupied,Stay Over,"78063000001221003",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+11,1101,Dirty,KCLB,Occupied,Stay Over,"78063000001220999",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+10,1027,Dirty,KCLB,Occupied,Stay Over,"78063000001220995",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+10,1026,Clean,TCLB,Vacant,Not Reserved,"78063000001220991",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+10,1025,Inspected,TCLB,Vacant,Not Reserved,"78063000001220987",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+10,1024,Clean,TCLB,Vacant,Not Reserved,"78063000001220983",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+10,1023,Dirty,TCLB,Occupied,Stay Over,"78063000001220979",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+10,1022,Dirty,KCLB,Occupied,Stay Over,"78063000001220975",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+10,1021,Dirty,KCLB,Occupied,Stay Over,"78063000001220971",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+10,1020,Dirty,KCLB,Occupied,Stay Over,"78063000001220967",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+10,1019,Dirty,KCLB,Occupied,Stay Over,"78063000001220963",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+10,1018,Dirty,KCLB,Occupied,Stay Over,"78063000001220959",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+10,1017,Dirty,TCLB,Vacant,Departed,"78063000001220955",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+10,1016,Dirty,KCLB,Occupied,Due Out/Arrivals,"78063000001220951",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+10,1015,Out Of Order,TCLB,Vacant,Not Reserved,"78063000001220947",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+10,1014,Dirty,TCLB,Occupied,Stay Over,"78063000001220943",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+10,1012,Out Of Order,KCLB,Vacant,Not Reserved,"78063000001220939",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+10,1011,Dirty,KCLB,Occupied,Stay Over,"78063000001220935",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+10,1010,Inspected,TCLB,Vacant,Not Reserved,"78063000001220931",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+10,1009,Dirty,KCLB,Vacant,Arrivals,"78063000001220927",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+10,1008,Dirty,KCLB,Vacant,Arrivals,"78063000001220923",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+10,1007,Out Of Order,KCLB,Vacant,Not Reserved,"78063000001220919",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+10,1006,Out Of Order,KCLB,Vacant,Not Reserved,"78063000001220915",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+10,1004,Out Of Order,KCLB,Vacant,Not Reserved,"78063000001220911",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+10,1003,Out Of Order,KCLB,Vacant,Not Reserved,"78063000001220907",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+10,1002,Out Of Order,KCLB,Vacant,Not Reserved,"78063000001220903",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+10,1001,Out Of Order,TCLB,Vacant,Not Reserved,"78063000001220899",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+9,927,Dirty,TCLB,Occupied,Due Out,"78063000001220895",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+9,926,Inspected,TCLB,Vacant,Arrivals,"78063000001220891",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+9,925,Dirty,TCLB,Vacant,Departed,"78063000001220887",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+9,924,Inspected,TCLB,Vacant,Arrivals,"78063000001220883",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+9,923,Inspected,TCLB,Vacant,Arrivals,"78063000001220879",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+9,922,Dirty,KCLB,Occupied,Stay Over,"78063000001220875",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+9,921,Dirty,KCLB,Occupied,Stay Over,"78063000001220871",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+9,920,Out Of Order,KCLB,Vacant,Not Reserved,"78063000001220867",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+9,919,Dirty,KCLB,Occupied,Stay Over,"78063000001220863",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+9,918,Inspected,KCLB,Occupied,Arrived,"78063000001220859",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+9,917,Dirty,TCLB,Vacant,Arrivals,"78063000001220855",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+9,916,Dirty,KCLB,Vacant,Arrivals,"78063000001220851",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+9,915,Dirty,TCLB,Occupied,Stay Over,"78063000001220847",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+9,914,Dirty,TCLB,Occupied,Stay Over,"78063000001220843",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+9,912,Inspected,TCLB,Vacant,Arrivals,"78063000001220839",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+9,911,Inspected,TCLB,Vacant,Arrivals,"78063000001220835",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+9,910,Out Of Order,TCLB,Vacant,Not Reserved,"78063000001220831",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+9,909,Inspected,TCLB,Vacant,Arrivals,"78063000001220827",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+9,908,Dirty,KCLB,Occupied,Stay Over,"78063000001220823",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+9,907,Dirty,KCLB,Occupied,Stay Over,"78063000001220819",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+9,906,Out Of Order,TCLB,Vacant,Not Reserved,"78063000001220815",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+9,904,Out Of Order,KCLB,Vacant,Not Reserved,"78063000001220811",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+9,903,Out Of Order,KCLB,Vacant,Not Reserved,"78063000001220807",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+9,902,Out Of Order,TCLB,Vacant,Not Reserved,"78063000001220803",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+9,901,Out Of Order,TCLB,Vacant,Not Reserved,"78063000001220799",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+8,827,Clean,TDLX,Vacant,Not Reserved,"78063000001220795",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+8,826,Clean,TDLX,Vacant,Not Reserved,"78063000001220791",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+8,825,Clean,TDLX,Vacant,Not Reserved,"78063000001220787",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+8,824,Clean,TDLX,Vacant,Not Reserved,"78063000001220783",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+8,823,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220779",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+8,822,Clean,KDLX,Vacant,Not Reserved,"78063000001220775",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+8,821,Dirty,KDLX,Vacant,Not Reserved,"78063000001220771",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+8,820,Dirty,KDLX,Vacant,Not Reserved,"78063000001220767",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+8,819,Clean,KDLX,Vacant,Not Reserved,"78063000001220763",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+8,818,Clean,KDLX,Vacant,Not Reserved,"78063000001220759",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+8,817,Out Of Order,TDLX,Vacant,Not Reserved,"78063000001220755",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+8,816,Clean,KDLX,Vacant,Not Reserved,"78063000001220751",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+8,815,Clean,TDLX,Vacant,Not Reserved,"78063000001220747",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+8,814,Clean,TDLX,Vacant,Not Reserved,"78063000001220743",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+8,812,Clean,TDLX,Vacant,Not Reserved,"78063000001220739",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+8,811,Clean,TDLX,Vacant,Not Reserved,"78063000001220735",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+8,810,Out Of Order,TDLX,Vacant,Not Reserved,"78063000001220731",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+8,809,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220727",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+8,808,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220723",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+8,807,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220719",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+8,806,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220715",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+8,804,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220711",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+8,803,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220707",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+8,802,Out Of Order,TDLX,Vacant,Not Reserved,"78063000001220703",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+8,801,Out Of Order,TDLX,Vacant,Not Reserved,"78063000001220699",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+7,727,Clean,TDLX,Vacant,Not Reserved,"78063000001220695",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+7,726,Clean,TDLX,Vacant,Not Reserved,"78063000001220691",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+7,725,Clean,TDLX,Vacant,Not Reserved,"78063000001220687",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+7,724,Clean,TDLX,Vacant,Not Reserved,"78063000001220683",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+7,723,Dirty,KDLX,Occupied,Stay Over,"78063000001220679",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+7,722,Clean,TDLX,Vacant,Not Reserved,"78063000001220675",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+7,721,Dirty,KDLX,Vacant,Arrivals,"78063000001220671",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+7,720,Dirty,KDLX,Occupied,Stay Over,"78063000001220667",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+7,719,Dirty,KDLX,Occupied,Stay Over,"78063000001220663",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+7,718,Inspected,KDLX,Occupied,Arrived,"78063000001220659",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+7,717,Dirty,KDLX,Occupied,Stay Over,"78063000001220655",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+7,716,Inspected,KDLX,Vacant,Arrivals,"78063000001220651",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+7,715,Inspected,TDLX,Vacant,Arrivals,"78063000001220647",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+7,714,Inspected,TDLX,Vacant,Not Reserved,"78063000001220643",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+7,712,Out Of Order,TDLX,Vacant,Not Reserved,"78063000001220639",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+7,711,Inspected,TDLX,Vacant,Arrivals,"78063000001220635",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+7,710,Out Of Order,TDLX,Vacant,Not Reserved,"78063000001220631",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+7,709,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220627",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+7,708,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220623",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+7,707,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220619",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+7,706,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220615",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+7,705,Out Of Order,EXE,Vacant,Not Reserved,"78063000011712104",13-Dec-2022 16:55:48,ashwin_theoterra1,09-Jan-2023 11:24:22,msd_velankanigroup
+7,704,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220611",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+7,703,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220607",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+7,702,Out Of Order,TDLX,Vacant,Not Reserved,"78063000001220603",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+7,701,Out Of Order,TDLX,Vacant,Not Reserved,"78063000001220599",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+6,627,Clean,TDLX,Vacant,Arrivals,"78063000001220595",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+6,626,Clean,TDLX,Vacant,Arrivals,"78063000001220591",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+6,625,Clean,TDLX,Vacant,Arrivals,"78063000001220587",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+6,624,Inspected,TDLX,Vacant,Arrivals,"78063000001220583",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+6,623,Inspected,KDLX,Vacant,Arrivals,"78063000001220579",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+6,622,Dirty,KDLX,Occupied,Stay Over,"78063000001220575",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+6,621,Inspected,KDLX,Vacant,Arrivals,"78063000001220571",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+6,620,Inspected,KDLX,Vacant,Arrivals,"78063000001220567",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+6,619,Dirty,KDLX,Occupied,Stay Over,"78063000001220563",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+6,618,Dirty,KDLX,Occupied,Stay Over,"78063000001220559",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+6,617,Dirty,KDLX,Occupied,Stay Over,"78063000001220555",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+6,616,Inspected,KDLX,Vacant,Arrivals,"78063000001220551",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+6,615,Inspected,TDLX,Vacant,Arrivals,"78063000001220547",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+6,614,Inspected,TDLX,Vacant,Arrivals,"78063000001220543",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+6,612,Inspected,TDLX,Vacant,Arrivals,"78063000001220539",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+6,611,Inspected,TDLX,Vacant,Arrivals,"78063000001220535",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+6,610,Out Of Order,TDLX,Vacant,Not Reserved,"78063000001220531",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+6,609,Out Of Order,TDLX,Vacant,Not Reserved,"78063000001220527",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+6,608,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220523",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+6,607,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220519",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+6,606,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220515",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+6,604,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220511",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+6,603,Out Of Order,KDLX,Vacant,Not Reserved,"78063000001220507",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+6,602,Out Of Order,TDLX,Vacant,Not Reserved,"78063000001220503",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+6,601,Out Of Order,TDLX,Vacant,Not Reserved,"78063000001220499",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+5,527,Clean,TDLX,Vacant,Arrivals,"78063000001220495",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,526,Out Of Order,TDLX,Vacant,Not Reserved,"78063000001220491",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+5,525,Clean,TDLX,Vacant,Arrivals,"78063000001220487",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,524,Inspected,TDLX,Vacant,Arrivals,"78063000001220483",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,523,Dirty,KDLX,Occupied,Stay Over,"78063000001220479",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+5,522,Inspected,TDLX,Vacant,Arrivals,"78063000001220475",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,521,Inspected,KDLX,Occupied,Arrived,"78063000001220471",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+5,520,Inspected,KDLX,Vacant,Arrivals,"78063000001220467",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,519,Inspected,KDLX,Vacant,Arrivals,"78063000001220463",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,518,Inspected,TDLX,Vacant,Arrivals,"78063000001220459",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,517,Inspected,KDLX,Vacant,Arrivals,"78063000001220455",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,516,Clean,KDLX,Vacant,Arrivals,"78063000001220451",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,515,Inspected,TDLX,Vacant,Arrivals,"78063000001220447",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,514,Inspected,TDLX,Vacant,Arrivals,"78063000001220443",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,512,Inspected,TDLX,Vacant,Arrivals,"78063000001220439",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,511,Inspected,TDLX,Vacant,Arrivals,"78063000001220435",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,510,Inspected,TDLX,Vacant,Arrivals,"78063000001220431",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,509,Inspected,KDLX,Occupied,Arrived,"78063000001220427",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,508,Dirty,KDLX,Occupied,Stay Over,"78063000001220423",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,507,Dirty,KDLX,Occupied,Stay Over,"78063000001220419",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,506,Dirty,KDLX,Occupied,Stay Over,"78063000001220415",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,504,Dirty,KDLX,Occupied,Stay Over,"78063000001220411",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+5,503,Dirty,KDLX,Occupied,Stay Over,"78063000001220407",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,502,Dirty,TDLX,Occupied,Stay Over,"78063000001220403",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+5,501,Inspected,TDLX,Vacant,Arrivals,"78063000001220399",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+4,427,Clean,TDLX,Vacant,Not Reserved,"78063000001220395",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,426,Clean,TDLX,Vacant,Not Reserved,"78063000001220391",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,425,Clean,TDLX,Vacant,Not Reserved,"78063000001220387",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,424,Clean,TDLX,Vacant,Not Reserved,"78063000001220383",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,423,Inspected,KDLX,Vacant,Not Reserved,"78063000001220379",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,422,Inspected,KDLX,Vacant,Not Reserved,"78063000001220375",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,421,Inspected,KDLX,Vacant,Not Reserved,"78063000001220371",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,420,Clean,KDLX,Vacant,Not Reserved,"78063000001220367",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,419,Inspected,KDLX,Vacant,Not Reserved,"78063000001220363",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,418,Inspected,KDLX,Vacant,Not Reserved,"78063000001220359",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,417,Inspected,KDLX,Vacant,Not Reserved,"78063000001220355",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,416,Inspected,KDLX,Vacant,Not Reserved,"78063000001220351",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,415,Clean,TDLX,Vacant,Not Reserved,"78063000001220347",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,414,Clean,TDLX,Vacant,Not Reserved,"78063000001220343",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,412,Clean,TDLX,Vacant,Not Reserved,"78063000001220339",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,411,Clean,TDLX,Vacant,Not Reserved,"78063000001220335",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,410,Clean,TDLX,Vacant,Not Reserved,"78063000001220331",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,409,Clean,TDLX,Vacant,Not Reserved,"78063000001220327",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,408,Inspected,KDLX,Vacant,Not Reserved,"78063000001220323",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,407,Inspected,KDLX,Vacant,Not Reserved,"78063000001220319",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,406,Inspected,KDLX,Vacant,Not Reserved,"78063000001220315",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,405,Clean,EXE,Vacant,Not Reserved,"78063000001220311",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,404,Inspected,KDLX,Vacant,Not Reserved,"78063000001220307",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,403,Inspected,KDLX,Vacant,Not Reserved,"78063000001220303",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,402,Clean,TDLX,Vacant,Not Reserved,"78063000001220299",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+4,401,Clean,TDLX,Vacant,Not Reserved,"78063000001220295",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+3,327,Inspected,TDLX,Vacant,Not Reserved,"78063000001220291",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+3,326,Inspected,TDLX,Vacant,Arrivals,"78063000001220287",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,325,Dirty,TDLX,Vacant,Not Reserved,"78063000001220283",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+3,324,Inspected,TDLX,Vacant,Arrivals,"78063000001220279",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+3,323,Dirty,KDLX,Occupied,Stay Over,"78063000001220275",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,322,Inspected,TDLX,Vacant,Not Reserved,"78063000001220271",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+3,321,Inspected,KDLX,Vacant,Arrivals,"78063000001220267",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+3,320,Dirty,KDLX,Occupied,Stay Over,"78063000001220263",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,319,Inspected,KDLX,Vacant,Arrivals,"78063000001220259",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,318,Inspected,KDLX,Occupied,Arrived,"78063000001220255",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,317,Dirty,KDLX,Occupied,Stay Over,"78063000001220251",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,316,Dirty,KDLX,Occupied,Stay Over,"78063000001220247",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+3,315,Dirty,TDLX,Occupied,Stay Over,"78063000001220243",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,314,Dirty,TDLX,Occupied,Stay Over,"78063000001220239",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,312,Dirty,TDLX,Occupied,Stay Over,"78063000001220235",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,311,Dirty,TDLX,Occupied,Stay Over,"78063000001220231",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,310,Inspected,TDLX,Vacant,Arrivals,"78063000001220227",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,309,Dirty,KDLX,Occupied,Stay Over,"78063000001220223",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,308,Dirty,KDLX,Occupied,Stay Over,"78063000001220219",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,307,Dirty,KDLX,Occupied,Stay Over,"78063000001220215",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,306,Dirty,KDLX,Occupied,Stay Over,"78063000001220211",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,305,Inspected,EXE,Vacant,Not Reserved,"78063000001220207",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+3,304,Dirty,KDLX,Occupied,Stay Over,"78063000001220203",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,303,Inspected,KDLX,Vacant,Arrivals,"78063000001220199",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,302,Inspected,TDLX,Vacant,Arrivals,"78063000001220195",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+3,301,Inspected,TDLX,Vacant,Arrivals,"78063000001220191",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:21,msd_velankanigroup
+2,227,Clean,TSUP,Vacant,Not Reserved,"78063000001220187",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,226,Clean,TSUP,Vacant,Not Reserved,"78063000001220183",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,225,Clean,TSUP,Vacant,Not Reserved,"78063000001220179",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,224,Clean,TSUP,Vacant,Not Reserved,"78063000001220175",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,223,Clean,KSUP,Vacant,Not Reserved,"78063000001220171",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,222,Clean,KSUP,Vacant,Not Reserved,"78063000001220167",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,221,Clean,KSUP,Vacant,Not Reserved,"78063000001220163",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,220,Out Of Order,KSUP,Vacant,Not Reserved,"78063000001220159",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,219,Inspected,KSUP,Vacant,Not Reserved,"78063000001220155",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,218,Inspected,KSUP,Vacant,Not Reserved,"78063000001220151",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,217,Inspected,KSUP,Vacant,Not Reserved,"78063000001220147",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,216,Inspected,KSUP,Vacant,Not Reserved,"78063000001220143",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,215,Inspected,TSUP,Vacant,Not Reserved,"78063000001220139",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,214,Inspected,TSUP,Vacant,Not Reserved,"78063000001220135",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,212,Inspected,TSUP,Vacant,Not Reserved,"78063000001220131",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,211,Inspected,TSUP,Vacant,Not Reserved,"78063000001220127",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,210,Inspected,TSUP,Vacant,Not Reserved,"78063000001220123",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,209,Inspected,TSUP,Vacant,Not Reserved,"78063000001220119",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,208,Inspected,KSUP,Vacant,Not Reserved,"78063000001220115",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,207,Inspected,KSUP,Vacant,Not Reserved,"78063000001220111",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,206,Inspected,KSUP,Vacant,Not Reserved,"78063000001220107",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,205,Inspected,EXE,Vacant,Not Reserved,"78063000001220103",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,204,Clean,KSUP,Vacant,Not Reserved,"78063000001220099",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,203,Inspected,KSUP,Vacant,Not Reserved,"78063000001220095",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,202,Inspected,TSUP,Vacant,Not Reserved,"78063000001220091",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+2,201,Inspected,TSUP,Vacant,Not Reserved,"78063000001220087",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+1,121,Out Of Order,TSUP,Vacant,Not Reserved,"78063000001220083",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,120,Out Of Order,TSUP,Vacant,Not Reserved,"78063000001220079",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,119,Out Of Order,TSUP,Vacant,Not Reserved,"78063000001220075",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,118,Out Of Order,TSUP,Vacant,Not Reserved,"78063000001220071",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,117,Out Of Order,KSUP,Vacant,Not Reserved,"78063000001220067",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,116,Out Of Order,TSUP,Vacant,Not Reserved,"78063000001220063",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,115,Out Of Order,KSUP,Vacant,Not Reserved,"78063000001220059",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,114,Out Of Order,KSUP,Vacant,Not Reserved,"78063000001220055",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,112,Out Of Order,KSUP,Vacant,Not Reserved,"78063000001220051",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,111,Out Of Order,KSUP,Vacant,Not Reserved,"78063000001220047",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,110,Out Of Order,KSUP,Vacant,Not Reserved,"78063000001220043",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,109,Out Of Order,TSUP,Vacant,Not Reserved,"78063000001220039",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,108,Out Of Order,TSUP,Vacant,Not Reserved,"78063000001220035",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,107,Out Of Order,KSUP,Vacant,Not Reserved,"78063000001220031",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,106,Out Of Order,KSUP,Vacant,Not Reserved,"78063000001220027",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,105,Out Of Order,EXE,Vacant,Not Reserved,"78063000001220023",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:20,msd_velankanigroup
+1,104,Out Of Order,KSUP,Vacant,Not Reserved,"78063000001220019",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,103,Out Of Order,KSUP,Vacant,Not Reserved,"78063000001220015",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,102,Out Of Order,TSUP,Vacant,Not Reserved,"78063000001220011",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
+1,101,Out Of Order,TSUP,Vacant,Not Reserved,"78063000001220007",04-May-2021 18:57:55,msd_velankanigroup,09-Jan-2023 11:24:22,msd_velankanigroup
