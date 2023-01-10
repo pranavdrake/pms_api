@@ -395,6 +395,7 @@ class Package(models.Model):
     CALCULATION_RULE_CHOICES = (
     ('flat_rate', 'Flat Rate'),
     ('per_adult', 'Per Adult'),
+    ('per_room','Per Room')
     )
     calculation_rule = models.CharField(max_length=20, choices=CALCULATION_RULE_CHOICES)
     POSTING_RHYTHM_CHOICES = (
