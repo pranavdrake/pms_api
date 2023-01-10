@@ -216,9 +216,9 @@ class Extra(models.Model):
 
     extra_code = models.CharField(max_length=255)
     description = models.TextField(blank= True, null= True)
-    group = models.ManyToManyField(Group)
-    sub_group = models.ForeignKey(SubGroup, on_delete=models.CASCADE)
-    type = models.CharField(max_length=255, choices=TYPE_CHOICES)
+    group = models.ManyToManyField(Group ,null = True)
+    sub_group = models.ForeignKey(SubGroup,blank= True, null= True, on_delete=models.SET_NULL)
+    type = models.CharField(max_length=255,null=True,blank=True, choices=TYPE_CHOICES)
     percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     pieces = models.IntegerField(null=True, blank=True)
