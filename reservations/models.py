@@ -684,11 +684,11 @@ class GroupReservation(models.Model):
                 if self.arrival_date > self.departure_date:
                     raise ValidationError("Arrival Date cannot be more than Departure Date")
                     
-                if self.arrival_date <= date.today():
+                if self.arrival_date < date.today():
                     raise ValidationError("Arrival Date cannot be less than Current Date")
 
             if self.departure_date:
-                if self.departure_date <= date.today():
+                if self.departure_date < date.today():
                     raise ValidationError("Departure Date cannot be less than Current Date")
         else:
             # for updating instance 
@@ -707,7 +707,7 @@ class GroupReservation(models.Model):
         if self.total_rooms:
             
             current_date = self.arrival_date
-            while current_date <= self.departure_date:
+            while current_date < self.departure_date:
                 if RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date):
                     inv  = RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date)
                     if((self.total_rooms > inv.number_of_available_rooms) and (inv.number_of_overbooked_rooms >= Overbooking.objects.first().overbooking_limit)):
@@ -727,7 +727,7 @@ class GroupReservation(models.Model):
 
 
     def __str__(self):
-        return 'Group Reservation ID:' + self.id +' ' + self.group_name.account_name
+        return 'Group Reservation ID:' + str(self.id) +' ' + self.group_name.account_name
 
 class GroupReservationRoomType(models.Model):
 
