@@ -30,7 +30,7 @@ def import_rooms(request):
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Room Number'])
 
-
+    
     for index, row in df.iterrows():
 
         if Floor.objects.filter(property = Property.objects.first(), floor=int(row['Floor'])).exists():
@@ -75,6 +75,8 @@ def import_market_codes(request):
     for index, row in df.iterrows():
         if row['Status'].strip()=='Active':
             is_active = True
+        else:
+            is_active = False
 
         market_group=MarketGroup.objects.get(market_group = row['Market Group'].strip())
         market_code, created = MarketCode.objects.update_or_create(market_group=market_group, market_code = row['Market Code'], defaults={'description': row['Description'], 'is_active': is_active})

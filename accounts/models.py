@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 from django_countries.fields import CountryField
-from reservations.models import RateCode, Commission, Room, Preference, MarketCode, Source
+from reservations.models import RateCode, Commission, Room, Preference, MarketCode, Source, Reservation
 from django.core.exceptions import ValidationError
 from simple_history.models import HistoricalRecords
 from datetime import date
@@ -162,6 +162,9 @@ class GuestProfile(models.Model):
         if self.dob:
             if self.dob > date.today():
                 raise ValidationError("Please enter a valid date of birth")
+        if self.last_visit:
+            if self.last_visit > date.today():
+                raise ValidationError("Last visit cannot be more than Today")
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -193,6 +196,12 @@ class IDDetail(models.Model):
             if self.issue_date > self.expiry_date:
                 raise ValidationError("Issue Date cannot be grater than Expiry Date")
 
+            if self.issue_date > date.today():
+                raise ValidationError("Issue Date cannot be grater than Today")
+
+            if self.expiry_date < date.today():
+                raise ValidationError("Expiry Date cannot be less than Today ")
+
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
@@ -202,15 +211,15 @@ class IDDetail(models.Model):
 
 class Booker(models.Model):
     account= models.ForeignKey(Account,on_delete=models.CASCADE,related_name='bookers')
-    name = models.TextField(blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
+    name = models.CharField(max_length=255)
+    email = models.EmailField(null=True)
     phone_number = models.CharField(max_length=255, blank=True, null=True)
     address_line_1 = models.CharField(max_length=255,blank = True, null = True)
     address_line_2 = models.CharField(max_length=255, blank = True, null = True)
     country = CountryField(blank = True, null = True)
     city = models.CharField(max_length=255,  blank = True, null = True)
     state = models.CharField(max_length=255, blank=True, null=True)
-    postal_code = models.PositiveIntegerField()
+    postal_code = models.PositiveIntegerField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
     
@@ -218,7 +227,7 @@ class Booker(models.Model):
         return self.name
 
 class VisaDetail(models.Model):
-    # Reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE,related_name='wail_list')
+    reservation = models.ForeignKey(Reservation,null=True, on_delete=models.CASCADE,related_name='visa_details')
     visa_number= models.TextField(blank=True, null=True)
     guest= models.ForeignKey(GuestProfile,on_delete=models.CASCADE,related_name='visa_details')
     issue_date = models.DateField()
@@ -229,6 +238,12 @@ class VisaDetail(models.Model):
     def clean(self):
         if self.issue_date > self.expiry_date:
                 raise ValidationError("Expiry date should be greater than Issue_date")
+
+        if self.issue_date > date.today():
+            raise ValidationError("Issue Date cannot be grater than Today")
+
+        if self.expiry_date < date.today():
+            raise ValidationError("Expiry Date cannot be less than Today ")
 
     def __str__(self):
         return self.visa_number
@@ -260,9 +275,18 @@ class Membership (models.Model):
         if self.joining_date > self.expiry_date:
             raise ValidationError("Joining Date cannot be more than Expiry Date")
     
+        if self.joining_date:
+            if self.joining_date > date.today():
+                raise ValidationError("Joining Date cannot be grater than Today")
+
+        if self.expiry_date:
+            if self.expiry_date < date.today():
+                raise ValidationError("Expiry Date cannot be less than Today ")
+                
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
+
 
     def __str__(self):
         return self.name_on_card
