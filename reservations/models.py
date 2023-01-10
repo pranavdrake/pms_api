@@ -80,9 +80,9 @@ class Room(models.Model):
     floor = models.ForeignKey(Floor, on_delete=models.CASCADE, related_name= 'rooms')
     room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE,related_name= 'rooms')
     room_number = models.PositiveSmallIntegerField()
-    room_status = models.CharField(max_length=100, choices=ROOM_STATUS_CHOICES)
-    front_office_status = models.CharField(max_length=100, choices=FRONT_OFFICE_STATUS_CHOICES)
-    reservation_status = models.CharField(max_length=100, choices=RESERVATION_STATUS_CHOICES)
+    room_status = models.CharField(max_length=100, choices=ROOM_STATUS_CHOICES,default='Dirty')
+    front_office_status = models.CharField(max_length=100, choices=FRONT_OFFICE_STATUS_CHOICES,default='Vacant')
+    reservation_status = models.CharField(max_length=100, choices=RESERVATION_STATUS_CHOICES, default= 'Not Reserved')
     history = HistoricalRecords()
 
     def __str__(self):
@@ -94,12 +94,28 @@ class RoomDiscrepancy(models.Model):
         ('occupied', 'Occupied')
     ]
     HOUSEKEEPING_STATUS_CHOICES = [
-        ('vacant', 'Vacant'),
-        ('occupied', 'Occupied')
+        ('Clean', 'Clean'),
+        ('Inspected', 'Inspected'),
+        ('Dirty', 'Dirty'),
+        ('Out Of Order', 'Out Of Order'),
+        ('Out Of Service', 'Out Of Service')
     ]
+    RESERVATION_STATUS_CHOICES = [
+        ('Assigned', 'Assigned'),
+        ('Departed', 'Departed'),
+        ('Stay Over', 'Stay Over'),
+        ('Arrivals', 'Arrivals'),
+        ('Not Reserved', 'Not Reserved'),
+        ('Arrived', 'Arrived'),
+        ('Due Out', 'Due Out'),
+        ('Due Out / Arrivals', 'Due Out / Arrivals')
+    ]
+
+
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name= 'room_discrepancies')
-    front_office_status = models.CharField(max_length=100, choices=FRONT_OFFICE_STATUS_CHOICES)
-    housekeeping_status = models.CharField(max_length=100, choices=HOUSEKEEPING_STATUS_CHOICES)
+    housekeeping_status = models.CharField(max_length=100, choices=HOUSEKEEPING_STATUS_CHOICES, default='Dirty')
+    front_office_status = models.CharField(max_length=100, choices=FRONT_OFFICE_STATUS_CHOICES,default='Vacant')
+    reservation_status = models.CharField(max_length=100, choices=RESERVATION_STATUS_CHOICES, default= 'Not Reserved')
     front_office_pax = models.PositiveSmallIntegerField()
     housekeeping_pax = models.PositiveSmallIntegerField()
     discrepancy = models.PositiveSmallIntegerField(default=0)
