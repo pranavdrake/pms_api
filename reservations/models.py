@@ -216,7 +216,7 @@ class Extra(models.Model):
 
     extra_code = models.CharField(max_length=255)
     description = models.TextField(blank= True, null= True)
-    group = models.ManyToManyField(Group ,null = True)
+    group = models.ManyToManyField(Group,null = True)
     sub_group = models.ForeignKey(SubGroup,blank= True, null= True, on_delete=models.SET_NULL)
     type = models.CharField(max_length=255,null=True,blank=True, choices=TYPE_CHOICES)
     percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
@@ -395,11 +395,14 @@ class Package(models.Model):
     CALCULATION_RULE_CHOICES = (
     ('flat_rate', 'Flat Rate'),
     ('per_adult', 'Per Adult'),
+    ('per_room', 'Per Room'),
     )
     calculation_rule = models.CharField(max_length=20, choices=CALCULATION_RULE_CHOICES)
     POSTING_RHYTHM_CHOICES = (
     ('post_every_night', 'Post Every Night'),
     ('post_on_arrival_night', 'Post on Arrival Night'),
+    ('post_on_every_x_night_starting_y_night','Post on Every X Night Starting Y Night'),
+    ('post_on_certain_nights_of_the_week','Post on Certain Nights of the week'),
     ('post_last_night', 'Post Last Night'),
     ('post_every_night_except_arrival_night', 'Post Every Night Except Arrival Night'),
     )

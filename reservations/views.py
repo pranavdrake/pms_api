@@ -83,3 +83,88 @@ def import_market_codes(request):
 
     return Response({'market codes imported':'market codes imported'})
 
+@api_view(['GET'])
+def import_source_groups(request):
+    file  = 'mediafiles/import_data/all_source_groups.csv'
+    df = pd.read_csv(file)
+    df = df.drop_duplicates(subset=['Source Group Code'])
+
+    for index, row in df.iterrows():
+        if row['Status'].strip()=='Active':
+            is_active = True
+        
+        source_group, created = SourceGroup.objects.update_or_create(
+            source_group=row['Source Group Code'], 
+            defaults={'description': row['Description'], 'is_active': is_active})
+    
+    return Response({'source groups imported':'Source groups imported'})
+
+
+
+@api_view(['GET'])
+def import_extra(request):
+    file  = 'mediafiles/import_data/all_extras.csv'
+    df = pd.read_csv(file)
+    df = df.drop_duplicates(subset=['Code'])
+
+    for index, row in df.iterrows():
+        # group = Group.objects.get(group=row['Department'].strip())
+        # sub_group = SubGroup.objects.get(sub_group = row[''])
+        extra, created = Extra.objects.update_or_create(
+        # group = group,
+        # sub_group=sub_group,
+        extra_code=row['Code'],
+            defaults={
+                 'description': row['Description'],
+                # 'type': row['Type'],
+            }
+        )
+    return Response({'Extra Data imported':'extra data imported'})
+
+@api_view(['GET'])
+def import_package_group(request):
+    file  = 'mediafiles/import_data/package_group.csv'
+    df = pd.read_csv(file)
+    df = df.drop_duplicates(subset=['Package Group'])
+
+    for index, row in df.iterrows():
+        package_group, created = PackageGroup.objects.update_or_create(
+            package_group=row['Package Group'], 
+            defaults={'description': row['Description'],})
+    
+    return Response({'package groups imported':'Package groups imported'})
+
+
+@api_view(['GET'])
+def import_package(request):
+    file  = 'mediafiles/import_data/all_packages.csv'
+    df = pd.read_csv(file)
+    df = df.drop_duplicates(subset=['Package Code'])
+
+    for index, row in df.iterrows():
+        if row['status'].strip() == 'Active':
+            is_active = True
+        else:
+            is_active = False
+
+        # package_group = PackageGroup.objects.get(package_group = row['Package Group'])
+        # transaction_code = TransactionCode.objects(transaction_code = row['Transaction Code'])
+        package, created = Package.objects.update_or_create( 
+            # package_group = package_group,
+            # transaction_code = transaction_code, 
+            package_code = row['Package Code'],
+            defaults={'description': row['Description'],
+            'begin_sell_date' : row['Begin Sell Date'],
+            'end_sell_date' : row['End Sell Date'],
+            'base_price' : row['Price'],
+            'tax_percentage' : row['Tax Percentage'],
+            # 'tax_amount' : row[''],
+            # 'total_amount' : row[''],
+            'calculation_rule' : row['calculation Rule '],
+            'posting_rhythm' : row['Posting Rhythm'],
+            'rate_inclusion' : row['Rate Inclusion'],
+            'is_active' : is_active
+            })
+    
+    return Response({'package imported':'Package imported'})
+
