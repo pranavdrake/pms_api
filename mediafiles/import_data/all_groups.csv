@@ -1,0 +1,20 @@
+Group Code,Description,Cost Center Type,Status
+Revenue,,Room Revenue,Active
+F&B,,F&B,Active
+Travel,,MOD,Active
+Payment,,,Active
+Adjustment,,,Active
+Allowance,,,Active
+Miscellaneous,,MOD,Active
+Paid Outs,,,Active
+Food,,F&B,Active
+Liquor,,F&B,Active
+Smokes,,F&B,Active
+Beverages,,F&B,Active
+Others,,F&B,Active
+Tips,,MOD,Active
+Laundry,,MOD,Active
+SPA,,MOD,Active
+Round Off ,,F&B,Active
+Service  Charge,,,In Active
+Commission,,,In Active

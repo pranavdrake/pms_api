@@ -83,3 +83,50 @@ def import_market_codes(request):
 
     return Response({'market codes imported':'market codes imported'})
 
+@api_view(['GET'])
+def import_groups(request):
+    file  = 'mediafiles/import_data/all_groups.csv'
+    df = pd.read_csv(file)
+    df = df.drop_duplicates(subset=['Group Code'])
+    for index, row in df.iterrows():
+        if row['Status'].strip()=='Active':
+            is_active = True
+        else:
+            is_active = False
+
+        if str(row['Description']) == 'nan':
+            description = ''
+        else:
+            description = row['Description']
+
+        
+        group, created = Group.objects.update_or_create(group_code=row['Group Code'], defaults={'description': description, 'is_active': is_active})
+    
+    return Response({'groups imported':'groups imported'})
+    
+@api_view(['GET'])
+def import_sub_groups(request):
+    file  = 'mediafiles/import_data/all_sub_groups.csv'
+    df = pd.read_csv(file)
+
+    for index, row in df.iterrows():
+        if row['Status'].strip()=='Active':
+            is_active = True
+        else:
+            is_active = False
+
+        if str(row['Description']) == 'nan':
+            description = ''
+        else:
+            description = row['Description']
+
+        # group=Group.objects.get(group = row['Group'])  
+        sub_group, created = SubGroup.objects.update_or_create(
+        # group=group,
+        sub_group_code = row['Sub Group Code'],
+
+        defaults={
+        'description': description,
+        'is_active': is_active})
+
+    return Response({'sub group imported':'sub group imported'})

@@ -187,15 +187,17 @@ class Reason(models.Model):
 class Group(models.Model):
     group_code = models.CharField(max_length=255, unique= True)
     description = models.TextField(blank = True, null = True)
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):
         return self.group_code
 
 class SubGroup(models.Model):
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name= 'sub_groups')
+    group = models.ForeignKey(Group,blank = True, null = True, on_delete=models.CASCADE, related_name= 'sub_groups')
     sub_group_code = models.CharField(max_length=255, unique= True)
     description = models.TextField(blank = True, null = True)
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):

@@ -61,12 +61,12 @@ class CustomUser(AbstractUser):
 
 class Account(models.Model):
     ACCOUNT_TYPE_CHOICES = [
-        ('company', 'Company'),
-        ('travel_agent', 'Travel Agent'),
-        ('group', 'Group'),
+        ('Company', 'Company'),
+        ('Travel Agent', 'Travel Agent'),
+        ('Group', 'Group'),
     ]
     account_name = models.CharField(max_length=255)
-    account_type = models.CharField(max_length=20, choices=ACCOUNT_TYPE_CHOICES)
+    account_type = models.CharField(max_length=20,null=True, choices=ACCOUNT_TYPE_CHOICES)
     email = models.EmailField(blank = True, null= True)
     phone_number = models.CharField(max_length=20,blank = True, null= True)
     address_line_1 = models.CharField(max_length=255 ,blank = True, null= True)
