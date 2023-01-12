@@ -210,7 +210,7 @@ class IDDetail(models.Model):
         return  self.first_name + ' ' + self.last_name
 
 class Booker(models.Model):
-    account= models.ForeignKey(Account,on_delete=models.CASCADE,related_name='bookers')
+    account= models.ForeignKey(Account, on_delete=models.CASCADE,related_name='bookers')
     name = models.CharField(max_length=255)
     email = models.EmailField(null=True)
     phone_number = models.CharField(max_length=255, blank=True, null=True)

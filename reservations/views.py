@@ -83,3 +83,89 @@ def import_market_codes(request):
 
     return Response({'market codes imported':'market codes imported'})
 
+
+@api_view(['GET'])
+def import_source_codes(request):
+    file = 'mediafiles/import_data/all_sources.csv'
+    df = pd.read_csv(file)
+    df = df.drop_duplicates(subset=['Source Code'])
+
+    for index, row in df.iterrows():
+        if row['Status'].strip()=='Active':
+            is_active = True
+        else:
+            is_active = False
+
+        source_group = SourceGroup.objects.get(source_group = row['Source Group'].strip())
+        source_code, created = Source.objects.update_or_create(source_group = source_group, source_code = row['Source Code'], defaults={'description': row['Description'],'is_active': is_active})
+
+    return Response({'source codes imported':'source codes imported'})
+
+
+@api_view(['GET'])
+def import_rate_classes(request):
+    file = 'mediafiles/import_data/all_rate_classes.csv'
+    df = pd.read_csv(file)
+    df = df.drop_duplicates(subset=['Rate Class'])
+
+    for index, row in df.iterrows():
+        if row['Status'].strip()=='Active':
+            is_active = True
+        else:
+            is_active = False
+        
+        rate_class, created = RateClass.objects.update_or_create(rate_class = row['Rate Class'], defaults={'description': row['Description'],'is_active': is_active})
+
+    return Response({'rate classes imported':'rate classes imported'})
+
+
+@api_view(['GET'])
+def import_rate_categories(request):
+    file = 'mediafiles/import_data/all_rate_categories.csv'
+    df = pd.read_csv(file)
+    df = df.drop_duplicates(subset=['Rate Category'])
+
+    for index, row in df.iterrows():
+        if row['Status'].strip()=='Active':
+            is_active = True
+        else:
+            is_active = False
+
+        rate_class = RateClass.objects.get(rate_class = row['Rate Class'].strip())
+        rate_category, created = RateCategory.objects.update_or_create(rate_class = rate_class, rate_category = row['Rate Category'], defaults={'description': row['Description'],'is_active': is_active})
+
+    return Response({'rate categories imported':'rate categories imported'})
+
+
+@api_view(['GET'])
+def import_forexes(request):
+    file = ''
+    df = pd.read_csv(file)
+    df = df.drop_duplicates(subset=[''])
+
+    for index, row in df.iterrows():
+        if str(row['Remarks']) == 'nan':
+            remarks = ''
+        else:
+            remarks=row['Remarks']
+
+        room = Room.objects.get(room_number = row['Room No'].strip())
+        #reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
+        #guest = GuestProfile.obejects.get(first_name = row['First Name'].strip(), last_name = row['Last Name'])
+        forex, created = Forex.objects.update_or_create(
+            room = room,  #certificate No.
+            reservation = reservation,
+            guest = guest,
+            
+            defaults={
+                'currency' : row['Currency'],
+                'amount' : row['Amount(FC)'],
+                'rate_for_the_day' : row['Rate For The Day'],
+                'equivalent_amount' : row['Eqvt Amount'],
+                'cgst' : row['CGST'],
+                'sgst' : row['SGST'],
+                'total' : row['Total'],
+                'remarks': remarks
+            }
+        )
+    return Response({'forex imported':'forex imported'})
