@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_countries',
     'simple_history',
     'djmoney',
+    'multiselectfield',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

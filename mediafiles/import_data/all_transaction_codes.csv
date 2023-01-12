@@ -1,0 +1,160 @@
+Transaction Code ,Description,Group,Sub Group,Rate,Tax Percentage,Commission Percent,Discount Allowed,Revoke Group,ID,Cost Center Type,Cost Center Zoho
+1000,Accommodation,Revenue,Room Revenue,,18.00,,false,,"78063000001217331",Room Revenue,
+1001,Room Tariff,Revenue,Room Revenue,,18.00,,false,,"78063000001217323",Room Revenue,
+1002,Extra Bed,Revenue,Room Revenue,1000.00,18.00,,true,,"78063000002201885",Room Revenue,
+1003,Upsell,Revenue,Room Revenue,,18.00,,true,,"78063000002201889",Room Revenue,
+1006,Retention Charges,Revenue,Room Revenue,,18.00,,true,,"78063000004476740",Room Revenue,
+1050,Service Charge R,Service Charge,Room Revenue,,18.00,,false,,"78063000004925837",,Service Charge
+1130,F&B Tips,F&B,Tips,,0.00,,true,,"78063000002010307",F&B,
+1131,SPA Tips,Tips,SPA,,0.00,,true,,"78063000002010311",MOD,
+1132,Laundry Tips,Tips,Laundry,,0.00,,true,,"78063000002010315",MOD,
+1150,Service Charge,F&B,Service Charge,,18.00,,false,,"78063000002667736",F&B,Service Charge
+1190,Credit Card Convenience fee,Commission,Credit Card Commission,0.00,18.00,,false,,"78063000008463707",,
+2020,Aloro Italian Restaurant F,Food,Alloro,,18.00,,true,,"78063000001914033",F&B,
+2021,Aloro Italian Restaurant B,Beverages,Alloro,,18.00,,true,,"78063000001914037",F&B,
+2022,Aloro Italian Restaurant L,Liquor,Alloro,,0.00,,true,,"78063000001914041",F&B,
+2023,Aloro Italian Restaurant S,Smokes,Alloro,,28.00,,true,,"78063000001914045",F&B,
+2024,Aloro Italian Restaurant O,Others,Alloro,,18.00,,true,,"78063000002010275",F&B,
+2050,Service Charge Aloro,Service Charge,Alloro,18.00,,,false,,"78063000004933548",,Service Charge
+2120,24@43 All Day Dining F,Food,24@43,,18.00,,true,,"78063000001914049",F&B,
+2121,24@43 All Day Dining B,Beverages,24@43,,18.00,,true,,"78063000001914053",F&B,
+2122,24@43 All Day Dining L,Liquor,24@43,,0.00,,true,,"78063000001914057",F&B,
+2123,24@43 All Day Dining S,Smokes,24@43,,28.00,,true,,"78063000001914061",F&B,
+2124,24@43 All Day Dining O,Others,24@43,,18.00,,true,,"78063000002010279",F&B,
+2150,Service Charge 24@43,Service Charge,24@43,,18.00,,false,,"78063000004925847",,Service Charge
+2320,In Room Dining F,Food,IN ROOM DINING,,18.00,,true,,"78063000001914065",F&B,
+2321,In Room Dining B,Beverages,IN ROOM DINING,,18.00,,true,,"78063000001914069",F&B,
+2322,In Room Dining S,Smokes,IN ROOM DINING,,28.00,,true,,"78063000001914073",F&B,
+2323,In Room Dining L,Liquor,IN ROOM DINING,,0.00,,true,,"78063000002010283",F&B,
+2324,In Room Dining O,Others,IN ROOM DINING,,18.00,,true,,"78063000002010287",F&B,
+2350,Service Charge IRD,Service Charge,IN ROOM DINING,,18.00,,false,,"78063000004925851",,Service Charge
+2620,Terminus Food Crg,Food,Terminus,,18.00,,true,,"78063000001914077",F&B,
+2621,Terminus Beverage Crg,Beverages,Terminus,,18.00,,true,,"78063000001914081",F&B,
+2622,Terminus Liquor Crg,Liquor,Terminus,,0.00,,true,,"78063000001914085",F&B,
+2623,Terminus Smokes Crg,Smokes,Terminus,,28.00,,true,,"78063000001914089",F&B,
+2650,Service Charge Terminus,Service Charge,Terminus,,18.00,,false,,"78063000004925855",,Service Charge
+2664,Terminus Others Crg,Others,Terminus,,18.00,,true,,"78063000002010291",F&B,
+2711,Refreshment Centre BFO,Beverages,Minibar,,18.00,,true,,"78063000001890065",F&B,Minibar
+2712,Refreshment Centre FFO,F&B,Minibar,,18.00,,true,,"78063000001890069",F&B,
+2713,Refreshment Centre Food,Food,Minibar,,18.00,,true,,"78063000008468768",F&B,Minibar
+2714,Refreshment Centre Liquor,Liquor,Minibar,,0.00,,false,,"78063000008468772",F&B,Minibar
+2715,Refreshment Centre Smokes,Smokes,Minibar,,28.00,,false,,"78063000008468776",F&B,Minibar
+2716,Refreshment Centre Others,Others,Minibar,,18.00,,false,,"78063000008468780",F&B,Minibar
+2750,Service Charge Minibar,Service Charge,Minibar,,18.00,,false,,"78063000004925859",,Service Charge
+3400,SPA Revenue,SPA,SPA,,18.00,,true,,"78063000001883019",MOD,
+3450,Service Charge SPA,Service Charge,SPA,,18.00,,false,,"78063000004925863",,Service Charge
+3520,Banquet F,Food,Banquet,,18.00,,true,,"78063000001914093",F&B,
+3521,Banquet Liquor Crg BF,Liquor,Banquet,,0.00,,true,,"78063000001914097",F&B,
+3522,Banquet Smokes Crg,Smokes,Banquet,,28.00,,true,,"78063000001914101",F&B,
+3523,Banquet Beverage Charge,Beverages,Banquet,,18.00,,true,,"78063000001914105",F&B,
+3524,Banquet Others Crg,Others,Banquet,,18.00,,true,,"78063000002010295",F&B,
+3550,Service Charge Banquet,Service Charge,Banquet,,18.00,,false,,"78063000004925867",,Service Charge
+3610,East Restaurant F,Food,East,,18.00,,true,,"78063000001914109",F&B,East
+3611,East Restaurant B,Beverages,East,,18.00,,true,,"78063000001914113",F&B,East
+3612,East Restaurant L,Liquor,East,,0.00,,true,,"78063000001914117",F&B,East
+3613,East Restaurant S,Smokes,East,,28.00,,true,,"78063000002010299",F&B,East
+3614,East Restaurant O,Others,East,,18.00,,true,,"78063000002010303",F&B,East
+3650,Service Charge East,Service Charge,East,,18.00,,false,,"78063000004925871",,Service Charge
+4320,Laundry Charges,Laundry,Laundry,,18.00,,true,,"78063000001883023",MOD,
+4350,Service Charge Laundry,Service Charge,Laundry,,18.00,,false,,"78063000004925875",,Service Charge
+4420,Travel Desk Charges,Travel,Travel Desk,,5.00,,true,,"78063000001880115",MOD,
+4450,Service Charge TD,Service Charge,Travel Desk,,18.00,,false,,"78063000004925879",,Service Charge
+4620,Miscellaneous Charges,Miscellaneous,Miscellaneous,,18.00,,true,,"78063000001880119",MOD,
+5050,Service Charge,Service Charge,Service Charge,,18.00,,false,,"78063000004925883",,Service Charge
+7450,24@43 Package Meal -CP,F&B,24@43,,18.00,,false,,"78063000001217319",F&B,
+7451,24@43 Package Meal -MAP,F&B,24@43,,18.00,,false,,"78063000001217327",F&B,
+7452,24@43 Package Meal -AP,F&B,24@43,,18.00,,false,,"78063000001217315",F&B,
+81000,Revoke - Accommodation,Revoke,Room Revenue,,18.00,,false,Revenue,"78063000002115571",Room Revenue,Front Office
+81001,Revoke - Room Tariff,Revoke,Room Revenue,,18.00,,false,Revenue,"78063000002115567",Room Revenue,Front Office
+81002,Revoke - Extra Bed,Revoke,Room Revenue,,18.00,,true,Revenue,"78063000002201893",Room Revenue,Front Office
+81003,Revoke - Upsell,Revoke,Room Revenue,,18.00,,true,Revenue,"78063000002201902",Room Revenue,Front Office
+81006,Revoke - Retention Charges,Revoke,Room Revenue,,18.00,,true,Revenue,"78063000004476744",Room Revenue,
+81050,Revoke - Service Charge R,Revoke,Room Revenue,,18.00,,false,Service Charge,"78063000004925887",,Service Charge
+81130,Revoke - F&B Tips,Revoke,Tips,,0.00,,false,F&B,"78063000002115483",F&B,Tips
+81131,Revoke - SPA Tips,Revoke,SPA,,0.00,,false,Tips,"78063000002115607",MOD,Tips
+81132,Revoke - Laundry Tips,Revoke,Laundry,,0.00,,false,Tips,"78063000002115603",MOD,Tips
+81150,Revoke - Service Charge,Revoke,Service Charge,,18.00,,false,Service Charge,"78063000004908479",F&B,Service Charge
+82020,Revoke - Aloro Italian Restaurant F,Revoke,Alloro,,18.00,,false,Food,"78063000002115491",F&B,Aloro
+82021,Revoke - Aloro Italian Restaurant B,Revoke,Alloro,,18.00,,false,Beverages,"78063000002115427",F&B,Aloro
+82022,Revoke - Aloro Italian Restaurant L,Revoke,Alloro,,0.00,,false,Liquor,"78063000002115519",F&B,Aloro
+82023,Revoke - Aloro Italian Restaurant S,Revoke,Alloro,,28.00,,false,Smokes,"78063000002115579",F&B,Aloro
+82024,Revoke - Aloro Italian Restaurant O,Revoke,Alloro,,18.00,,false,Others,"78063000002115547",F&B,Aloro
+82050,Revoke - Service Charge Aloro,Revoke,Alloro,,18.00,,false,Service Charge,"78063000004933606",,Service Charge
+82120,Revoke - 24@43 All Day Dining F,Revoke,24@43,,18.00,,false,Food,"78063000002115487",F&B,24@43
+82121,Revoke - 24@43 All Day Dining B,Revoke,24@43,,18.00,,false,Beverages,"78063000002115423",F&B,24@43
+82122,Revoke - 24@43 All Day Dining L,Revoke,24@43,,0.00,,false,Liquor,"78063000002115515",F&B,24@43
+82123,Revoke - 24@43 All Day Dining S,Revoke,24@43,,28.00,,false,Smokes,"78063000002115575",F&B,24@43
+82124,Revoke - 24@43 All Day Dining O,Revoke,24@43,,18.00,,false,Others,"78063000002115543",F&B,24@43
+82150,Revoke - Service Charge 24@43,Revoke,24@43,,18.00,,false,Service Charge,"78063000004925891",,Service Charge
+82320,Revoke - In Room Dining F,Revoke,IN ROOM DINING,,18.00,,false,Food,"78063000002115503",F&B,IRD
+82321,Revoke - In Room Dining B,Revoke,IN ROOM DINING,,18.00,,false,Beverages,"78063000002115439",F&B,IRD
+82322,Revoke - In Room Dining S,Revoke,IN ROOM DINING,,28.00,,false,Smokes,"78063000002115591",F&B,IRD
+82323,Revoke - In Room Dining L,Revoke,IN ROOM DINING,,0.00,,false,Liquor,"78063000002115531",F&B,IRD
+82324,Revoke - In Room Dining O,Revoke,IN ROOM DINING,,18.00,,false,Others,"78063000002115559",F&B,IRD
+82350,Revoke - Service Charge IRD,Revoke,IN ROOM DINING,,18.00,,false,Service Charge,"78063000004925895",,Service Charge
+82620,Revoke - Terminus Food Crg,Revoke,Terminus,,18.00,,false,Food,"78063000002115507",F&B,Terminus
+82621,Revoke - Terminus Beverage Crg,Revoke,Terminus,,18.00,,false,Beverages,"78063000002115447",F&B,Terminus
+82622,Revoke - Terminus Liquor Crg,Revoke,Terminus,,0.00,,false,Liquor,"78063000002115535",F&B,Terminus
+82623,Revoke - Terminus Smokes Crg,Revoke,Terminus,,28.00,,false,Smokes,"78063000002115595",F&B,Terminus
+82624,Revoke - Terminus Others Crg,Revoke,Terminus,,18.00,,false,Others,"78063000002115563",F&B,Terminus
+82650,Revoke - Service Charge Terminus,Revoke,Terminus,,18.00,,false,Service Charge,"78063000004925899",,Service Charge
+82711,Revoke - Refreshment Centre BFO,Revoke,Minibar,,18.00,,false,Beverages,"78063000002115443",F&B,Minibar
+82712,Revoke - Refreshment Centre FFO,Revoke,Minibar,,18.00,,false,F&B,"78063000002115475",F&B,Minibar
+82713,Revoke – Refreshment Centre Food,Revoke,Minibar,,18.00,,false,Food,"78063000008873209",F&B,Minibar
+82714,Revoke – Refreshment Centre Liquor,Revoke,Minibar,,0.00,,false,Liquor,"78063000008873213",F&B,Minibar
+82715,Revoke – Refreshment Centre Smokes,Revoke,Minibar,,28.00,,false,Smokes,"78063000008873217",F&B,Minibar
+82716,Revoke – Refreshment Centre Others,Revoke,Minibar,,18.00,,false,Others,"78063000008873221",F&B,Minibar
+82750,Revoke - Service Charge Minibar,Revoke,Minibar,,18.00,,false,Service Charge,"78063000004925903",,Service Charge
+83400,Revoke - SPA Revenue,Revoke,SPA,,18.00,,false,Others,"78063000002115599",MOD,SPA
+83450,Revoke - Service Charge SPA,Revoke,SPA,,18.00,,false,Service Charge,"78063000004925907",,Service Charge
+83520,Revoke - Banquet F,Revoke,Banquet,,18.00,,false,Food,"78063000002115495",F&B,Banquets
+83521,Revoke - Banquet Liquor Crg BF,Revoke,Banquet,,0.00,,false,Liquor,"78063000002115523",F&B,Banquets
+83522,Revoke - Banquet Smokes Crg,Revoke,Banquet,,18.00,,false,Smokes,"78063000002115583",F&B,Banquets
+83523,Revoke - Banquet Beverage Charge,Revoke,Banquet,,18.00,,false,Beverages,"78063000002115431",F&B,Banquets
+83524,Revoke - Banquet Others Crg,Revoke,Banquet,,18.00,,false,Others,"78063000002115551",F&B,Banquets
+83550,Revoke - Service Charge Banquet,Revoke,Banquet,,18.00,,false,Service Charge,"78063000004925911",,Service Charge
+83610,Revoke - East Restaurant F,Revoke,East,,18.00,,false,Food,"78063000002115499",F&B,East
+83611,Revoke - East Restaurant B,Revoke,East,,18.00,,false,Beverages,"78063000002115435",F&B,East
+83612,Revoke - East Restaurant L,Revoke,East,,0.00,,false,Liquor,"78063000002115527",F&B,East
+83613,Revoke - East Restaurant S,Revoke,East,,28.00,,false,Smokes,"78063000002115587",F&B,East
+83614,Revoke - East Restaurant O,Revoke,East,,18.00,,false,Others,"78063000002115555",F&B,East
+83650,Revoke - Service Charge East,Revoke,East,,18.00,,false,Service Charge,"78063000004925915",,Service Charge
+84320,Revoke - Laundry Charges,Revoke,Laundry,,18.00,,false,Others,"78063000002115511",MOD,Laundry
+84350,Revoke - Service Charge Laundry,Revoke,Laundry,,18.00,,false,Service Charge,"78063000004925919",,Service Charge
+84420,Revoke - Travel Desk Charges,Revoke,Travel Desk,,5.00,,false,Travel,"78063000002115611",MOD,Travel Desk
+84450,Revoke - Service Charge TD,Revoke,Travel Desk,,18.00,,false,Service Charge,"78063000004925923",,Service Charge
+84620,Revoke - Miscellaneous Charges,Revoke,Miscellaneous,,18.00,,false,Miscellaneous,"78063000002115539",F&B,
+85050,Revoke - Service Charge,Revoke,Service Charge,,18.00,,false,Service Charge,"78063000004925927",,Service Charge
+87450,Revoke - 24@43 Package Meal -CP,Revoke,24@43,,18.00,,false,F&B,"78063000002115455",F&B,24@43
+87451,Revoke - 24@43 Package Meal -MAP,Revoke,24@43,,18.00,,false,F&B,"78063000002115459",F&B,24@43
+87452,Revoke - 24@43 Package Meal -AP,Revoke,24@43,,18.00,,false,F&B,"78063000002115451",F&B,24@43
+89013,Revoke - Guest Refunds,Revoke,Adjustment,,0.00,,false,Adjustment,"78063000002115415",,Guest Refunds
+89014,Revoke - Paid Outs,Revoke,Paid Outs,,0.00,,false,Paid Outs,"78063000004220433",,PaidOuts
+9000,Cash,Payment,Payment,,,,false,,"78063000001602045",,
+9002,BTC,Payment,Settlement,,,,false,,"78063000001866809",,
+9003,VISA Cards,Payment,Payment,,,,false,,"78063000001832303",,
+9004,Master Cards,Payment,Payment,,,,false,,"78063000001832307",,
+9005,Dinners,Payment,Payment,,,,false,,"78063000001832311",,
+9006,HDFC UPI,Payment,Payment,,,,false,,"78063000001832315",,
+9007,Amex cards,Payment,Payment,,18.00,0.00,false,,"78063000001832319",,
+9008,Bharat Pe Cards,Payment,Payment,,,,false,,"78063000001832323",,
+9009,Bharat Pe UPI,Payment,Payment,,,,false,,"78063000001832327",,
+9010,Razor Pay,Payment,Payment,,,,false,,"78063000001832331",,
+9011,Online Payment,Payment,Payment,,,,false,,"78063000001832335",,
+9012,Cheque Payment,Payment,Payment,,,,false,,"78063000001832339",,
+9013,Guest Refunds,Adjustment,Adjustment,,0.00,,false,,"78063000001883043",,Guest Refunds
+9014,Paid Outs,Paid Outs,Paid Outs,,0.00,,false,,"78063000001890073",,
+9015,JCB,Payment,Payment,,0.00,,false,,"78063000003866548",,
+9019,Deposit Ledger,Payment,Payment,,0.00,,false,,"78063000002212003",,
+9020,City Ledger,Payment,Settlement,,0.00,,false,,"78063000002201868",,
+9021,Round Off,Round Off,Round Off,,0.00,,false,,"78063000002186323",F&B,
+9022,Amazon Pay,Payment,Payment,,0.00,,false,,"78063000003866552",,
+9023,PayTM,Payment,Payment,,0.00,,false,,"78063000003866556",,
+9024,PhonePe,Payment,Payment,,0.00,,false,,"78063000003866560",,
+9025,Google Pay,Payment,Payment,,0.00,,false,,"78063000003866564",,
+9026,RuPay Cards,Payment,Payment,,0.00,,false,,"78063000003861415",,
+9027,UPI/BHIM,Payment,Payment,,0.00,,false,,"78063000003861419",,
+9030,Visa Debit Cards,Payment,Payment,,18.00,0.00,false,,"78063000008463711",,
+9031,Master Debit Cards,Payment,Payment,,,,false,,"78063000008463715",,
+9032,Visa Credit Cards,Payment,Payment,,18.00,0.00,false,,"78063000008463719",,
+9033,Master Credit Cards,Payment,Payment,,18.00,0.00,false,,"78063000008463723",,
