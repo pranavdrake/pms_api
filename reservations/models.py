@@ -1008,6 +1008,8 @@ class Transaction(models.Model):
     discount_percentage = models.DecimalField(max_digits=5, decimal_places=2,null=True, blank= True)
     transaction_type = models.CharField(max_length=50, choices = TRANSACTION_TYPE_CHOICES)
     is_deposit = models.BooleanField(default=False)
+    is_moved = models.BooleanField(default=False)
+    is_duplicate = models.BooleanField(default=False)
     tax_percentage = models.DecimalField(max_digits=5, decimal_places=2,null=True, blank= True)
     cgst = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
     sgst = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
