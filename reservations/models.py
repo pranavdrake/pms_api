@@ -387,29 +387,29 @@ class Package(models.Model):
     description = models.TextField(blank= True, null= True)
     begin_sell_date = models.DateField()
     end_sell_date = models.DateField()
-    base_price = models.DecimalField(max_digits=8, decimal_places=2)
-    tax_percentage = models.DecimalField(max_digits=5, decimal_places=2)
-    tax_amount = models.DecimalField(max_digits=8, decimal_places=2)
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    base_price = models.DecimalField(max_digits=8, decimal_places=2,default=0)
+    tax_percentage = models.DecimalField(max_digits=5, decimal_places=2,default=0)
+    tax_amount = models.DecimalField(max_digits=8, decimal_places=2,default=0)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2,default=0)
     is_active = models.BooleanField()
     CALCULATION_RULE_CHOICES = (
-    ('flat_rate', 'Flat Rate'),
-    ('per_adult', 'Per Adult'),
-    ('per_room', 'Per Room'),
+    ('Flat Rate', 'Flat Rate'),
+    ('Per Adult', 'Per Adult'),
+    ('Per Room', 'Per Room'),
     )
     calculation_rule = models.CharField(max_length=20, choices=CALCULATION_RULE_CHOICES)
     POSTING_RHYTHM_CHOICES = (
-    ('post_every_night', 'Post Every Night'),
-    ('post_on_arrival_night', 'Post on Arrival Night'),
-    ('post_on_every_x_night_starting_y_night','Post on Every X Night Starting Y Night'),
-    ('post_on_certain_nights_of_the_week','Post on Certain Nights of the week'),
-    ('post_last_night', 'Post Last Night'),
-    ('post_every_night_except_arrival_night', 'Post Every Night Except Arrival Night'),
+    ('Post Every Night', 'Post Every Night'),
+    ('Post on Arrival Night', 'Post on Arrival Night'),
+    ('Post on Every X Night Starting Y Night','Post on Every X Night Starting Y Night'),
+    ('Post on Certain Nights of the week','Post on Certain Nights of the week'),
+    ('Post Last Night', 'Post Last Night'),
+    ('Post Every Night Except Arrival Night', 'Post Every Night Except Arrival Night'),
     )
     posting_rhythm = models.CharField(max_length=50, choices=POSTING_RHYTHM_CHOICES)
     RATE_INCLUSION_CHOICES = (
-    ('included_in_rate', 'Included in Rate'),
-    ('add_rate_separate_line', 'Add Rate Separate Line'),
+    ('Included in rate', 'Included in rate'),
+    ('Add Rate Separate Line', 'Add Rate Separate Line'),
     )
     rate_inclusion = models.CharField(max_length=50, choices=RATE_INCLUSION_CHOICES)
     transaction_code = models.ForeignKey(TransactionCode, on_delete=models.CASCADE, related_name='packages')
@@ -1533,4 +1533,19 @@ class Reinstate(models.Model):
 
     def __str__(self):
         return 'Reinstate ID:' + self.id 
+
+
+
+class Tax(models.Model):
+    POSTING_TYPE_CHOICES = [
+        ('Slab', 'Slab'),
+    ]
+    tax_name = models.CharField(max_length=255, unique= True)
+    applies_form = models.DateField()
+    exempt_after = models.IntegerField()
+    posting_type = models.CharField(max_length=100, choices=POSTING_TYPE_CHOICES, default= 'Slab')
+    no_of_slab = models.IntegerField()
+    history = HistoricalRecords()
+
+        
 

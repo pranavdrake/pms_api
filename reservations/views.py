@@ -142,20 +142,26 @@ def import_package(request):
     df = df.drop_duplicates(subset=['Package Code'])
 
     for index, row in df.iterrows():
-        if row['status'].strip() == 'Active':
+        begin_sell_date = datetime.strptime(row['Begin Sell Date'],"%d-%b-%Y")
+        end_sell_date= datetime.strptime(row['End Sell Date'],"%d-%b-%Y")
+
+        if row['status'] == 'Active':
             is_active = True
         else:
             is_active = False
-
         # package_group = PackageGroup.objects.get(package_group = row['Package Group'])
-        # transaction_code = TransactionCode.objects(transaction_code = row['Transaction Code'])
+        package_group = PackageGroup.objects.first()
+        
+        # transaction_code = TransactionCode.objects.get(transaction_code = row['Transaction Code'])
+        transaction_code  = TransactionCode.objects.first()
+
         package, created = Package.objects.update_or_create( 
-            # package_group = package_group,
-            # transaction_code = transaction_code, 
+            package_group = package_group,
+            transaction_code = transaction_code, 
             package_code = row['Package Code'],
             defaults={'description': row['Description'],
-            'begin_sell_date' : row['Begin Sell Date'],
-            'end_sell_date' : row['End Sell Date'],
+            'begin_sell_date' : begin_sell_date,
+            'end_sell_date' : end_sell_date,
             'base_price' : row['Price'],
             'tax_percentage' : row['Tax Percentage'],
             # 'tax_amount' : row[''],
@@ -165,6 +171,7 @@ def import_package(request):
             'rate_inclusion' : row['Rate Inclusion'],
             'is_active' : is_active
             })
-    
+            
     return Response({'package imported':'Package imported'})
+
 
