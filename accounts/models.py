@@ -61,12 +61,12 @@ class CustomUser(AbstractUser):
 
 class Account(models.Model):
     ACCOUNT_TYPE_CHOICES = [
-        ('company', 'Company'),
-        ('travel_agent', 'Travel Agent'),
-        ('group', 'Group'),
+        ('Company', 'Company'),
+        ('Travel Agent', 'Travel Agent'),
+        ('Group', 'Group'),
     ]
     account_name = models.CharField(max_length=255)
-    account_type = models.CharField(max_length=20, choices=ACCOUNT_TYPE_CHOICES)
+    account_type = models.CharField(max_length=20,null=True, choices=ACCOUNT_TYPE_CHOICES)
     email = models.EmailField(blank = True, null= True)
     phone_number = models.CharField(max_length=20,blank = True, null= True)
     address_line_1 = models.CharField(max_length=255 ,blank = True, null= True)
@@ -101,37 +101,33 @@ class VIP(models.Model):
 
 class GuestProfile(models.Model):
     # Salutation choices
-    MR = 'Mr.'
-    MS = 'Ms.'
-    MRS = 'Mrs.'
-    DR = 'Dr.'
-    PROF = 'Prof.'
-    CAPT = 'Capt.'
-    WG_CDR = 'Wg Cdr'
-    MAJOR = 'Major'
-    COLONEL = 'Colonel'
     SALUTATION_CHOICES = [
-        (MR, 'Mr.'),
-        (MS, 'Ms.'),
-        (MRS, 'Mrs.'),
-        (DR, 'Dr.'),
-        (PROF, 'Prof.'),
-        (CAPT, 'Capt.'),
-        (WG_CDR, 'Wg Cdr'),
-        (MAJOR, 'Major'),
-        (COLONEL, 'Colonel'),
+        ('Mr', 'Mr'),
+        ('Ms', 'Ms'),
+        ('Mrs', 'Mrs'),
+        ('Dr', 'Dr'),
+        ('Prof', 'Prof'),
+        ('Capt', 'Capt'),
+        ('Wg Cdr', 'Wg Cdr'),
+        ('Major', 'Major'),
+        ('Colonel', 'Colonel'),
     ]
 
     # Guest Type choices
     FIT = 'FIT'
     CORPORATE = 'Corporate'
     GUEST_TYPE_CHOICES = [
-        (FIT, 'FIT'),
-        (CORPORATE, 'Corporate'),
+        ('FIT', 'FIT'),
+        ('Corporate', 'Corporate'),
+    ]
+    GUEST_STATUS_CHOICES = [
+        ('In House', 'In House'),
+        ('Out', 'Out'),
     ]
 
-    first_name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255 ,blank = True, null = True)
     last_name = models.CharField(max_length=255)
+    guest_status = models.CharField( max_length=255,blank = True, null = True ,choices=GUEST_STATUS_CHOICES ,default='Out')
     salutation = models.CharField(max_length=10, choices=SALUTATION_CHOICES)
     address_line_1 = models.CharField(max_length=255,blank = True, null = True)
     address_line_2 = models.CharField(max_length=255, blank = True, null = True)
@@ -171,7 +167,7 @@ class GuestProfile(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return  self.first_name + ' ' + self.last_name
+        return  ' ' + self.last_name
 
 class IDDetail(models.Model):
     guest = models.ForeignKey(GuestProfile, on_delete=models.CASCADE, related_name= 'id_details')

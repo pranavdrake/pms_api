@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'accounts',
     'reservations',
     'crispy_forms',
-    "crispy_bootstrap5",
+    'crispy_bootstrap5',
     'rest_framework',
     'searchableselect',
     'django_select2',
