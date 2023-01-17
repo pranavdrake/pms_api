@@ -644,19 +644,19 @@ class ReservationType(models.Model):
 class GroupReservation(models.Model):
 
     STATUS_CHOICES = (
-        ('E', 'Enquiry'),
-        ('T', 'Tentative'),
-        ('D', 'Definitive'),
+        ('Enquiry', 'Enquiry'),
+        ('Tentative', 'Tentative'),
+        ('Definite', 'Definite'),
     )
     ORIGIN_CHOICES = (
-        ('PH', 'Phone'),
-        ('WI', 'Walk-in'),
-        ('HU', 'House use'),
-        ('HRO', 'Hotel Reservation Office'),
-        ('E', 'Email'),
-        ('O', 'Online'),
+        ('Phone', 'Phone'),
+        ('Walk-in', 'Walk-in'),
+        ('House use', 'House use'),
+        ('Hotel Reservation Office', 'Hotel Reservation Office'),
+        ('EMAIL', 'EMAIL'),
+        ('ONLINE', 'ONLINE'),
     )
-
+    block_code = models.CharField(max_length=50, blank= True, null =True)
     group_name = models.ForeignKey("accounts.Account", on_delete=models.SET_NULL, null= True, related_name='group_reservations')
     arrival_date = models.DateField()
     departure_date = models.DateField()
@@ -664,7 +664,7 @@ class GroupReservation(models.Model):
     company = models.ForeignKey("accounts.Account", on_delete=models.SET_NULL, null= True, blank= True, related_name='company_group_reservations')
     travel_agent = models.ForeignKey("accounts.Account", on_delete=models.SET_NULL, null= True, blank= True, related_name='travel_agent_group_reservations')
     nights = models.PositiveIntegerField(blank=True)
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES)
     source = models.ForeignKey(Source, on_delete=models.SET_NULL, null= True, related_name='group_reservations')
     market = models.ForeignKey(MarketCode, on_delete=models.SET_NULL, null= True, related_name='group_reservations')
     origin = models.CharField(max_length=100, choices=ORIGIN_CHOICES)
@@ -674,49 +674,49 @@ class GroupReservation(models.Model):
     package = models.ForeignKey(Package, on_delete=models.SET_NULL, null= True, related_name='group_reservations', blank= True)
     pax = models.PositiveIntegerField(default=0)
     cut_off_date = models.DateField(blank=True, null= True)
-    total_rooms = models.PositiveIntegerField(default=0)
+    total_rooms = models.PositiveIntegerField(default=0, null = True)
 
     def clean(self):
+        if self.block_code is None:
+            if self.pk is None:
+                # for creating instance 
+                if self.arrival_date:
+                    if self.arrival_date > self.departure_date:
+                        raise ValidationError("Arrival Date cannot be more than Departure Date")
+                        
+                    if self.arrival_date < date.today():
+                        raise ValidationError("Arrival Date cannot be less than Current Date")
 
-        if self.pk is None:
-            # for creating instance 
-            if self.arrival_date:
-                if self.arrival_date > self.departure_date:
-                    raise ValidationError("Arrival Date cannot be more than Departure Date")
-                    
-                if self.arrival_date < date.today():
-                    raise ValidationError("Arrival Date cannot be less than Current Date")
+                if self.departure_date:
+                    if self.departure_date < date.today():
+                        raise ValidationError("Departure Date cannot be less than Current Date")
+            else:
+                # for updating instance 
+                if self.arrival_date:
+                    if self.arrival_date > self.departure_date:
+                        raise ValidationError("Arrival Date cannot be more than Departure Date")
 
-            if self.departure_date:
-                if self.departure_date < date.today():
-                    raise ValidationError("Departure Date cannot be less than Current Date")
-        else:
-            # for updating instance 
-            if self.arrival_date:
-                if self.arrival_date > self.departure_date:
-                    raise ValidationError("Arrival Date cannot be more than Departure Date")
-
-        if self.pax:
-            if self.pax < 1:
-                raise ValidationError("There must be at least 1 PAX")
-        
-        if self.cut_off_date:
-            if self.cut_off_date <= date.today():
-                raise ValidationError("Cut Off Date cannot be less than Current Date")
-
-        if self.total_rooms:
+            if self.pax:
+                if self.pax < 1:
+                    raise ValidationError("There must be at least 1 PAX")
             
-            current_date = self.arrival_date
-            while current_date < self.departure_date:
-                if RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date):
-                    inv  = RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date)
-                    if((self.total_rooms > inv.number_of_available_rooms) and (inv.number_of_overbooked_rooms >= Overbooking.objects.first().overbooking_limit)):
-                        raise ValidationError("The number of rooms are more than the number of available rooms in the inventory for the arrival and departure dates.")
-                    current_date += timedelta(days=1)
+            if self.cut_off_date:
+                if self.cut_off_date <= date.today():
+                    raise ValidationError("Cut Off Date cannot be less than Current Date")
 
-        if self.rate:
-            if self.rate < 0:
-                raise ValidationError("Rate cannot be negative")
+            if self.total_rooms:
+                
+                current_date = self.arrival_date
+                while current_date < self.departure_date:
+                    if RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date):
+                        inv  = RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date)
+                        if((self.total_rooms > inv.number_of_available_rooms) and (inv.number_of_overbooked_rooms >= Overbooking.objects.first().overbooking_limit)):
+                            raise ValidationError("The number of rooms are more than the number of available rooms in the inventory for the arrival and departure dates.")
+                        current_date += timedelta(days=1)
+
+            if self.rate:
+                if self.rate < 0:
+                    raise ValidationError("Rate cannot be negative")
 
     def save(self, *args, **kwargs):
         self.full_clean()

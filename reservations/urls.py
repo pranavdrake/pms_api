@@ -10,4 +10,7 @@ urlpatterns = [
     path('import-rate-classes/', import_rate_classes),
     path('import-rate-categories/', import_rate_categories),
     path('import-forexes/', import_forexes),
+    path('import-folios/', import_folios),
+    path('import-daily-details/', import_daily_details),
+    path('import-group-reservations/',import_group_reservations),
 ]
