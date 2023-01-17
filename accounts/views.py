@@ -95,6 +95,15 @@ def import_guest_profiles(request):
 
             if row['Nationality'] == 'United States':
                 row['Nationality'] = 'United States of America'
+
+            if row['Nationality'] == 'Russian Federation':
+                row['Nationality'] = 'Russia'
+
+            if row['Nationality'] == 'Ireland {Republic}':
+                row['Nationality'] = 'Ireland'
+                
+            if row['Nationality'] == 'Korea South':
+                row['Nationality'] = 'South Korea'
             
             nationality = list(filter(lambda x: COUNTRY_DICT[x] == row['Nationality'], COUNTRY_DICT))[0]
 
@@ -135,3 +144,10 @@ def import_guest_profiles(request):
 
     return Response({'guest imported':'guest imported'})
 
+# @api_view(['GET'])
+# def import_guest_profiles(request):
+#     file  = 'mediafiles/import_data/all_guests_test.csv'
+#     df = pd.read_csv(file)
+#     # GuestProfile.objects.all().delete()    
+
+#     return Response({'guest imported':'guest imported'})

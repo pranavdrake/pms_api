@@ -1531,3 +1531,33 @@ class Reinstate(models.Model):
     def __str__(self):
         return 'Reinstate ID:' + self.id 
 
+class Tax(models.Model):
+    POSTING_TYPE_CHOICES = [
+        ('slab', 'Slab'),
+        ('flat amount','Flat Amount'),
+        ('flat percentage','Flat Percentage'),
+
+    ]
+    tax_name = models.CharField(max_length=255, unique= True)
+    applies_form = models.DateField()
+    exempt_after = models.IntegerField()
+    posting_type = models.CharField(max_length=100, choices=POSTING_TYPE_CHOICES, default= 'slab')
+    no_of_slab = models.IntegerField()
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return self.tax_name
+
+class TaxGeneration(models.Model):
+    APPLY_TAX_CHOICES = [
+        ('before discount', 'Before Discount'),
+        ('after discount','After Discount'),
+
+    ]
+    tax = models.ForeignKey(Tax, on_delete=models.CASCADE, related_name='taxes_generation')
+    from_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    to_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    percentage =models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    apply_tax = models.CharField(max_length=100, choices=APPLY_TAX_CHOICES,default= 'before discount')
+    apply_tax_on_rack_rate = models.BooleanField(default=False)
+    note = models.TextField(blank=True, null=True)
