@@ -17,5 +17,8 @@ urlpatterns = [
     path('import-extra/',import_extra),
     path('import-package-group/',import_package_group),
     path('import-package/',import_package),
-    path('import-rate-codes/', import_rate_codes),
+    path('import-reservations/',import_reservations),
+    path('import-folios/', import_folios),
+    path('import-daily-details/', import_daily_details),
+    path('import-group-reservations/',import_group_reservations),
 ]

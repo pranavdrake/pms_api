@@ -280,7 +280,7 @@ class PickupDropDetails(models.Model):
     remarks = models.TextField(blank = True, null=True)
     history = HistoricalRecords()
     def __str__(self):
-        return self.type + 'on' + str(self.date) + + 'at'+ str(self.time)
+        return self.type + 'on' + str(self.date) + 'at'+ str(self.time)
 
     class Meta:
         verbose_name  = 'Pickup / Drop Details'
@@ -547,7 +547,7 @@ class RateCodeRoomRate(models.Model):
 class PaymentType(models.Model):
     payment_type_code = models.CharField(max_length=255 ,unique=True)
     description = models.TextField(blank= True, null= True)
-    transaction_code = models.ForeignKey(TransactionCode, on_delete=models.CASCADE, related_name='PaymentTypes') 
+    transaction_code = models.ForeignKey(TransactionCode,null=True, blank = True, on_delete=models.CASCADE, related_name='PaymentTypes') 
     history = HistoricalRecords()
 
     def __str__(self):
@@ -664,19 +664,20 @@ class ReservationType(models.Model):
 class GroupReservation(models.Model):
 
     STATUS_CHOICES = (
-        ('E', 'Enquiry'),
-        ('T', 'Tentative'),
-        ('D', 'Definitive'),
+        ('Enquiry', 'Enquiry'),
+        ('Tentative', 'Tentative'),
+        ('Definite', 'Definite'),
     )
     ORIGIN_CHOICES = (
-        ('PH', 'Phone'),
-        ('WI', 'Walk-in'),
-        ('HU', 'House use'),
-        ('HRO', 'Hotel Reservation Office'),
-        ('E', 'Email'),
-        ('O', 'Online'),
+        ('Phone', 'Phone'),
+        ('Walk-in', 'Walk-in'),
+        ('House use', 'House use'),
+        ('Hotel Reservation Office', 'Hotel Reservation Office'),
+        ('EMAIL', 'EMAIL'),
+        ('ONLINE', 'ONLINE'),
     )
 
+    block_code = models.CharField(max_length=20,null= True, blank= True)
     group_name = models.ForeignKey("accounts.Account", on_delete=models.SET_NULL, null= True, related_name='group_reservations')
     arrival_date = models.DateField()
     departure_date = models.DateField()
@@ -684,7 +685,7 @@ class GroupReservation(models.Model):
     company = models.ForeignKey("accounts.Account", on_delete=models.SET_NULL, null= True, blank= True, related_name='company_group_reservations')
     travel_agent = models.ForeignKey("accounts.Account", on_delete=models.SET_NULL, null= True, blank= True, related_name='travel_agent_group_reservations')
     nights = models.PositiveIntegerField(blank=True)
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES)
     source = models.ForeignKey(Source, on_delete=models.SET_NULL, null= True, related_name='group_reservations')
     market = models.ForeignKey(MarketCode, on_delete=models.SET_NULL, null= True, related_name='group_reservations')
     origin = models.CharField(max_length=100, choices=ORIGIN_CHOICES)
@@ -694,49 +695,50 @@ class GroupReservation(models.Model):
     package = models.ForeignKey(Package, on_delete=models.SET_NULL, null= True, related_name='group_reservations', blank= True)
     pax = models.PositiveIntegerField(default=0)
     cut_off_date = models.DateField(blank=True, null= True)
-    total_rooms = models.PositiveIntegerField(default=0)
+    total_rooms = models.PositiveIntegerField(default=0, null = True)
 
     def clean(self):
+        if self.block_code is None:
+            if self.pk is None:
+                # for creating instance 
+                if self.arrival_date:
+                    if self.arrival_date > self.departure_date:
+                        raise ValidationError("Arrival Date cannot be more than Departure Date")
+                        
+                    if self.arrival_date < date.today():
+                        raise ValidationError("Arrival Date cannot be less than Current Date")
 
-        if self.pk is None:
-            # for creating instance 
-            if self.arrival_date:
-                if self.arrival_date > self.departure_date:
-                    raise ValidationError("Arrival Date cannot be more than Departure Date")
-                    
-                if self.arrival_date < date.today():
-                    raise ValidationError("Arrival Date cannot be less than Current Date")
+                if self.departure_date:
+                    if self.departure_date < date.today():
+                        raise ValidationError("Departure Date cannot be less than Current Date")
+            else:
+                # for updating instance 
+                if self.arrival_date:
+                    if self.arrival_date > self.departure_date:
+                        raise ValidationError("Arrival Date cannot be more than Departure Date")
 
-            if self.departure_date:
-                if self.departure_date < date.today():
-                    raise ValidationError("Departure Date cannot be less than Current Date")
-        else:
-            # for updating instance 
-            if self.arrival_date:
-                if self.arrival_date > self.departure_date:
-                    raise ValidationError("Arrival Date cannot be more than Departure Date")
+            if self.total_rooms:
+                
+                current_date = self.arrival_date
+                while current_date < self.departure_date:
+                    if RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date):
+                        inv  = RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date)
+                        if((self.total_rooms > inv.number_of_available_rooms) and (inv.number_of_overbooked_rooms >= Overbooking.objects.first().overbooking_limit)):
+                            raise ValidationError("The number of rooms are more than the number of available rooms in the inventory for the arrival and departure dates.")
+                        current_date += timedelta(days=1)
 
-        if self.pax:
-            if self.pax < 1:
-                raise ValidationError("There must be at least 1 PAX")
-        
-        if self.cut_off_date:
-            if self.cut_off_date <= date.today():
-                raise ValidationError("Cut Off Date cannot be less than Current Date")
-
-        if self.total_rooms:
+            if self.pax:
+                if self.pax < 1:
+                    raise ValidationError("There must be at least 1 PAX")
             
-            current_date = self.arrival_date
-            while current_date < self.departure_date:
-                if RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date):
-                    inv  = RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date)
-                    if((self.total_rooms > inv.number_of_available_rooms) and (inv.number_of_overbooked_rooms >= Overbooking.objects.first().overbooking_limit)):
-                        raise ValidationError("The number of rooms are more than the number of available rooms in the inventory for the arrival and departure dates.")
-                    current_date += timedelta(days=1)
+            if self.cut_off_date:
+                if self.cut_off_date <= date.today():
+                    raise ValidationError("Cut Off Date cannot be less than Current Date")
 
-        if self.rate:
-            if self.rate < 0:
-                raise ValidationError("Rate cannot be negative")
+
+            if self.rate:
+                if self.rate < 0:
+                    raise ValidationError("Rate cannot be negative")
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -802,26 +804,27 @@ class CardDetail(models.Model):
 class Reservation(models.Model):
 
     RESERVATION_STATUS_CHOICES = (
-        ('RES', 'Reserved'),
-        ('WL', 'Wait-list'),
-        ('DI', 'Due In'),
-        ('CI', 'Checked In'),
-        ('DO', 'Due Out'),
-        ('RO', 'Roll Over'),
-        ('CO', 'Checked Out'),
-        ('NS', 'No show'),
-        ('CAN', 'Cancelled'),
-        ('NR', 'Not Reserved'),
-        ('EO', 'Enquiry Only'),
+        ('Reserved', 'Reserved'),
+        ('Wait-list', 'Wait-list'),
+        ('Due In', 'Due In'),
+        ('Checked In', 'Checked In'),
+        ('Due Out', 'Due Out'),
+        ('Roll Over', 'Roll Over'),
+        ('Checked Out', 'Checked Out'),
+        ('No Show', 'No Show'),
+        ('Cancelled', 'Cancelled'),
+        ('Not Reserved', 'Not Reserved'),
+        ('Enquiry Only', 'Enquiry Only'),
     )
     ORIGIN_CHOICES = (
-        ('PH', 'Phone'),
-        ('WI', 'Walk-in'),
-        ('HU', 'House use'),
-        ('HRO', 'Hotel Reservation Office'),
-        ('E', 'Email'),
-        ('O', 'Online'),
+        ('Phone', 'Phone'),
+        ('Walk-in', 'Walk-in'),
+        ('House use', 'House use'),
+        ('Hotel Reservation Office', 'Hotel Reservation Office'),
+        ('EMAIL', 'EMAIL'),
+        ('ONLINE', 'ONLINE'),
     )
+    booking_id  = models.CharField(max_length=9,blank = True, null= True)
     guest = models.ForeignKey("accounts.GuestProfile", null=True, on_delete=models.SET_NULL, related_name='reservations')
     sharing_id = models.ForeignKey(SharingID, on_delete=models.SET_NULL, null=True, blank=True)
     arrival_date = models.DateField()
@@ -834,7 +837,7 @@ class Reservation(models.Model):
     selected_room = models.ForeignKey(Room, on_delete=models.SET_NULL, related_name='selected_room_reservations', null=True, blank=True)
     rate_code = models.ForeignKey(RateCode,null=True, on_delete=models.SET_NULL, related_name='reservations')
     rate = models.DecimalField(max_digits=10, decimal_places=2)
-    room_to_charge = models.ForeignKey(Room,null=True,  on_delete=models.SET_NULL, related_name='room_to_charge_reservations', blank=True)
+    room_type_to_charge = models.ForeignKey(RoomType,null=True,  on_delete=models.SET_NULL, related_name='room_to_charge_reservations', blank=True)
     package = models.ForeignKey(Package, on_delete=models.SET_NULL, null=True, blank=True, related_name='reservations')
     extras = models.ManyToManyField(Extra, blank=True)
     block_code = models.ForeignKey(GroupReservation, on_delete=models.SET_NULL, null=True, blank=True, related_name='reservations')
@@ -843,7 +846,7 @@ class Reservation(models.Model):
     reservation_type = models.ForeignKey(ReservationType,null =True, on_delete=models.SET_NULL, related_name='reservations')
     market = models.ForeignKey(MarketCode, null=True, on_delete=models.SET_NULL, related_name='reservations')
     source = models.ForeignKey(Source, null=True, on_delete=models.SET_NULL, related_name='reservations')
-    origin = models.CharField(max_length=20, choices=ORIGIN_CHOICES)
+    origin = models.CharField(max_length=100, choices=ORIGIN_CHOICES)
     payment_type = models.ForeignKey(PaymentType, null=True, on_delete=models.SET_NULL, related_name='reservations')
     card_details = models.ForeignKey(CardDetail, on_delete=models.SET_NULL, null=True, blank=True, related_name='reservations')
     balance = models.DecimalField(max_digits=10, decimal_places=2, default= 0)
@@ -852,7 +855,7 @@ class Reservation(models.Model):
     agent = models.ForeignKey("accounts.Account",on_delete=models.SET_NULL, null=True, blank=True, related_name='agent_reservations')
     booker = models.ForeignKey("accounts.Booker", on_delete=models.SET_NULL, null=True, blank=True, related_name='reservations')
     print_rate = models.BooleanField(default=True)
-    reservation_status = models.CharField(max_length=3, choices=RESERVATION_STATUS_CHOICES)
+    reservation_status = models.CharField(max_length=100, choices=RESERVATION_STATUS_CHOICES)
     commission = models.BooleanField(default= False)
     po_number = models.CharField(max_length=100, blank=True, null= True)
     total_discount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -868,40 +871,46 @@ class Reservation(models.Model):
     preferences = models.ManyToManyField(Preference, blank=True)
     comments = models.TextField(blank=True)
     billing_instruction = models.TextField(blank=True)
-    unique_id = models.CharField(max_length=100, unique=True, blank= True, null= True)
-    sub_booking_id = models.CharField(max_length=100, unique=True, blank= True, null= True)
-    transaction_id = models.CharField(max_length=100, unique=True, blank= True, null= True)
-    voucher_number = models.CharField(max_length=100, unique=True, blank= True, null= True)
+    unique_id = models.CharField(max_length=100, blank= True, null= True)
+    sub_booking_id = models.CharField(max_length=100,  blank= True, null= True)
+    transaction_id = models.TextField(blank= True, null= True)
+    voucher_number = models.CharField(max_length=100,  blank= True, null= True)
     history  = HistoricalRecords()
 
     def clean(self):
         
-        if self.pk is None:
-            # for creating instance 
-            if self.arrival_date:
-                if self.arrival_date > self.departure_date:
-                    raise ValidationError("Arrival Date cannot be more than Departure Date")
-                    
-                if self.arrival_date <= date.today():
-                    raise ValidationError("Arrival Date cannot be less than Current Date")
-
-            if self.departure_date:
-                if self.departure_date <= date.today():
-                    raise ValidationError("Departure Date cannot be less than Current Date")
+        if self.booking_id:
+            pass
         else:
-            # for updating instance 
-            if self.arrival_date:
-                if self.arrival_date > self.departure_date:
-                    raise ValidationError("Arrival Date cannot be more than Departure Date")
+            if self.pk is None:
+                # for creating instance 
+                if self.arrival_date:
+                    if self.arrival_date > self.departure_date:
+                        raise ValidationError("Arrival Date cannot be more than Departure Date")
+                        
+                    if self.arrival_date <= date.today():
+                        raise ValidationError("Arrival Date cannot be less than Current Date")
 
-        if self.number_of_rooms:
-            current_date = self.arrival_date
-            while current_date <= self.departure_date:
-                if RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date):
-                    inv  = RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date)
-                    if((self.number_of_rooms > inv.number_of_available_rooms) and (inv.number_of_overbooked_rooms >= Overbooking.objects.first().overbooking_limit)):
-                        raise ValidationError("The number of rooms are more than the number of available rooms in the inventory for the arrival and departure dates.")
-                    current_date += timedelta(days=1)
+                if self.departure_date:
+                    if self.departure_date <= date.today():
+                        raise ValidationError("Departure Date cannot be less than Current Date")
+            else:
+                # for updating instance 
+                if self.arrival_date:
+                    if self.arrival_date > self.departure_date:
+                        raise ValidationError("Arrival Date cannot be more than Departure Date")
+
+        if self.booking_id:
+            pass
+        else:
+            if self.number_of_rooms:
+                current_date = self.arrival_date
+                while current_date <= self.departure_date:
+                    if RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date):
+                        inv  = RoomTypeInventory.objects.get(room_type = self.room_type, date = current_date)
+                        if((self.number_of_rooms > inv.number_of_available_rooms) and (inv.number_of_overbooked_rooms >= Overbooking.objects.first().overbooking_limit)):
+                            raise ValidationError("The number of rooms are more than the number of available rooms in the inventory for the arrival and departure dates.")
+                        current_date += timedelta(days=1)
 
         if self.adults and self.children and self.number_of_rooms:
             if self.adults + self.children > 3*self.number_of_rooms:
@@ -936,7 +945,7 @@ class Reservation(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return 'Reservation ID:' + self.id +' ' + self.guest.first_name + ' ' + self.guest.last_name
+        return 'Reservation ID:' + str(self.id) +' ' + self.guest.first_name + ' ' + self.guest.last_name
 
 class Folio(models.Model):
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE,related_name='folios')
@@ -1181,18 +1190,6 @@ class DailyDetail(models.Model):
 
     def save(self, *args, **kwargs):
         self.full_clean()
-
-        if self.room_revenue < 7500:
-            self.room_tax = (self.room_revenue * 12 / 100)
-        else:
-            self.room_tax = (self.room_revenue * 18 / 100)
-
-        if self.package_revenue:
-            self.package_tax = (self.package_revenue * 18 / 100)
-
-        self.sub_total = self.room_revenue + self.package_revenue
-        self.total_tax_generated = self.room_tax + self.package_tax
-        self.total = self.total_tax_generated + self.sub_total
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -1537,14 +1534,67 @@ class Reinstate(models.Model):
 
 class Tax(models.Model):
     POSTING_TYPE_CHOICES = [
-        ('Slab', 'Slab'),
+        ('slab', 'Slab'),
+        ('flat amount','Flat Amount'),
+        ('flat percentage','Flat Percentage'),
+
     ]
+
+    APPLY_ON_PAX_CHOICES = [
+        ('Per Night', 'Per Night'),
+        ('Per Adult', 'Per Adult'),
+        ('Per Child', 'Per Child'),
+        ('Per Pax', 'Per Pax'),
+    ]
+
+    APPLY_TAX_CHOICES = [
+        ('before discount', 'Before Discount'),
+        ('after discount','After Discount'),
+
+    ]
+    
     tax_name = models.CharField(max_length=255, unique= True)
     applies_form = models.DateField()
-    exempt_after = models.IntegerField()
-    posting_type = models.CharField(max_length=100, choices=POSTING_TYPE_CHOICES, default= 'Slab')
-    no_of_slab = models.IntegerField()
+    exempt_after = models.IntegerField(default = 0)
+    posting_type = models.CharField(max_length=100, choices=POSTING_TYPE_CHOICES)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    apply_on_pax  = models.CharField(max_length=100, choices=APPLY_ON_PAX_CHOICES,null=True, blank=True)
+    tax_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    no_of_slabs = models.IntegerField( null=True, blank=True)
+    apply_tax = models.CharField(max_length=100, choices=APPLY_TAX_CHOICES,default= 'before discount')
+    apply_tax_on_rack_rate = models.BooleanField(default=False)
+    note = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
+
+    def clean(self):
+        if(self.tax_percentage):
+            if self.tax_percentage < 0:
+                raise ValidationError("Tax Percentage cannot be negative")
+            elif self.tax_percentage > 100:
+                raise ValidationError("Tax Percentage cannot be more than 100")
+
+        elif self.amount:
+            if self.amount < 0:
+                raise ValidationError("Amount cannot be negative")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.tax_name
+
+    class Meta:
+        verbose_name_plural  = 'Taxes'
+
+class TaxGeneration(models.Model):
+
+    tax = models.ForeignKey(Tax, on_delete=models.CASCADE, related_name='taxes_generation')
+    from_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    to_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    percentage =models.DecimalField(max_digits=10, decimal_places=2)
+    history = HistoricalRecords()
+
+    class Meta:
+        verbose_name_plural  = 'Taxes Generation'
