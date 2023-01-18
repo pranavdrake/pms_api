@@ -94,7 +94,12 @@ def import_guests(request):
     file  = 'mediafiles/import_data/all_guests.csv'
     df = pd.read_csv(file)
 
+    # GuestProfile.objects.all().delete()
     for index, row in df.iterrows():
+
+        print(index)
+        print(row['Name'])
+
         if str(row['Date Of Birth']) == 'nan':
             dob = None
         else:
@@ -128,7 +133,11 @@ def import_guests(request):
             if row['Nationality'] == 'Korea South':
                 row['Nationality'] = 'South Korea'
 
+            if row['Nationality'] == 'Korea North':
+                row['Nationality'] = 'North Korea'
+
             nationality = list(filter(lambda x: COUNTRY_DICT[x] == row['Nationality'], COUNTRY_DICT))[0]
+            
 
         if str(row['GST']) == 'nan':
             gst_id = ''
@@ -145,10 +154,19 @@ def import_guests(request):
         else:
             company = Account.objects.get(account_name = row['Corporate'])
 
+        if str(row['Name']) == 'nan':
+            name = ''
+        else:
+            
+            split_string = row['Name'].split('.')
+            salutation = split_string[0]
+            name = '.'.join(split_string[1:])
+            salutation=salutation.strip()
+            name=name.strip()
+
         guest, created = GuestProfile.objects.update_or_create(
-        first_name = row['First Name'] ,
-        last_name = row['Last Name'] ,
-        salutation = row['Salutation'],
+        last_name = name,
+        salutation = salutation,
         email = email,
         phone_number = phone_number,
         defaults = 

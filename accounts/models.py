@@ -103,6 +103,7 @@ class GuestProfile(models.Model):
 
     SALUTATION_CHOICES = [
         ('Mr', 'Mr'),
+        ('Mast', 'Mast'),
         ('Ms', 'Ms'),
         ('Mrs', 'Mrs'),
         ('Dr', 'Dr'),
