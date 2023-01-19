@@ -93,7 +93,8 @@ def import_bookers(request):
 def import_guests(request):
     file  = 'mediafiles/import_data/all_guests.csv'
     df = pd.read_csv(file)
-
+    # print(dict(countries))
+    # return Response({'guests imported':'guests imported'}) 
     # GuestProfile.objects.all().delete()
     for index, row in df.iterrows():
 
@@ -135,6 +136,12 @@ def import_guests(request):
 
             if row['Nationality'] == 'Korea North':
                 row['Nationality'] = 'North Korea'
+
+            if row['Nationality'] == 'Trinidad & Tobago':
+                row['Nationality'] = 'Trinidad and Tobago'
+
+            if row['Nationality'] == 'Czech Republic':
+                row['Nationality'] = 'Czechia'
 
             nationality = list(filter(lambda x: COUNTRY_DICT[x] == row['Nationality'], COUNTRY_DICT))[0]
             
