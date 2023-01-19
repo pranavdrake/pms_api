@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 import pandas as pd
 from .models import *
-from accounts.models import Account
+from accounts.models import Account,GuestProfile
 from django.apps import apps
 from decimal import Decimal
 
@@ -144,31 +144,34 @@ def import_forexes(request):
     file = 'mediafiles/import_data/all_forex_report.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Booking ID'])
-
+    CURRENCY_CHOICES =[(currency.alpha_3, f"{currency.name} ({currency.alpha_3})") for currency in pycountry.currencies]
+    print(CURRENCY_CHOICES)
     for index, row in df.iterrows():
         if str(row['Remarks']) == 'nan':
             remarks = ''
         else:
             remarks=row['Remarks']
 
-        room = Room.objects.get(room_number = row['Room No'].strip())
+        room = Room.objects.get(room_number = row['Room No'])
         #reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
+        reservation = Reservation.objects.first()
         #guest = GuestProfile.obejects.get(first_name = row['First Name'].strip(), last_name = row['Last Name'])
+        guest = GuestProfile.objects.first()
         forex, created = Forex.objects.update_or_create(
-            room = room,  #certificate No.
+            room = room,  
             reservation = reservation,
             guest = guest,
             
             defaults={
-                'currency' : row['Currency'],
+                'currency' : row['Currency'].split('-')[-1].strip(),
                 'amount' : row['Amount(FC)'],
-                'rate_for_the_day' : row['Rate For The Day'],
-                'equivalent_amount' : row['Eqvt Amount'],
-                'cgst' : row['CGST'],
-                'sgst' : row['SGST'],
-                'total' : row['Total'],
+                'rate_for_the_day' : Decimal(row['Rate For The Day']).quantize(Decimal("0.00")),
+                'equivalent_amount' : Decimal(row['Eqvt Amount']).quantize(Decimal("0.00")),
+                'cgst' : Decimal(row['CGST']).quantize(Decimal("0.00")),
+                'sgst' : Decimal(row['SGST']).quantize(Decimal("0.00")),
+                'total' : Decimal(row['Total']).quantize(Decimal("0.00")),
                 'remarks': remarks
-            }
+            }                                   #df['growth(%)'] = df['growth(%)'].astype('float')
         )
     return Response({'forexes imported':'forexes imported'})
 
@@ -178,18 +181,22 @@ def import_forexes(request):
 def import_folios(request):
     file ='mediafiles/import_data/all_guest_folio.csv'
     df = pd.read_csv(file)
-    df = df.drop_duplicates(subset=['Booking ID'])
+    df  = df.head(100)
+    #df = df.drop_duplicates(subset=['Booking ID'])
 
     for index, row in df.iterrows():
 
         #reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
+        reservation = Reservation.objects.first()
         room = Room.objects.get(room_number = row['Room'])
         #guest = GuestProfile.obejects.get(first_name = row['First Name'].strip(), last_name = row['Last Name'].strip())
-        #company_agent = Account.objects.get(company_agent = row['Company/Agent'].strip())
+        guest =  GuestProfile.objects.first()
         if row['Company/Agent']=='Company':
-            company_agent  =  Account.objects.get(account_name = row['Company'])
+            #company_agent  =  Account.objects.get(account_name = row['Company'])
+            company_agent = Account.objects.first()
         else:
-            company_agent  =  Account.objects.get(account_name = row['Agent'])
+            #company_agent  =  Account.objects.get(account_name = row['Agent'])
+            company_agent = Account.objects.first()
         
         if str(row['Company'])=='nan' and str(row['Agent'])=='nan':
             company_agent = None
@@ -198,9 +205,9 @@ def import_folios(request):
             folio_number = row['Folio'],
             room = room,
             reservation = reservation,
-            guest = guest,
+            #guest = guest,
             defaults={
-                'balance' : row['Balance'],
+                'balance' : Decimal(row['Balance']).quantize(Decimal("0.00")),
                 'company_agent' : company_agent,
                 'is_settled': row['Is Settled'],
                 'is_cancelled':row['Is_Cancelled'],
@@ -215,23 +222,26 @@ def import_daily_details(request):
     file = 'mediafiles/import_data/all_daily_details.csv'
     df = pd.read_csv(file)
     # df = df.drop_duplicates(subset=['Bookings']) #unique columns?.........
+    df  = df.head(100)
+    # DailyDetail.objects.all().delete()
 
+    
     for index, row in df.iterrows():
         
-        if row['Disc Amt'] =='nan':
-            discount_amount = 0
+        if str(row['Disc Amt']) =='nan':
+            discount_amount = 0        
         else:
-            discount_amount = row['Disc Amt']
-
+            discount_amount = float(row['Disc Amt']) 
         if str(row['Market']) == 'nan':         
-            market_code = None
+            market = None
         else:
-            market_code = MarketCode.objects.get(market_code = row['Market'].split('-')[0].strip())
+            market = MarketCode.objects.get(market_code = row['Market'].split('-')[0].strip())
 
         if row['Bookings']=='nan':
             reservation= None
         else:
-            reservation = Reservation.objects.get(booking_id = row['Bookings'])  
+            #reservation = Reservation.objects.get(booking_id = row['Bookings'])
+            reservation = Reservation.objects.first()  
 
         if str(row['Room Type'])=='nan':
             room_type=None
@@ -241,9 +251,10 @@ def import_daily_details(request):
         if row['Rate Code']=='nan':
             rate_code=None
         else:
-            rate_code = RateCode.objects.get(rate_code = row['Rate Code'] )
+            #rate_code = RateCode.objects.get(rate_code = row['Rate Code'] )
+            rate_code = RateCode.objects.first()
 
-        if row['Room'] == 'nan':
+        if str(row['Room']) == 'nan':
             room = None
         else:
             room = Room.objects.get(room_number = row['Room'])            
@@ -251,12 +262,14 @@ def import_daily_details(request):
         if row['package']=='nan':
             package = None
         else:
-            package = Package.objects.get(package_code = row['package'])            
+            #package = Package.objects.get(package_code = row['package'])   
+            package = Package.objects.first()         
 
         if str(row['Source'])=='nan':
             source=None
         else:
-            source = Source.objects.get(source_code= row['Source'])
+            #source = Source.objects.get(source_code= row['Source'])
+            source = Source.objects.first()
 
         daily_detail ,created = DailyDetail.objects.update_or_create(
 
@@ -269,15 +282,16 @@ def import_daily_details(request):
                 'room':room,
                 'rate_code':rate_code,
                 'room_type' : room_type,
-                'market_code':market_code,
-                'total_rate' : row['Rate Amount'],
+                'market':market,
+                'total_rate' :Decimal(row['Rate Amount']).quantize(Decimal("0.00")),  
                 'adults' : row['Adults'],
                 'children' : row['Child'],
-                'discount_amount' : discount_amount,
+                'discount_amount' : Decimal(discount_amount).quantize(Decimal("0.00")),
                 # 'room_rate' : row[''],                
                 # 'package_rate' : row[''],             
             }
         )
+    
 
     return Response({'daily details imported' : 'daily details imported'})
 
@@ -353,7 +367,7 @@ def import_group_reservations(request):
 
         if str(row['Cut-off Date']) !='nan':
             print(row['Cut-off Date'])
-            cut_off_date =datetime.strptime(str(row['Cut-off Date']),"%d-%b-%Y %H:%M:%S")  #'%d-%b-%Y %H:%M:%S' ?...
+            cut_off_date =datetime.strptime(str(row['Cut-off Date']),"%d-%b-%Y %H:%M:%S")
         else:
             cut_off_date = None   
 

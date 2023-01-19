@@ -919,12 +919,12 @@ class Reservation(models.Model):
         return 'Reservation ID:' + self.id +' ' + self.guest.first_name + ' ' + self.guest.last_name
 
 class Folio(models.Model):
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE,related_name='folios')
+    reservation = models.ForeignKey(Reservation,null=True,blank=True, on_delete=models.CASCADE,related_name='folios')
     folio_number = models.PositiveIntegerField()
     balance = models.DecimalField(max_digits=10, decimal_places=2,default=0)
     room = models.ForeignKey(Room,null=True, on_delete=models.SET_NULL, related_name='folios')
-    guest = models.ForeignKey("accounts.GuestProfile",null=True, on_delete=models.SET_NULL, related_name='folios')
-    company_agent = models.ForeignKey("accounts.Account", null=True, on_delete=models.SET_NULL, related_name='folios')
+    guest = models.ForeignKey("accounts.GuestProfile",null=True,blank=True, on_delete=models.SET_NULL, related_name='folios')
+    company_agent = models.ForeignKey("accounts.Account", null=True,blank=True, on_delete=models.SET_NULL, related_name='folios')
     is_settled = models.BooleanField(default=False)
     is_cancelled = models.BooleanField(default=False)
 
@@ -1127,7 +1127,7 @@ class WaitList(models.Model):
         return 'Waitlist sequence: ' +  str(self.wait_list_sequence) + ' for Reservation ID: ' +  self.reservation.id
 
 class DailyDetail(models.Model):
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE,related_name='daily_details')
+    reservation = models.ForeignKey(Reservation,null=True,blank=True, on_delete=models.CASCADE,related_name='daily_details')
     date = models.DateField()
     room_type = models.ForeignKey(RoomType, null=True,  on_delete=models.SET_NULL, related_name= 'daily_details')
     rate_code = models.ForeignKey(RateCode, null=True,  on_delete=models.SET_NULL, related_name= 'daily_details')
@@ -1161,22 +1161,10 @@ class DailyDetail(models.Model):
 
     def save(self, *args, **kwargs):
         self.full_clean()
-
-        if self.room_revenue < 7500:
-            self.room_tax = (self.room_revenue * 12 / 100)
-        else:
-            self.room_tax = (self.room_revenue * 18 / 100)
-
-        if self.package_revenue:
-            self.package_tax = (self.package_revenue * 18 / 100)
-
-        self.sub_total = self.room_revenue + self.package_revenue
-        self.total_tax_generated = self.room_tax + self.package_tax
-        self.total = self.total_tax_generated + self.sub_total
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return 'Daily Details for Reservation ID:' + str(self.reservation.id)
+        return 'Daily Details for Reservation ID:' + str(self.total_rate)
 
 class DocumentType(models.Model):
     document_type  = models.CharField(max_length=255,blank = False, null=False ,unique=True)
@@ -1341,10 +1329,10 @@ class Forex(models.Model):
     CURRENCY_CHOICES =[(currency.alpha_3, f"{currency.name} ({currency.alpha_3})") for currency in pycountry.currencies]
 
     room = models.ForeignKey(Room,null=True, on_delete=models.SET_NULL, related_name='forexes')
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE,related_name='forexes')
-    guest = models.ForeignKey("accounts.GuestProfile", null=True, on_delete=models.SET_NULL, related_name='forexes')
-    currency = models.CharField(max_length=3,choices= CURRENCY_CHOICES)
-    rate_for_the_day = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    reservation = models.ForeignKey(Reservation,null=True,blank=True, on_delete=models.CASCADE,related_name='forexes')
+    guest = models.ForeignKey("accounts.GuestProfile", null=True,blank=True, on_delete=models.SET_NULL, related_name='forexes')
+    currency = models.CharField(max_length=3,blank=True, choices= CURRENCY_CHOICES)
+    rate_for_the_day = models.DecimalField(max_digits=10,blank=True, decimal_places=2,default=0)
     amount = models.PositiveIntegerField()
     equivalent_amount = models.DecimalField(max_digits=10, decimal_places=2,default=0)
     cgst = models.DecimalField(max_digits=10, decimal_places=2,default=0)
@@ -1367,7 +1355,7 @@ class Forex(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         if self.amount:
-            self.equivalent_amount = self.rate_for_the_day * self.amount
+            self.equivalent_amount = float(self.rate_for_the_day) * self.amount
 
             if self.equivalent_amount < 25000:
                 self.cgst = 22.5
@@ -1376,7 +1364,7 @@ class Forex(models.Model):
                 self.cgst = 0.01 * self.equivalent_amount * 0.09
                 self.sgst = 0.01 * self.equivalent_amount * 0.09
 
-            self.total = (self.equivalent_amount - (self.sgst + self.cgst))
+            self.total = (float(self.equivalent_amount) - (self.sgst + self.cgst))
         super().save(*args, **kwargs)
 
     def __str__(self):
