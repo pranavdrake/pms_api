@@ -6,6 +6,8 @@ from .models import *
 from django.apps import apps
 from datetime import datetime
 from django_countries import countries
+import re
+
 # Create your views here.
 
 @api_view(['GET'])
@@ -94,7 +96,15 @@ def import_guests(request):
     file  = 'mediafiles/import_data/all_guests.csv'
     df = pd.read_csv(file)
     # print(dict(countries))
-    # return Response({'guests imported':'guests imported'}) 
+    # email = 'thejo.k.@naturalremedies.com'
+
+    # print(email)
+    # return Response({'guests imported':'guests imported'})
+    # if "." in email[:email.index("@")]:
+    #     print("There is a period before the @ symbol.")
+    # else:
+    #     print("There is no period before the @ symbol.")
+
     # GuestProfile.objects.all().delete()
     for index, row in df.iterrows():
 
@@ -143,6 +153,9 @@ def import_guests(request):
             if row['Nationality'] == 'Czech Republic':
                 row['Nationality'] = 'Czechia'
 
+            if row['Nationality'] == 'Swaziland':
+                row['Nationality'] = 'Eswatini'
+
             nationality = list(filter(lambda x: COUNTRY_DICT[x] == row['Nationality'], COUNTRY_DICT))[0]
             
 
@@ -151,25 +164,53 @@ def import_guests(request):
         else:
             gst_id = row['GST']
 
+
         if str(row['Email']) == 'nan':
             email = ''
         else:
             email = row['Email']
 
+            for index, char in enumerate(email):
+                if char == '@':
+                    if email[index - 1]=='.':
+                        new_email = email[:index-1] + email[index:]
+                        email = new_email
+                        break
+
+            if "_" in email[email.find("@"):]:
+                email = email.replace("_", "-")
+
+            index = email.find("@")
+
+            if '.' == email[index-1]:
+                email = email[:index-1]+email[index:]
+                print(email)
+
+            if '..' in email[:index]:
+                email = email.replace('..','.',1)
+
         if str(row['Corporate']) == 'nan':
             company = None
         else:
-            company = Account.objects.get(account_name = row['Corporate'])
+            if Account.objects.filter(account_name = row['Corporate']).count()>1:
+                company = Account.objects.filter(account_name = row['Corporate'])[0]
+            else:
+                company = Account.objects.get(account_name = row['Corporate'])
 
         if str(row['Name']) == 'nan':
-            name = ''
+            name = 'nan'
         else:
-            
             split_string = row['Name'].split('.')
             salutation = split_string[0]
             name = '.'.join(split_string[1:])
             salutation=salutation.strip()
             name=name.strip()
+            if name =='':
+                name = 'nan'
+
+        if str(row['Source']) == 'Simple Guest':
+            continue
+
 
         guest, created = GuestProfile.objects.update_or_create(
         last_name = name,
