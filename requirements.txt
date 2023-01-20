@@ -3,10 +3,11 @@ asgiref==3.5.2
 awscli==1.25.90
 Babel==2.11.0
 backports.zoneinfo==0.2.1
-botocore==1.27.89
+botocore
 crispy-bootstrap5==0.6
 dateutils==0.6.12
 Django==3.2.5
+django-multiselectfield
 django-appconf==1.0.5
 django-countries==7.4.2
 django-credit-cards==0.4.1
@@ -39,3 +40,4 @@ typing_extensions==4.4.0
 tzdata==2022.6
 tzlocal==4.2
 uuid==1.30
+

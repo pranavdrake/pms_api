@@ -496,7 +496,7 @@ def import_group_reservations(request):
 
             group_name = None
         else:
-            group_name , created = Account.objects.get_or_create(account_name= row['Group Name'].strip(), account_type = 'group')
+            group_name , created = Account.objects.update_or_create(account_name= row['Group Name'].strip(), account_type = 'Group')
             # group_name = Account.objects.first()
 
         if row['Payment']=='nan':
