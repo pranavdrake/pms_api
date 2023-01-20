@@ -105,6 +105,7 @@ class GuestProfile(models.Model):
         ('Mr', 'Mr'),
         ('Ms', 'Ms'),
         ('Mrs', 'Mrs'),
+        ('Mast', 'Mast'),
         ('Dr', 'Dr'),
         ('Prof', 'Prof'),
         ('Capt', 'Capt'),

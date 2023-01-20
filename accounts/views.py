@@ -1,3 +1,4 @@
+# import re
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -7,13 +8,18 @@ from django.apps import apps
 from datetime import datetime
 from django_countries import countries
 
+
 # Create your views here.
 @api_view(['GET'])
 def import_accounts(request):
     file  = 'mediafiles/import_data/all_accounts.csv'
     df = pd.read_csv(file)
 
-    # Account.objects.all().delete()    
+    Account.objects.all().delete()  
+    for row in Account.objects.all().reverse():
+        if (Account.objects.filter(account_name=row.account_name).count() > 1):
+         row.delete()
+      
     for index, row in df.iterrows():
         print(index)
         if str(row['Email'])=='nan':
@@ -65,10 +71,10 @@ def import_accounts(request):
 
 @api_view(['GET'])
 def import_guest_profiles(request):
-    file  = 'mediafiles/import_data/all_guests_test.csv'
+    file  = 'mediafiles/import_data/all_guests_(copy).csv'
     df = pd.read_csv(file)
 
-    # GuestProfile.objects.all().delete()    
+    GuestProfile.objects.all().delete()    
     for index, row in df.iterrows():
         print(index)  
         if str(row['Date Of Birth']) == 'nan':
@@ -104,6 +110,15 @@ def import_guest_profiles(request):
                 
             if row['Nationality'] == 'Korea South':
                 row['Nationality'] = 'South Korea'
+
+            if row['Nationality'] == 'Korea North':
+                row['Nationality'] = 'North Korea'
+            
+            if row['Nationality'] == 'Trinidad & Tobago':
+                row['Nationality'] = 'Trinidad and Tobago'
+                
+            if row['Nationality'] == 'Czech Republic':
+                row['Nationality'] = 'Czechia'
             
             nationality = list(filter(lambda x: COUNTRY_DICT[x] == row['Nationality'], COUNTRY_DICT))[0]
 
@@ -116,11 +131,20 @@ def import_guest_profiles(request):
             email = ''
         else:
             email = row['Email']
-        
-        if str(row['Corporate']) == 'nan':
-            company = None
+
+        if str(row['Address']) == 'nan':
+            address_line_1 = ''
         else:
-            company = Account.objects.get(account_name = row['Corporate'])
+            address_line_1 = row['Address']
+
+        if str(row['Corporate']) == 'nan' :
+            company = None 
+        else:
+            # print(Account.objects.filter(account_name = row['Corporate']))
+            if Account.objects.filter(account_name = row['Corporate']).count()>1:
+                company = Account.objects.filter(account_name = row['Corporate'])[0]
+            else:
+                company = Account.objects.get(account_name = row['Corporate'])
 
         # print(row['Corporate'])
         all_guest, created = GuestProfile.objects.update_or_create(
@@ -131,9 +155,8 @@ def import_guest_profiles(request):
 
         defaults = 
         {
-        'first_name' : row['First Name'] ,
         'guest_status' : guest_status,
-        'address_line_1' : row['Address'],
+        'address_line_1' : address_line_1,
         'gst_id':gst_id,
         'nationality':nationality,
         'dob' : dob,
@@ -144,10 +167,3 @@ def import_guest_profiles(request):
 
     return Response({'guest imported':'guest imported'})
 
-# @api_view(['GET'])
-# def import_guest_profiles(request):
-#     file  = 'mediafiles/import_data/all_guests_test.csv'
-#     df = pd.read_csv(file)
-#     # GuestProfile.objects.all().delete()    
-
-#     return Response({'guest imported':'guest imported'})
