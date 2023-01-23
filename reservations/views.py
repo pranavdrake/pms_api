@@ -590,17 +590,35 @@ def import_reservations(request):
     file  = 'mediafiles/import_data/all_reservations.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Confirmation Code'])
-    df = df.head(10)
+    # df = df.head(100)
 
     # Reservation.objects.all().delete()
     # return Response({'reservations imported':'reservations imported'})
 
     for index, row in df.iterrows():
-        
+       
+        print(index)
+        print(row['Confirmation Code'])
         if str(row['Email'])!='nan':
-            guest = GuestProfile.objects.get(email = row['Email'])
+               
+            if GuestProfile.objects.filter(email = row['Email']).count()> 1:
+                guest = GuestProfile.objects.filter(email = row['Email'])[0]
+            else:
+                if GuestProfile.objects.filter(email = row['Email']).exists():
+                    guest = GuestProfile.objects.get(email = row['Email'])
+                else:
+                    guest = GuestProfile.objects.get(last_name  = name)
+
+
         else:
-            guest = GuestProfile.objects.get(last_name  = row['Contact Name'])
+            split_string = row['Contact Name'].split('.')
+            salutation = split_string[0].strip()
+            name = '.'.join(split_string[1:]).strip()
+            if GuestProfile.objects.filter(last_name = name).count()> 1:
+                guest = GuestProfile.objects.filter(last_name = name)[0]
+            else:
+                guest, created = GuestProfile.objects.get_or_create(last_name  = name, salutation = salutation)
+
         # guest = GuestProfile.objects.first()
 
         arrival_date  =  datetime.strptime(row['Arrival'],"%d-%b-%Y")
@@ -662,10 +680,10 @@ def import_reservations(request):
             company = None
             agent = None
             if(row['Company/Agent']=='Company'):
-                company = Account.objects.get(account_name  = row['Account Name'])
+                company, created  = Account.objects.get_or_create(account_name  = row['Account Name'])
                 # company = Account.objects.first()
             if(row['Company/Agent']=='Agent'):
-                agent = Account.objects.get(account_name  = row['Agent'])
+                agent, created = Account.objects.get_or_create(account_name  = row['Agent'])
             
             
 
@@ -715,7 +733,7 @@ def import_reservations(request):
             total_discount = 0
 
         if str(row['Total'])!= 'nan':
-            total_base_amount = row['Total']
+            total_base_amount = Decimal(row['Total']).quantize(Decimal('0.00'))
         else:
             total_base_amount = 0
 
@@ -748,6 +766,16 @@ def import_reservations(request):
             total_cost_of_stay = Decimal(row['Total Cost Of stay']).quantize(Decimal('0.00'))
         else:
             total_cost_of_stay = 0
+
+        if str(row['Rate'])!= 'nan':
+            rate = Decimal(row['Rate']).quantize(Decimal('0.00'))
+        else:
+            rate = 0
+        
+        if str(row['Balance'])!= 'nan':
+            balance = Decimal(row['Balance']).quantize(Decimal('0.00'))
+        else:
+            balance = 0
         
         reservation, created = Reservation.objects.update_or_create(
                 booking_id = row['Confirmation Code'],
@@ -761,7 +789,7 @@ def import_reservations(request):
                 'room_type'  : room_type,
                 'selected_room'  : selected_room,
                 'rate_code'  : rate_code,
-                'rate'  : row['Rate'],
+                'rate'  : rate,
                 'room_type_to_charge': room_type_to_charge,
                 'package': package,
                 'block_code': block_code,
@@ -772,7 +800,7 @@ def import_reservations(request):
                 'source': source,
                 'origin': row['Origin'],
                 'payment_type': paymemt_type,
-                'balance': row['Balance'],
+                'balance': balance,
                 'company':company,
                 'agent':agent,
                 'booker':booker,

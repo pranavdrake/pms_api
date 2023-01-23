@@ -1013,7 +1013,7 @@ class Reservation(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return 'Reservation ID:' + str(self.id) +' ' + self.guest.first_name + ' ' + self.guest.last_name
+        return 'Reservation ID:' + str(self.id) +' ' + self.guest.last_name
 
 class Folio(models.Model):
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE,related_name='folios')
