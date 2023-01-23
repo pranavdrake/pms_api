@@ -592,11 +592,13 @@ def import_reservations(request):
     df = df.drop_duplicates(subset=['Confirmation Code'])
     df = df.head(10)
 
+    # Reservation.objects.all().delete()
+    # return Response({'reservations imported':'reservations imported'})
+
     for index, row in df.iterrows():
         
         if str(row['Email'])!='nan':
             guest = GuestProfile.objects.get(email = row['Email'])
-            
         else:
             guest = GuestProfile.objects.get(last_name  = row['Contact Name'])
         # guest = GuestProfile.objects.first()
@@ -806,7 +808,7 @@ def import_folios(request):
     file ='mediafiles/import_data/all_guest_folio.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Booking ID'])
-
+    
     for index, row in df.iterrows():
 
         reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
