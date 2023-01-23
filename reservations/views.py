@@ -3,14 +3,15 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 import pandas as pd
 from .models import *
-from accounts.models import Account,GuestProfile, Booker
+from accounts.models import Account, GuestProfile, Booker
 from django.apps import apps
 from decimal import Decimal
 from accounts.models import Account
 
+
 @api_view(['GET'])
 def import_room_types(request):
-    file  = 'mediafiles/import_data/all_room_types.csv'
+    file = 'mediafiles/import_data/all_room_types.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Type Name'])
 
@@ -25,28 +26,34 @@ def import_room_types(request):
                 'total_number_of_rooms': row['Total Number of Rooms'],
             }
         )
-    return Response({'room types imported':'room types imported'})
+    return Response({'room types imported': 'room types imported'})
+
 
 @api_view(['GET'])
 def import_rooms(request):
-    file  = 'mediafiles/import_data/all_rooms.csv'
+    file = 'mediafiles/import_data/all_rooms.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Room Number'])
 
-    
     for index, row in df.iterrows():
 
-        if Floor.objects.filter(property = Property.objects.first(), floor=int(row['Floor'])).exists():
-            floor = Floor.objects.get(property = Property.objects.first(), floor=int(row['Floor']))
+        if Floor.objects.filter(property=Property.objects.first(), floor=int(row['Floor'])).exists():
+            floor = Floor.objects.get(
+                property=Property.objects.first(), floor=int(row['Floor']))
         else:
-            Floor.objects.create(property = Property.objects.first(), floor=int(row['Floor']))
-            floor = Floor.objects.get(property = Property.objects.first(), floor=int(row['Floor']))
-
+            Floor.objects.create(
+                property=Property.objects.first(), floor=int(row['Floor']))
+            floor = Floor.objects.get(
+                property=Property.objects.first(), floor=int(row['Floor']))
+        if str(row[row['Room Number']] == 'nan'):
+            room_number = ''
+        else:
+            room_number = row['Room Number']
         room_type = RoomType.objects.get(room_type=row['Room Type'])
         room, created = Room.objects.update_or_create(
             floor=floor,
             room_type=room_type,
-            room_number=row['Room Number'],
+            room_number=room_number,
             defaults={
                 'room_status': row['Room Status'],
                 'front_office_status': row['FO Status'],
@@ -54,45 +61,51 @@ def import_rooms(request):
             }
         )
 
-    return Response({'rooms imported':'rooms imported'})
+    return Response({'rooms imported': 'rooms imported'})
+
 
 @api_view(['GET'])
 def import_market_groups(request):
-    file  = 'mediafiles/import_data/all_market_groups.csv'
+    file = 'mediafiles/import_data/all_market_groups.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Market Group'])
     for index, row in df.iterrows():
-        if row['Status'].strip()=='Active':
+        if row['Status'].strip() == 'Active':
             is_active = True
 
-        market_group, created = MarketGroup.objects.update_or_create(market_group=row['Market Group'], defaults={'description': row['Description'], 'is_active': is_active})
-    
-    return Response({'market groups imported':'market groups imported'})
+        market_group, created = MarketGroup.objects.update_or_create(market_group=row['Market Group'], defaults={
+                                                                     'description': row['Description'], 'is_active': is_active})
+
+    return Response({'market groups imported': 'market groups imported'})
+
 
 @api_view(['GET'])
 def import_market_codes(request):
-    file  = 'mediafiles/import_data/all_market_codes.csv'
+    file = 'mediafiles/import_data/all_market_codes.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Market Code'])
 
     for index, row in df.iterrows():
-        if row['Status'].strip()=='Active':
+        if row['Status'].strip() == 'Active':
             is_active = True
         else:
             is_active = False
 
-        market_group=MarketGroup.objects.get(market_group = row['Market Group'].strip())
-        market_code, created = MarketCode.objects.update_or_create(market_group=market_group, market_code = row['Market Code'], defaults={'description': row['Description'], 'is_active': is_active})
+        market_group = MarketGroup.objects.get(
+            market_group=row['Market Group'].strip())
+        market_code, created = MarketCode.objects.update_or_create(market_group=market_group, market_code=row['Market Code'], defaults={
+                                                                   'description': row['Description'], 'is_active': is_active})
 
-    return Response({'market codes imported':'market codes imported'})
+    return Response({'market codes imported': 'market codes imported'})
+
 
 @api_view(['GET'])
 def import_groups(request):
-    file  = 'mediafiles/import_data/all_groups.csv'
+    file = 'mediafiles/import_data/all_groups.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Group Code'])
     for index, row in df.iterrows():
-        if row['Status'].strip()=='Active':
+        if row['Status'].strip() == 'Active':
             is_active = True
         else:
             is_active = False
@@ -106,13 +119,15 @@ def import_groups(request):
         else:
             cost_center = row['Cost Center Type']
 
-        group, created = Group.objects.update_or_create(group_code=row['Group Code'], defaults={'description': description, 'cost_center': cost_center})
+        group, created = Group.objects.update_or_create(group_code=row['Group Code'], defaults={
+                                                        'description': description, 'cost_center': cost_center})
 
-    return Response({'groups imported':'groups imported'})
+    return Response({'groups imported': 'groups imported'})
+
 
 @api_view(['GET'])
 def import_sub_groups(request):
-    file  = 'mediafiles/import_data/all_sub_groups.csv'
+    file = 'mediafiles/import_data/all_sub_groups.csv'
     df = pd.read_csv(file)
     for index, row in df.iterrows():
         if str(row['Description']) == 'nan':
@@ -120,32 +135,34 @@ def import_sub_groups(request):
         else:
             description = row['Description']
 
-        # group=Group.objects.get(group = row['Group'])  
+        # group=Group.objects.get(group = row['Group'])
         sub_group, created = SubGroup.objects.update_or_create(
-        # group=group,
-        sub_group_code = row['Sub Group Code'],
+            # group=group,
+            sub_group_code=row['Sub Group Code'],
 
-        defaults={
-        'description': description,
-        })
+            defaults={
+                'description': description,
+            })
 
-    return Response({'sub group imported':'sub group imported'})
+    return Response({'sub group imported': 'sub group imported'})
+
 
 @api_view(['GET'])
 def import_source_groups(request):
-    file  = 'mediafiles/import_data/all_source_groups.csv'
+    file = 'mediafiles/import_data/all_source_groups.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Source Group Code'])
 
     for index, row in df.iterrows():
-        if row['Status'].strip()=='Active':
+        if row['Status'].strip() == 'Active':
             is_active = True
 
         source_group, created = SourceGroup.objects.update_or_create(
-            source_group=row['Source Group Code'], 
+            source_group=row['Source Group Code'],
             defaults={'description': row['Description'], 'is_active': is_active})
 
-    return Response({'source groups imported':'Source groups imported'})
+    return Response({'source groups imported': 'Source groups imported'})
+
 
 @api_view(['GET'])
 def import_source_codes(request):
@@ -154,15 +171,17 @@ def import_source_codes(request):
     df = df.drop_duplicates(subset=['Source Code'])
 
     for index, row in df.iterrows():
-        if row['Status'].strip()=='Active':
+        if row['Status'].strip() == 'Active':
             is_active = True
         else:
             is_active = False
 
-        source_group = SourceGroup.objects.get(source_group = row['Source Group'].strip())
-        source_code, created = Source.objects.update_or_create(source_group = source_group, source_code = row['Source Code'], defaults={'description': row['Description'],'is_active': is_active})
+        source_group = SourceGroup.objects.get(
+            source_group=row['Source Group'].strip())
+        source_code, created = Source.objects.update_or_create(source_group=source_group, source_code=row['Source Code'], defaults={
+                                                               'description': row['Description'], 'is_active': is_active})
 
-    return Response({'source codes imported':'source codes imported'})
+    return Response({'source codes imported': 'source codes imported'})
 
 
 @api_view(['GET'])
@@ -172,14 +191,15 @@ def import_rate_classes(request):
     df = df.drop_duplicates(subset=['Rate Class'])
 
     for index, row in df.iterrows():
-        if row['Status'].strip()=='Active':
+        if row['Status'].strip() == 'Active':
             is_active = True
         else:
             is_active = False
 
-        rate_class, created = RateClass.objects.update_or_create(rate_class = row['Rate Class'], defaults={'description': row['Description'],'is_active': is_active})
+        rate_class, created = RateClass.objects.update_or_create(rate_class=row['Rate Class'], defaults={
+                                                                 'description': row['Description'], 'is_active': is_active})
 
-    return Response({'rate classes imported':'rate classes imported'})
+    return Response({'rate classes imported': 'rate classes imported'})
 
 
 @api_view(['GET'])
@@ -189,15 +209,17 @@ def import_rate_categories(request):
     df = df.drop_duplicates(subset=['Rate Category'])
 
     for index, row in df.iterrows():
-        if row['Status'].strip()=='Active':
+        if row['Status'].strip() == 'Active':
             is_active = True
         else:
             is_active = False
 
-        rate_class = RateClass.objects.get(rate_class = row['Rate Class'].strip())
-        rate_category, created = RateCategory.objects.update_or_create(rate_class = rate_class, rate_category = row['Rate Category'], defaults={'description': row['Description'],'is_active': is_active})
+        rate_class = RateClass.objects.get(
+            rate_class=row['Rate Class'].strip())
+        rate_category, created = RateCategory.objects.update_or_create(rate_class=rate_class, rate_category=row['Rate Category'], defaults={
+                                                                       'description': row['Description'], 'is_active': is_active})
 
-    return Response({'rate categories imported':'rate categories imported'})
+    return Response({'rate categories imported': 'rate categories imported'})
 
 
 @api_view(['GET'])
@@ -211,33 +233,33 @@ def import_forexes(request):
         if str(row['Remarks']) == 'nan':
             remarks = ''
         else:
-            remarks=row['Remarks']
+            remarks = row['Remarks']
 
-        room = Room.objects.get(room_number = row['Room No'].strip())
-        #reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
-        #guest = GuestProfile.obejects.get(first_name = row['First Name'].strip(), last_name = row['Last Name'])
+        room = Room.objects.get(room_number=row['Room No'].strip())
+        # reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
+        # guest = GuestProfile.obejects.get(first_name = row['First Name'].strip(), last_name = row['Last Name'])
         forex, created = Forex.objects.update_or_create(
-            room = room,  #certificate No.
+            room=room,  # certificate No.
             # reservation = reservation,
             # guest = guest,
 
             defaults={
-                'currency' : row['Currency'],
-                'amount' : row['Amount(FC)'],
-                'rate_for_the_day' : row['Rate For The Day'],
-                'equivalent_amount' : row['Eqvt Amount'],
-                'cgst' : row['CGST'],
-                'sgst' : row['SGST'],
-                'total' : row['Total'],
+                'currency': row['Currency'],
+                'amount': row['Amount(FC)'],
+                'rate_for_the_day': row['Rate For The Day'],
+                'equivalent_amount': row['Eqvt Amount'],
+                'cgst': row['CGST'],
+                'sgst': row['SGST'],
+                'total': row['Total'],
                 'remarks': remarks
             }
         )
-    return Response({'forex imported':'forex imported'})
+    return Response({'forex imported': 'forex imported'})
 
 
 @api_view(['GET'])
 def import_extra(request):
-    file  = 'mediafiles/import_data/all_extras.csv'
+    file = 'mediafiles/import_data/all_extras.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Code'])
 
@@ -245,39 +267,40 @@ def import_extra(request):
         # group = Group.objects.get(group=row['Department'].strip())
         # sub_group = SubGroup.objects.get(sub_group = row[''])
         extra, created = Extra.objects.update_or_create(
-        # group = group,
-        # sub_group=sub_group,
-        extra_code=row['Code'],
+            # group = group,
+            # sub_group=sub_group,
+            extra_code=row['Code'],
             defaults={
-                 'description': row['Description'],
+                'description': row['Description'],
                 # 'type': row['Type'],
             }
         )
-    return Response({'Extra Data imported':'extra data imported'})
+    return Response({'Extra Data imported': 'extra data imported'})
+
 
 @api_view(['GET'])
 def import_package_group(request):
-    file  = 'mediafiles/import_data/package_group.csv'
+    file = 'mediafiles/import_data/package_group.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Package Group'])
 
     for index, row in df.iterrows():
         package_group, created = PackageGroup.objects.update_or_create(
-            package_group=row['Package Group'], 
-            defaults={'description': row['Description'],})
+            package_group=row['Package Group'],
+            defaults={'description': row['Description'], })
 
-    return Response({'package groups imported':'Package groups imported'})
+    return Response({'package groups imported': 'Package groups imported'})
 
 
 @api_view(['GET'])
 def import_package(request):
-    file  = 'mediafiles/import_data/all_packages.csv'
+    file = 'mediafiles/import_data/all_packages.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Package Code'])
 
     for index, row in df.iterrows():
-        begin_sell_date = datetime.strptime(row['Begin Sell Date'],"%d-%b-%Y")
-        end_sell_date= datetime.strptime(row['End Sell Date'],"%d-%b-%Y")
+        begin_sell_date = datetime.strptime(row['Begin Sell Date'], "%d-%b-%Y")
+        end_sell_date = datetime.strptime(row['End Sell Date'], "%d-%b-%Y")
 
         if row['status'] == 'Active':
             is_active = True
@@ -286,626 +309,650 @@ def import_package(request):
 
         # package_group = PackageGroup.objects.get(package_group = row['Package Group'])
         package_group = PackageGroup.objects.first()
-        
-        transaction_code = TransactionCode.objects.get(transaction_code = row['Transaction Code'])
+
+        transaction_code = TransactionCode.objects.get(
+            transaction_code=row['Transaction Code'])
         # transaction_code  = TransactionCode.objects.first()
 
-        package, created = Package.objects.update_or_create( 
-            package_group = package_group,
-            package_code = row['Package Code'],
+        package, created = Package.objects.update_or_create(
+            package_group=package_group,
+            package_code=row['Package Code'],
             defaults={'description': row['Description'],
-            'transaction_code' : transaction_code, 
-            'begin_sell_date' : begin_sell_date,
-            'end_sell_date' : end_sell_date,
-            'base_price' : row['Price'],
-            'tax_percentage' : row['Tax Percentage'],
-            # 'tax_amount' : row[''],
-            # 'total_amount' : row[''],
-            'calculation_rule' : row['calculation Rule '],
-            'posting_rhythm' : row['Posting Rhythm'],
-            'rate_inclusion' : row['Rate Inclusion'],
-            'is_active' : is_active
-            })
-            
-    return Response({'package imported':'Package imported'})
+                      'transaction_code': transaction_code,
+                      'begin_sell_date': begin_sell_date,
+                      'end_sell_date': end_sell_date,
+                      'base_price': row['Price'],
+                      'tax_percentage': row['Tax Percentage'],
+                      # 'tax_amount' : row[''],
+                      # 'total_amount' : row[''],
+                      'calculation_rule': row['calculation Rule '],
+                      'posting_rhythm': row['Posting Rhythm'],
+                      'rate_inclusion': row['Rate Inclusion'],
+                      'is_active': is_active
+                      })
+
+    return Response({'package imported': 'Package imported'})
+
 
 @api_view(['GET'])
 def import_transaction_codes(request):
-    file  = 'mediafiles/import_data/all_transaction_codes.csv'
+    file = 'mediafiles/import_data/all_transaction_codes.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Transaction Code '])
-    revoke_df = df[df['Revoke Group'].notnull()] 
-    df = df[df['Revoke Group'].isnull()] 
+    revoke_df = df[df['Revoke Group'].notnull()]
+    df = df[df['Revoke Group'].isnull()]
 
     for index, row in revoke_df.iterrows():
-        if row['Discount Allowed']=='true':
+        if row['Discount Allowed'] == 'true':
             discount_allowed = True
         else:
             discount_allowed = False
 
-        if str(row['Rate'])=='nan':
+        if str(row['Rate']) == 'nan':
             base_rate = 0
         else:
             base_rate = row['Rate']
 
-        if str(row['Commission Percent'])=='nan':
+        if str(row['Commission Percent']) == 'nan':
             commission_service_charge_percentage = 0
         else:
             commission_service_charge_percentage = row['Commission Percent']
 
-        if str(row['Tax Percentage'])=='nan':
+        if str(row['Tax Percentage']) == 'nan':
             tax_percentage = 0
         else:
             tax_percentage = row['Tax Percentage']
 
-        is_allowance  = True 
-        group  = Group.objects.get(group_code = row['Revoke Group'].strip())
-        sub_group  = SubGroup.objects.get(sub_group_code = row['Sub Group'].strip())
+        is_allowance = True
+        group = Group.objects.get(group_code=row['Revoke Group'].strip())
+        sub_group = SubGroup.objects.get(
+            sub_group_code=row['Sub Group'].strip())
         # group  = Group.objects.first()
         # sub_group  = SubGroup.objects.first()
 
-        transaction_code, created = TransactionCode.objects.update_or_create(transaction_code=row['Transaction Code '], group = group, sub_group = sub_group ,defaults={'description': row['Description'], 'base_rate': base_rate,'tax_percentage': tax_percentage,'commission_service_charge_percentage': commission_service_charge_percentage, 'discount_allowed': discount_allowed, 'is_allowance': is_allowance})
+        transaction_code, created = TransactionCode.objects.update_or_create(transaction_code=row['Transaction Code '], group=group, sub_group=sub_group, defaults={
+                                                                             'description': row['Description'], 'base_rate': base_rate, 'tax_percentage': tax_percentage, 'commission_service_charge_percentage': commission_service_charge_percentage, 'discount_allowed': discount_allowed, 'is_allowance': is_allowance})
 
     for index, row in df.iterrows():
-        if row['Discount Allowed']=='true':
+        if row['Discount Allowed'] == 'true':
             discount_allowed = True
         else:
             discount_allowed = False
 
-        is_allowance  = False 
+        is_allowance = False
 
-        if(TransactionCode.objects.filter(transaction_code =  '8' + str(row['Transaction Code '])).exists()):
-            allowance_code  = TransactionCode.objects.get(transaction_code =  '8' + str(row['Transaction Code ']))
+        if (TransactionCode.objects.filter(transaction_code='8' + str(row['Transaction Code '])).exists()):
+            allowance_code = TransactionCode.objects.get(
+                transaction_code='8' + str(row['Transaction Code ']))
         else:
             allowance_code = None
 
-        if str(row['Rate'])=='nan':
+        if str(row['Rate']) == 'nan':
             base_rate = 0
         else:
             base_rate = row['Rate']
 
-        if str(row['Commission Percent'])=='nan':
+        if str(row['Commission Percent']) == 'nan':
             commission_service_charge_percentage = 0
         else:
             commission_service_charge_percentage = row['Commission Percent']
 
-        if str(row['Tax Percentage'])=='nan':
+        if str(row['Tax Percentage']) == 'nan':
             tax_percentage = 0
         else:
             tax_percentage = row['Tax Percentage']
 
-        group  = Group.objects.get(group_code = row['Group'].strip())
-        sub_group  = SubGroup.objects.get(sub_group_code = row['Sub Group'].strip())
+        group = Group.objects.get(group_code=row['Group'].strip())
+        sub_group = SubGroup.objects.get(
+            sub_group_code=row['Sub Group'].strip())
         # group  = Group.objects.first()
         # sub_group  = SubGroup.objects.first()
         transaction_code, created = TransactionCode.objects.update_or_create(transaction_code=row['Transaction Code '],
-          defaults={'description': row['Description'],
-           'base_rate': base_rate,
-           'tax_percentage': tax_percentage,
-           'commission_service_charge_percentage': commission_service_charge_percentage, 
-           'discount_allowed': discount_allowed, 
-            'group' : group,
-            'sub_group' : sub_group ,
-            'allowance_code' :allowance_code,
-           'is_allowance': is_allowance})
+                                                                             defaults={'description': row['Description'],
+                                                                                       'base_rate': base_rate,
+                                                                                       'tax_percentage': tax_percentage,
+                                                                                       'commission_service_charge_percentage': commission_service_charge_percentage,
+                                                                                       'discount_allowed': discount_allowed,
+                                                                                       'group': group,
+                                                                                       'sub_group': sub_group,
+                                                                                       'allowance_code': allowance_code,
+                                                                                       'is_allowance': is_allowance})
 
-    return Response({'transaction codes imported':'transaction codes imported'})
+    return Response({'transaction codes imported': 'transaction codes imported'})
+
 
 @api_view(['GET'])
 def import_rate_codes(request):
     # rc= RateCode.objects.first()
     # print(rc.days_applicable)
     # rc.days_applicable.clear()
-    # rc.days_applicable  = ['Monday'] 
+    # rc.days_applicable  = ['Monday']
     # print(rc.days_applicable)
     # rc.save()
     # print(RateCode.objects.first().days_applicable)
-    file  = 'mediafiles/import_data/all_rate_codes.csv'
+    file = 'mediafiles/import_data/all_rate_codes.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Rate code'])
 
     for index, row in df.iterrows():
 
-        
         begin_sell_date = datetime.strptime(row['Begin_date'], "%d-%b-%Y")
         end_sell_date = datetime.strptime(row['End _sell_Date'], "%d-%b-%Y")
-        rate_category = RateCategory.objects.get(rate_category = row['Rate Category'].strip())
+        rate_category = RateCategory.objects.get(
+            rate_category=row['Rate Category'].strip())
         # rate_category = RateCategory.objects.first()
-        if(MarketCode.objects.filter(market_code = str(row['Market Code']).strip()).exists()):
-            market=MarketCode.objects.get(market_code = str(row['Market Code']).strip())
+        if (MarketCode.objects.filter(market_code=str(row['Market Code']).strip()).exists()):
+            market = MarketCode.objects.get(
+                market_code=str(row['Market Code']).strip())
         else:
             market = None
-        
-        if str(row['Source'])=='nan':
+
+        if str(row['Source']) == 'nan':
             source = None
         else:
-            source=Source.objects.get(source_code = row['Source'])
+            source = Source.objects.get(source_code=row['Source'])
         # source=Source.objects.first()
 
         room_type_ids = []
         for room_type in df['Room Type'][index].split(","):
             room_type = room_type.strip()
-            room_type_ids.append(RoomType.objects.get(room_type = room_type).id)
-        room_types  = RoomType.objects.filter(pk__in=room_type_ids)
+            room_type_ids.append(RoomType.objects.get(room_type=room_type).id)
+        room_types = RoomType.objects.filter(pk__in=room_type_ids)
 
         if str(df['Extras'][index]) != 'nan':
             extra_ids = []
             for extra in df['Extras'][index].split(","):
                 extra = extra.strip()
-                
-                extra_ids.append(Extra.objects.get(extra_code = extra).id)
-            extras  = Extra.objects.filter(pk__in = extra_ids)
+
+                extra_ids.append(Extra.objects.get(extra_code=extra).id)
+            extras = Extra.objects.filter(pk__in=extra_ids)
         else:
             extras = []
 
-        days_applicable  = []
-        if(str(df['Days'][index])!='nan'):
+        days_applicable = []
+        if (str(df['Days'][index]) != 'nan'):
             for day in df['Days'][index].split(","):
                 days_applicable.append(day)
-        if str(row['package'])=='nan':
+        if str(row['package']) == 'nan':
             package = None
         else:
-            package = Package.objects.get(package_code = row['package'])
+            package = Package.objects.get(package_code=row['package'])
         # package = Package.objects.first()
-        
-        if str(row['Pkg Transaction Code'])=='nan':
+
+        if str(row['Pkg Transaction Code']) == 'nan':
             package_transaction_code = None
         else:
-            package_transaction_code = TransactionCode.objects.get(transaction_code = str(int(row['Pkg Transaction Code'])))
-            
-        transaction_code=TransactionCode.objects.get(transaction_code = str(row['Transaction Code']))
+            package_transaction_code = TransactionCode.objects.get(
+                transaction_code=str(int(row['Pkg Transaction Code'])))
+
+        transaction_code = TransactionCode.objects.get(
+            transaction_code=str(row['Transaction Code']))
 
         rate_code, created = RateCode.objects.update_or_create(
             rate_category=rate_category,
-            rate_code = row['Rate code'],
+            rate_code=row['Rate code'],
             defaults={
-                        'description': row['Description'],
-                        'market' : market,
-                        'source' : source,
-                        'begin_sell_date' : begin_sell_date,
-                        'end_sell_date' : end_sell_date,
-                        'package' : package,
+                'description': row['Description'],
+                'market': market,
+                'source': source,
+                        'begin_sell_date': begin_sell_date,
+                        'end_sell_date': end_sell_date,
+                        'package': package,
                         # 'extras' : extras,
-                        'transaction_code' : transaction_code,
-                        'package_transaction_code' : package_transaction_code,
+                        'transaction_code': transaction_code,
+                        'package_transaction_code': package_transaction_code,
                         # 'room_types' : room_types,
                         # 'days_applicable' : days_applicable,
-                        'print_rate' : row['Print Rate'],
-                        'day_use' : row['Day Use'],
-                        'discount' : row['Discount'],
-                        'complementary' : row['Complementary'],
-                        'house_use' : row['House Use'],
-                    })
-        
+                        'print_rate': row['Print Rate'],
+                        'day_use': row['Day Use'],
+                        'discount': row['Discount'],
+                        'complementary': row['Complementary'],
+                        'house_use': row['House Use'],
+            })
+
         rate_code.room_types.set(room_types)
         rate_code.extras.set(extras)
         rate_code.days_applicable = days_applicable
         rate_code.save()
 
-    return Response({'rate codes imported':'rate codes imported'})
+    return Response({'rate codes imported': 'rate codes imported'})
+
 
 @api_view(['GET'])
 def import_group_reservations(request):
-    file = 'mediafiles/import_data/all_group_reservations.csv'                             
+    file = 'mediafiles/import_data/all_group_reservations.csv'
     df = pd.read_csv(file)
-    df = df.drop_duplicates(subset=['Block Code'])    #unique column name to subset ?...
+    # unique column name to subset ?...
+    df = df.drop_duplicates(subset=['Block Code'])
 
     for index, row in df.iterrows():
 
-        if str(row['Group Name'])=='nan':
+        if str(row['Group Name']) == 'nan':
 
             group_name = None
         else:
-            group_name , created = Account.objects.update_or_create(account_name= row['Group Name'].strip(), account_type = 'Group')
+            group_name, created = Account.objects.update_or_create(
+                account_name=row['Group Name'].strip(), account_type='Group')
             # group_name = Account.objects.first()
 
-        if row['Payment']=='nan':
-            payment_type=None
+        if row['Payment'] == 'nan':
+            payment_type = None
         else:
-            payment_type , created = PaymentType.objects.get_or_create(payment_type_code= row['Payment'])
+            payment_type, created = PaymentType.objects.get_or_create(
+                payment_type_code=row['Payment'])
             # payment_type = PaymentType.objects.first()
 
-        if str(row['Company'])=='nan':
-            company=None
+        if str(row['Company']) == 'nan':
+            company = None
         else:
-            company = Account.objects.get(account_name= row['Company'])
+            company = Account.objects.get(account_name=row['Company'])
             # company = Account.objects.first()
 
-        if str(row['Agent'])=='nan':
-            travel_agent = None        
+        if str(row['Agent']) == 'nan':
+            travel_agent = None
         else:
-            travel_agent = Account.objects.get(account_name= row['Agent'].strip())
+            travel_agent = Account.objects.get(
+                account_name=row['Agent'].strip())
 
-        if str(row['Source'])=='nan':
-            source=None                             
+        if str(row['Source']) == 'nan':
+            source = None
         else:
-            source = Source.objects.get(source_code= row['Source'])
+            source = Source.objects.get(source_code=row['Source'])
             # source = Source.objects.first()
 
-        if str(row['Market']) == 'nan':         
-            market = None                        
+        if str(row['Market']) == 'nan':
+            market = None
         else:
-            market = MarketCode.objects.get(market_code = row['Market'])
+            market = MarketCode.objects.get(market_code=row['Market'])
             # market = MarketCode.objects.first()
 
-        if str(row['Res Type'])=='nan':
-            reservation_type = None    
+        if str(row['Res Type']) == 'nan':
+            reservation_type = None
         else:
-            reservation_type , created= ReservationType.objects.get_or_create(reservation_type = row['Res Type'].strip())
+            reservation_type, created = ReservationType.objects.get_or_create(
+                reservation_type=row['Res Type'].strip())
             # reservation_type = ReservationType.objects.first()
 
-        if str(row['Rate Code'])=='nan':
-            rate_code=None
+        if str(row['Rate Code']) == 'nan':
+            rate_code = None
         else:
-            rate_code = RateCode.objects.get(rate_code = row['Rate Code'] )
+            rate_code = RateCode.objects.get(rate_code=row['Rate Code'])
             # rate_code = RateCode.objects.first()
 
-        if str(row['package'])=='nan':
-            package = None                          
+        if str(row['package']) == 'nan':
+            package = None
         else:
-            package = Package.objects.get(package_code = row['package'])
+            package = Package.objects.get(package_code=row['package'])
             # package = Package.objects.first()
 
-        if str(row['Total Rooms'])=='nan':
-            total_rooms = 0                          
+        if str(row['Total Rooms']) == 'nan':
+            total_rooms = 0
         else:
             total_rooms = row['Total Rooms']
 
-        if str(row['Cut-off Date']) !='nan':
-            cut_off_date =datetime.strptime(str(row['Cut-off Date']),"%d-%b-%Y %H:%M:%S") 
+        if str(row['Cut-off Date']) != 'nan':
+            cut_off_date = datetime.strptime(
+                str(row['Cut-off Date']), "%d-%b-%Y %H:%M:%S")
         else:
-            cut_off_date = None   
+            cut_off_date = None
 
         group_reservations, created = GroupReservation.objects.update_or_create(
 
-            block_code = row['Block Code'],                    
+            block_code=row['Block Code'],
 
             defaults={
                 'group_name': group_name,
-                'payment_type':payment_type,
-                'company' : company,
-                'travel_agent':travel_agent,
-                'source' : source,
-                'market' :market,
-                'reservation_type':reservation_type,
+                'payment_type': payment_type,
+                'company': company,
+                'travel_agent': travel_agent,
+                'source': source,
+                'market': market,
+                'reservation_type': reservation_type,
                 'rate_code': rate_code,
-                'package' :package,
-                'arrival_date' : datetime.strptime(str(row['Arrival Date']),"%d-%b-%Y"),
-                'departure_date' : datetime.strptime(str(row['Departure Date']),"%d-%b-%Y"),
-                'nights' : row['Nights'],
-                'status' : row['Status'],
-                'origin' : row['Origin'],  
-                'rate' :Decimal(row['Rate']).quantize(Decimal("0.00")),      
-                'pax' : row['Pax'],        
-                'cut_off_date' : cut_off_date,
-                'total_rooms' :total_rooms,   
+                'package': package,
+                'arrival_date': datetime.strptime(str(row['Arrival Date']), "%d-%b-%Y"),
+                'departure_date': datetime.strptime(str(row['Departure Date']), "%d-%b-%Y"),
+                'nights': row['Nights'],
+                'status': row['Status'],
+                'origin': row['Origin'],
+                'rate': Decimal(row['Rate']).quantize(Decimal("0.00")),
+                'pax': row['Pax'],
+                'cut_off_date': cut_off_date,
+                'total_rooms': total_rooms,
             }
         )
 
-    return Response({'group reservstions imported' : 'group reservstions imported'})
+    return Response({'group reservstions imported': 'group reservstions imported'})
 
 
 @api_view(['GET'])
 def import_reservations(request):
-    file  = 'mediafiles/import_data/all_reservations.csv'
+    file = 'mediafiles/import_data/all_reservations.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Confirmation Code'])
     df = df.head(10)
-
+    df = df.iloc[10001:20000]
     for index, row in df.iterrows():
-        
-        if str(row['Email'])!='nan':
-            guest = GuestProfile.objects.get(email = row['Email'])
-            
+
+        if str(row['Email']) != 'nan':
+            guest = GuestProfile.objects.get(email=row['Email'])
+
         else:
-            guest = GuestProfile.objects.get(last_name  = row['Contact Name'])
+            guest = GuestProfile.objects.get(last_name=row['Contact Name'])
         # guest = GuestProfile.objects.first()
 
-        arrival_date  =  datetime.strptime(row['Arrival'],"%d-%b-%Y")
-        departure_date  =  datetime.strptime(row['Departure'],"%d-%b-%Y")
-        room_type  =  RoomType.objects.get(room_type = row['Room Type'])
-        
-        if str(row['Selected Room'])!= 'nan':
-            selected_room  =  Room.objects.get(room_number = row['Selected Room'])
+        arrival_date = datetime.strptime(row['Arrival'], "%d-%b-%Y")
+        departure_date = datetime.strptime(row['Departure'], "%d-%b-%Y")
+        room_type = RoomType.objects.get(room_type=row['Room Type'])
+
+        if str(row['Selected Room']) != 'nan':
+            selected_room = Room.objects.get(room_number=row['Selected Room'])
         else:
             selected_room = None
 
-        if str(row['Rate code'])!= 'nan':
-            rate_code  =  RateCode.objects.get(rate_code = row['Rate code'])
+        if str(row['Rate code']) != 'nan':
+            rate_code = RateCode.objects.get(rate_code=row['Rate code'])
 
-        if str(row['RTC'])!= 'nan':
-            room_type_to_charge  =  RoomType.objects.get(room_type = str(row['RTC']))
+        if str(row['RTC']) != 'nan':
+            room_type_to_charge = RoomType.objects.get(
+                room_type=str(row['RTC']))
 
-        if str(row['Package'])!= 'nan':
-            package  =  Package.objects.get(package_code = str(row['Package']))
+        if str(row['Package']) != 'nan':
+            package = Package.objects.get(package_code=str(row['Package']))
 
         if str(df['Extra Code'][index]) != 'nan':
             extra_ids = []
             for extra in df['Extra Code'][index].split(","):
                 extra = extra.strip()
-                extra_ids.append(Extra.objects.get(extra_code = extra).id)
-            extras  = Extra.objects.filter(pk__in = extra_ids)
+                extra_ids.append(Extra.objects.get(extra_code=extra).id)
+            extras = Extra.objects.filter(pk__in=extra_ids)
         else:
             extras = []
 
-        if str(row['Block Code'])!= 'nan':
-            block_code  =  GroupReservation.objects.get(block_code = str(row['Block Code']))
+        if str(row['Block Code']) != 'nan':
+            block_code = GroupReservation.objects.get(
+                block_code=str(row['Block Code']))
             # block_code  =  GroupReservation.objects.first()
         else:
             block_code = None
 
-        if str(row['ETA'])!= 'nan':
-            eta  = datetime.strptime(row['ETA'], '%H:%M').time()
+        if str(row['ETA']) != 'nan':
+            eta = datetime.strptime(row['ETA'], '%H:%M').time()
 
-        if str(row['ETD'])!= 'nan':
-            etd  = datetime.strptime(row['ETD'], '%H:%M').time()
+        if str(row['ETD']) != 'nan':
+            etd = datetime.strptime(row['ETD'], '%H:%M').time()
 
-        if str(row['Res Type'])!= 'nan':
-            reservation_type,created = ReservationType.objects.get_or_create(
-                reservation_type = row['Res Type'])
-            
-        if str(row['Market'])!= 'nan':
-           market_code = row['Market'].split("-")[0]
-           market = MarketCode.objects.get(market_code = market_code.strip())
-            
-        if str(row['Source'])!= 'nan':
-           source = Source.objects.get(source_code = row['Source'])
-            
-        if str(row['Payment'])!= 'nan':
-            paymemt_type,created = PaymentType.objects.get_or_create(
-                payment_type_code = row['Payment'])
+        if str(row['Res Type']) != 'nan':
+            reservation_type, created = ReservationType.objects.get_or_create(
+                reservation_type=row['Res Type'])
 
+        if str(row['Market']) != 'nan':
+            market_code = row['Market'].split("-")[0]
+            market = MarketCode.objects.get(market_code=market_code.strip())
 
-        if str(row['Company/Agent'])!= 'nan':
+        if str(row['Source']) != 'nan':
+            source = Source.objects.get(source_code=row['Source'])
+
+        if str(row['Payment']) != 'nan':
+            paymemt_type, created = PaymentType.objects.get_or_create(
+                payment_type_code=row['Payment'])
+
+        if str(row['Company/Agent']) != 'nan':
             company = None
             agent = None
-            if(row['Company/Agent']=='Company'):
-                company = Account.objects.get(account_name  = row['Account Name'])
+            if (row['Company/Agent'] == 'Company'):
+                company = Account.objects.get(account_name=row['Account Name'])
                 # company = Account.objects.first()
-            if(row['Company/Agent']=='Agent'):
-                agent = Account.objects.get(account_name  = row['Agent'])
-            
-            
+            if (row['Company/Agent'] == 'Agent'):
+                agent = Account.objects.get(account_name=row['Agent'])
 
-        if str(row['Booker'])!= 'nan':
+        if str(row['Booker']) != 'nan':
             booker = Booker.objects.get(name=row['Booker'])
         else:
             booker = None
-        
 
         pick_up = None
-        if row['Pickup Required']!= False:
-            if str(row['Pickup Remarks'])!= 'nan':
+        if row['Pickup Required'] != False:
+            if str(row['Pickup Remarks']) != 'nan':
                 remarks = row['Pickup Remarks']
-        
-            pick_up, created =  PickupDropDetails.objects.get_or_create(
-                type = 'Pickup',
-                date = datetime.strptime(row['Pickup date'],"%d-%b-%Y"),
-                time  = datetime.strptime(row['Pickup Time'], '%H:%M').time(),
-                station_code  = row['Pickup Station Code'],
-                carrier_code  = row['Pickup Carrier Code'],
-                transport_type  = row['Pickup Transport Type'],
+
+            pick_up, created = PickupDropDetails.objects.get_or_create(
+                type='Pickup',
+                date=datetime.strptime(row['Pickup date'], "%d-%b-%Y"),
+                time=datetime.strptime(row['Pickup Time'], '%H:%M').time(),
+                station_code=row['Pickup Station Code'],
+                carrier_code=row['Pickup Carrier Code'],
+                transport_type=row['Pickup Transport Type'],
                 defaults={
-                'remarks'  : remarks
+                    'remarks': remarks
                 }
             )
-        
+
         drop = None
-        if row['Drop Required']!= False:
-            if str(row['Drop Remarks'])!= 'nan':
+        if row['Drop Required'] != False:
+            if str(row['Drop Remarks']) != 'nan':
                 remarks = row['Drop Remarks']
-        
-            drop, created =  PickupDropDetails.objects.get_or_create(
-                type = 'Drop',
-                date = datetime.strptime(row['Drop Date'],"%d-%b-%Y"),
-                time  = datetime.strptime(row['Drop Time'], '%H:%M').time(),
-                station_code  = row['Drop Station Code'],
-                carrier_code  = row['Drop Carrier Code'],
-                transport_type  = row['Drop Transport Type'],
+
+            drop, created = PickupDropDetails.objects.get_or_create(
+                type='Drop',
+                date=datetime.strptime(row['Drop Date'], "%d-%b-%Y"),
+                time=datetime.strptime(row['Drop Time'], '%H:%M').time(),
+                station_code=row['Drop Station Code'],
+                carrier_code=row['Drop Carrier Code'],
+                transport_type=row['Drop Transport Type'],
                 defaults={
-                'remarks'  : remarks
+                    'remarks': remarks
                 }
             )
-                
-        if str(row['Total Discount'])!= 'nan':
+
+        if str(row['Total Discount']) != 'nan':
             total_discount = row['Total Discount']
         else:
             total_discount = 0
 
-        if str(row['Total'])!= 'nan':
+        if str(row['Total']) != 'nan':
             total_base_amount = row['Total']
         else:
             total_base_amount = 0
 
-        if str(row['Total Tax'])!= 'nan':
+        if str(row['Total Tax']) != 'nan':
             total_tax = Decimal(row['Total Tax']).quantize(Decimal('0.00'))
         else:
             total_tax = 0
 
-        if str(row['Total Extra Charge'])!= 'nan':
-            total_extra_charge = Decimal(row['Total Extra Charge']).quantize(Decimal('0.00'))
+        if str(row['Total Extra Charge']) != 'nan':
+            total_extra_charge = Decimal(
+                row['Total Extra Charge']).quantize(Decimal('0.00'))
         else:
             total_extra_charge = 0
-        
-        if str(row['Total Payment'])!= 'nan':
-            total_payment = Decimal(row['Total Payment']).quantize(Decimal('0.00'))
+
+        if str(row['Total Payment']) != 'nan':
+            total_payment = Decimal(
+                row['Total Payment']).quantize(Decimal('0.00'))
         else:
             total_payment = 0
 
-        if str(row['Stay Total'])!= 'nan':
+        if str(row['Stay Total']) != 'nan':
             stay_total = Decimal(row['Stay Total']).quantize(Decimal('0.00'))
         else:
             stay_total = 0
 
-        if str(row['TA Commision'])!= 'nan':
-            travel_agent_commission = Decimal(row['TA Commision']).quantize(Decimal('0.00'))
+        if str(row['TA Commision']) != 'nan':
+            travel_agent_commission = Decimal(
+                row['TA Commision']).quantize(Decimal('0.00'))
         else:
             travel_agent_commission = 0
-            
-        if str(row['Total Cost Of stay'])!= 'nan':
-            total_cost_of_stay = Decimal(row['Total Cost Of stay']).quantize(Decimal('0.00'))
+
+        if str(row['Total Cost Of stay']) != 'nan':
+            total_cost_of_stay = Decimal(
+                row['Total Cost Of stay']).quantize(Decimal('0.00'))
         else:
             total_cost_of_stay = 0
-        
+
         reservation, created = Reservation.objects.update_or_create(
-                booking_id = row['Confirmation Code'],
-                defaults = {
-                'guest'  : guest,
-                'arrival_date'  : arrival_date,
-                'departure_date'  : departure_date,
-                'adults': row['Adults'],
-                'children': row['Children'],
-                'number_of_rooms': row['No. of Rooms'],
-                'room_type'  : room_type,
-                'selected_room'  : selected_room,
-                'rate_code'  : rate_code,
-                'rate'  : row['Rate'],
-                'room_type_to_charge': room_type_to_charge,
-                'package': package,
-                'block_code': block_code,
-                'eta': eta,
-                'etd': etd,
-                'reservation_type': reservation_type,
-                'market': market,
-                'source': source,
-                'origin': row['Origin'],
-                'payment_type': paymemt_type,
-                'balance': row['Balance'],
-                'company':company,
-                'agent':agent,
-                'booker':booker,
-                'print_rate':row['Print Rate'],
-                'reservation_status':row['Status'],
-                'total_discount':total_discount,
-                'total_base_amount':total_base_amount,
-                'total_extra_charge':total_extra_charge,
-                'total_tax':total_tax,
-                'total_payment':total_payment,
-                'stay_total':stay_total,
-                'travel_agent_commission':travel_agent_commission,
-                'total_cost_of_stay':total_cost_of_stay,
-                'pick_up': pick_up,
-                'drop': drop,
-                'comments': row['Comments'],
-                'billing_instruction': row['Billing Instruction'],
-                'unique_id': row['Unique ID'],
-                'sub_booking_id': str(row['Sub Booking ID']),
-                'transaction_id': str(row['Transaction Id']),
-                'voucher_number': str(row['Voucher No']),
-                }
+            booking_id=row['Confirmation Code'],
+            defaults={
+                'guest': guest,
+                'arrival_date': arrival_date,
+                    'departure_date': departure_date,
+                    'adults': row['Adults'],
+                    'children': row['Children'],
+                    'number_of_rooms': row['No. of Rooms'],
+                    'room_type': room_type,
+                    'selected_room': selected_room,
+                    'rate_code': rate_code,
+                    'rate': row['Rate'],
+                    'room_type_to_charge': room_type_to_charge,
+                    'package': package,
+                    'block_code': block_code,
+                    'eta': eta,
+                    'etd': etd,
+                    'reservation_type': reservation_type,
+                    'market': market,
+                    'source': source,
+                    'origin': row['Origin'],
+                    'payment_type': paymemt_type,
+                    'balance': row['Balance'],
+                'company': company,
+                'agent': agent,
+                'booker': booker,
+                'print_rate': row['Print Rate'],
+                'reservation_status': row['Status'],
+                'total_discount': total_discount,
+                'total_base_amount': total_base_amount,
+                'total_extra_charge': total_extra_charge,
+                'total_tax': total_tax,
+                'total_payment': total_payment,
+                'stay_total': stay_total,
+                'travel_agent_commission': travel_agent_commission,
+                'total_cost_of_stay': total_cost_of_stay,
+                    'pick_up': pick_up,
+                    'drop': drop,
+                    'comments': row['Comments'],
+                    'billing_instruction': row['Billing Instruction'],
+                    'unique_id': row['Unique ID'],
+                    'sub_booking_id': str(row['Sub Booking ID']),
+                    'transaction_id': str(row['Transaction Id']),
+                    'voucher_number': str(row['Voucher No']),
+            }
         )
-        
+
         reservation.extras.set(extras)
         reservation.save()
 
-    
-    return Response({'reservations imported':'reservations imported'})
+    return Response({'reservations imported': 'reservations imported'})
+
 
 @api_view(['GET'])
 def import_folios(request):
-    file ='mediafiles/import_data/all_guest_folio.csv'
+    file = 'mediafiles/import_data/all_guest_folio.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Booking ID'])
 
     for index, row in df.iterrows():
 
-        reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
-        room = Room.objects.get(room_number = row['Room'])
-        guest = GuestProfile.obejects.get(first_name = row['First Name'].strip(), last_name = row['Last Name'].strip())
+        reservation = Reservation.objects.get(
+            reservation=row['Booking ID'].strip())
+        room = Room.objects.get(room_number=row['Room'])
+        guest = GuestProfile.obejects.get(first_name=row['First Name'].strip(), last_name=row['Last Name'].strip())
 
-        if row['Company/Agent']=='Company':
-            company_agent  =  Account.objects.get(account_name = row['Company'])
+        if row['Company/Agent'] == 'Company':
+            company_agent = Account.objects.get(account_name=row['Company'])
         else:
-            company_agent  =  Account.objects.get(account_name = row['Agent'])
+            company_agent = Account.objects.get(account_name=row['Agent'])
 
-        if str(row['Company'])=='nan' and str(row['Agent'])=='nan':
+        if str(row['Company']) == 'nan' and str(row['Agent']) == 'nan':
             company_agent = None
 
         folio, cretaed = Folio.objects.update_or_create(
-            folio_number = row['Folio'],
-            room = room,
-            reservation = reservation,
-            guest = guest,
+            folio_number=row['Folio'],
+            room=room,
+            reservation=reservation,
+            guest=guest,
             defaults={
-                'balance' : row['Balance'],
-                'company_agent' : company_agent,
+                'balance': row['Balance'],
+                'company_agent': company_agent,
                 'is_settled': row['Is Settled'],
-                'is_cancelled':row['Is_Cancelled'],
+                'is_cancelled': row['Is_Cancelled'],
             }
 
         )
 
-    return Response({'folios imported':'folios imported'})
+    return Response({'folios imported': 'folios imported'})
+
 
 @api_view(['GET'])
 def import_daily_details(request):
     file = 'mediafiles/import_data/all_daily_details.csv'
     df = pd.read_csv(file)
     # df = df.drop_duplicates(subset=['Bookings']) #unique columns?.........
-
+    DailyDetail.objects.all().delete()
     for index, row in df.iterrows():
+        print(index)
+        if row['Bookings'] == 'nan':
+            reservation = None
+        else:
+            reservation = Reservation.objects.first()
+         # reservation = Reservation.objects.get(booking_id = row['Bookings'])
 
-        if row['Disc Amt'] =='nan':
+        if str(row['Room Type']) == 'nan':
+            room_type = None
+        else:
+            room_type = RoomType.objects.get(room_type=row['Room Type'])
+
+        if row['Rate Code'] == 'nan':
+            rate_code = None
+        else:
+            rate_code = RateCode.objects.get(rate_code=row['Rate Code'])
+
+        if str(row['Rate Amount']) != 'nan':
+            total_rate = Decimal(row['Rate Amount']).quantize(Decimal('0.00'))
+        else:
+            total_rate = 0
+
+        if str(row['Disc Amt']) != 'nan':
+            discount_amount = Decimal(row['Disc Amt']).quantize(Decimal('0.00'))
+        else:
             discount_amount = 0
-        else:
-            discount_amount = row['Disc Amt']
 
-        if str(row['Market']) == 'nan':         
-            market_code = None
-        else:
-            market_code = MarketCode.objects.get(market_code = row['Market'].split('-')[0].strip())
-
-        if row['Bookings']=='nan':
-            reservation= None
-        else:
-            reservation = Reservation.objects.get(booking_id = row['Bookings'])  
-
-        if str(row['Room Type'])=='nan':
-            room_type=None
-        else:
-            room_type = RoomType.objects.get(room_type = row['Room Type'])
-
-        if row['Rate Code']=='nan':
-            rate_code=None
-        else:
-            rate_code = RateCode.objects.get(rate_code = row['Rate Code'] )
-
-        if row['Room'] == 'nan':
-            room = None
-        else:
-            room = Room.objects.get(room_number = row['Room'])            
-
-        if row['package']=='nan':
+        if str(row['package']) == 'nan':
             package = None
         else:
-            package = Package.objects.get(package_code = row['package'])            
+            package = Package.objects.get(package_code=row['package'])
 
-        if str(row['Source'])=='nan':
-            source=None
+        if str(row['Source']) == 'nan':
+            source = None
         else:
-            source = Source.objects.get(source_code= row['Source'])
+            source = Source.objects.get(source_code=row['Source'])
 
-        daily_detail ,created = DailyDetail.objects.update_or_create(
+        if str(row['Room']) == 'nan':
+            room = None
+        else:
+            room = Room.objects.get(room_number=row['Room'])
 
-            date = datetime.strptime(row['Date'],"%d-%b-%Y"),
-            reservation = reservation,
+        if str(row['Market']) == 'nan':
+            market = None
+        else:
+            market = MarketCode.objects.get(market_code=(row['Market'].split('-')[0].strip()))
+
+        daily_detail, created = DailyDetail.objects.update_or_create(
+            date= datetime.strptime(str(row['Date']), "%d-%b-%Y"),
+            reservation=reservation,
 
             defaults={
-                'source':source,
-                'package':package,
-                'room':room,
-                'rate_code':rate_code,
-                'room_type' : room_type,
-                'market_code':market_code,
-                'total_rate' : row['Rate Amount'],
-                'adults' : row['Adults'],
-                'children' : row['Child'],
-                'discount_amount' : discount_amount,
-                # 'room_rate' : row[''],                
-                # 'package_rate' : row[''],             
-            }
+                'source': source,
+                'package': package,
+                'room': room,
+                'rate_code': rate_code,
+                'room_type': room_type,
+                'market': market,
+                'total_rate': total_rate,
+                'adults': row['Adults'],
+                'children': row['Child'],
+                'discount_amount': discount_amount,
+                # 'room_rate' : row[''],
+                # 'package_rate' : row[''],
+                }
         )
 
-    return Response({'daily details imported' : 'daily details imported'})
-
-
+    return Response({'daily details imported': 'daily details imported'})

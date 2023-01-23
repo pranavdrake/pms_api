@@ -912,9 +912,9 @@ class Reservation(models.Model):
                             raise ValidationError("The number of rooms are more than the number of available rooms in the inventory for the arrival and departure dates.")
                         current_date += timedelta(days=1)
 
-        if self.adults and self.children and self.number_of_rooms:
-            if self.adults + self.children > 3*self.number_of_rooms:
-                raise ValidationError("The sum of adults and children should be less than or equal to 3 in one room")
+        # if self.adults and self.children and self.number_of_rooms:
+        #     if self.adults + self.children > 3*self.number_of_rooms:
+        #         raise ValidationError("The sum of adults and children should be less than or equal to 3 in one room")
 
         if self.total_discount:
             if self.total_discount < 0:
@@ -945,7 +945,8 @@ class Reservation(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return 'Reservation ID:' + str(self.id) +' ' + self.guest.first_name + ' ' + self.guest.last_name
+        # return 'Reservation ID:' + str(self.id) +' ' + str(self.guest.first_name) + ' ' + str(self.guest.last_name)
+        return 'Reservation ID:' + str(self.id)
 
 class Folio(models.Model):
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE,related_name='folios')
@@ -1165,7 +1166,7 @@ class DailyDetail(models.Model):
     package_rate =models.DecimalField(max_digits=10, decimal_places=2, null=True, blank =True)
     room = models.ForeignKey(Room, null =True, blank=True, on_delete=models.SET_NULL, related_name= 'daily_details')
     package = models.ForeignKey(Package, null=True, blank=True, on_delete=models.SET_NULL, related_name='daily_details')
-    adults = models.PositiveSmallIntegerField()
+    adults = models.PositiveSmallIntegerField(default=1)
     children = models.PositiveSmallIntegerField(default=0)
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank =True)
     market = models.ForeignKey(MarketCode,null=True, blank=True, on_delete=models.SET_NULL, related_name='daily_details')
@@ -1173,8 +1174,8 @@ class DailyDetail(models.Model):
     history = HistoricalRecords()
 
     def clean(self):
-        if self.adults + self.children > 3:
-                raise ValidationError("The sum of Adults and Children should not exceed 3")
+        # if self.adults + self.children > 3:
+        #         raise ValidationError("The sum of Adults and Children should not exceed 3")
         if self.total_rate:
             if self.total_rate < 0:
                 raise ValidationError("Total Rate cannot be negative")
