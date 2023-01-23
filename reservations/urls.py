@@ -18,4 +18,5 @@ urlpatterns = [
     path('import-package-group/',import_package_group),
     path('import-package/',import_package),
     path('import-rate-codes/', import_rate_codes),
+    path('import-transactions/', import_transactions)
 ]

@@ -35,6 +35,11 @@ def import_accounts(request):
         else:
             account_type = row['Account Type']
 
+        if str(row['Address'])=='nan':
+            address_line_1  = ''
+        else:
+            address_line_1 = row['Address']
+
         if str(row['Phone'])=='nan':
             phone_number  = ''
         else:
@@ -56,7 +61,7 @@ def import_accounts(request):
         email =email,
         phone_number = phone_number,
         defaults={
-        'address_line_1' : row['Address'],
+        'address_line_1' : address_line_1,
         'iata':iata,
         'gst_id':gst_id,
         'is_btc_approved':row['Is BTC Approved'],
@@ -65,6 +70,17 @@ def import_accounts(request):
         )
 
     return Response({'account imported':'account imported'})
+
+
+
+# @api_view(['GET'])
+# def import_accounts(request):
+#     file  = 'mediafiles/import_data/all_accounts.csv'
+#     df = pd.read_csv(file)
+
+#     Account.objects.all().delete()
+
+#     return Response({'accounts deleted':'accounts deleted'})
 
 @api_view(['GET'])
 def import_bookers(request):
@@ -86,3 +102,4 @@ def import_bookers(request):
         )
 
     return Response({'bookers imported':'bookers imported'})
+    
