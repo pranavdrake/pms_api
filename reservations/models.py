@@ -42,7 +42,7 @@ class Floor(models.Model):
         return str(self.floor) +' ' + self.property.property_name
 
 class RoomType(models.Model):
-    property = models.ForeignKey(Property,on_delete=models.CASCADE, related_name= 'room_types')
+    property = models.ForeignKey(Property,on_delete=models.CASCADE, related_name= 'room_types',null=True,blank=True)
     room_type = models.CharField(max_length=100)
     max_adults = models.PositiveSmallIntegerField()
     max_children = models.PositiveSmallIntegerField()
@@ -50,7 +50,9 @@ class RoomType(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return self.room_type + ' ' + self.property.property_name
+        # return self.room_type + ' ' + self.property.property_name
+        return self.room_type 
+
 
 class Room(models.Model):
 
@@ -80,14 +82,16 @@ class Room(models.Model):
 
     floor = models.ForeignKey(Floor, on_delete=models.CASCADE, related_name= 'rooms')
     room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE,related_name= 'rooms')
-    room_number = models.PositiveSmallIntegerField()
+    room_number = models.PositiveSmallIntegerField(null=True,blank=True)
     room_status = models.CharField(max_length=100, choices=ROOM_STATUS_CHOICES,default='Dirty')
     front_office_status = models.CharField(max_length=100, choices=FRONT_OFFICE_STATUS_CHOICES,default='Vacant')
     reservation_status = models.CharField(max_length=100, choices=RESERVATION_STATUS_CHOICES, default= 'Not Reserved')
     history = HistoricalRecords()
 
     def __str__(self):
-        return str(self.room_number) + ' ' + self.room_type.property.property_name
+        # return str(self.room_number) + ' ' + self.room_type.property.property_name
+         return str(self.room_number) 
+        
 
 class RoomDiscrepancy(models.Model):
     FRONT_OFFICE_STATUS_CHOICES = [
@@ -955,18 +959,21 @@ class Reservation(models.Model):
                 if self.arrival_date:
                     if self.arrival_date > self.departure_date:
                         raise ValidationError("Arrival Date cannot be more than Departure Date")
-                        
-                    if self.arrival_date <= date.today():
-                        raise ValidationError("Arrival Date cannot be less than Current Date")
+                      
+                    if self.arrival_date < date.today():
+                        raise ValidationError("Please give arrival date future value")
+                        self.arrival_date = date.today()
 
                 if self.departure_date:
-                    if self.departure_date <= date.today():
-                        raise ValidationError("Departure Date cannot be less than Current Date")
-            else:
-                # for updating instance 
-                if self.arrival_date:
-                    if self.arrival_date > self.departure_date:
-                        raise ValidationError("Arrival Date cannot be more than Departure Date")
+                    if self.departure_date== '':
+                                       
+                        if self.departure_date < self.arrival_date :
+                            raise ValidationError("Departure Date should be greater than Arrival Date")
+            # else:
+            #     # for updating instance 
+            #     if self.arrival_date:
+            #         if self.arrival_date > self.departure_date:
+            #             raise ValidationError("Arrival Date cannot be more than Departure Date")
 
         if self.booking_id:
             pass
@@ -1019,16 +1026,16 @@ class Folio(models.Model):
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE,related_name='folios')
     folio_number = models.PositiveIntegerField()
     balance = models.DecimalField(max_digits=10, decimal_places=2,default=0)
-    room = models.ForeignKey(Room,null=True, on_delete=models.SET_NULL, related_name='folios')
+    room = models.ForeignKey(Room,null=True,blank=True, on_delete=models.SET_NULL, related_name='folios')
     guest = models.ForeignKey("accounts.GuestProfile",null=True, on_delete=models.SET_NULL, related_name='folios')
-    company_agent = models.ForeignKey("accounts.Account", null=True, on_delete=models.SET_NULL, related_name='folios')
+    company_agent = models.ForeignKey("accounts.Account", null=True,blank=True, on_delete=models.SET_NULL, related_name='folios')
     is_settled = models.BooleanField(default=False)
     is_cancelled = models.BooleanField(default=False)
 
-    def clean(self):
-        if self.is_settled:
-            if self.balance != 0:
-                raise ValidationError("Folio cannot be settled without 0 balance")
+    # def clean(self):
+    #     if self.is_settled:
+    #         if self.balance != 0:
+    #             raise ValidationError("Folio cannot be settled without 0 balance")
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -1062,42 +1069,47 @@ class Transaction(models.Model):
     TRANSACTION_TYPE_CHOICES = [
         ('Bill', 'Bill'),
         ('Payment', 'Payment'),
-        ('Allowance', 'Allowance'),
+        ('Allowance', 'Allowance'), 
         ('Round off', 'Round off'),
         ('Paid out', 'Paid out')
     ]
-
-    folio = models.ForeignKey(Folio, on_delete=models.CASCADE, related_name  = 'transactions')
-    transaction_code = models.ForeignKey(TransactionCode, on_delete=models.CASCADE, related_name  = 'transactions')
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, related_name  = 'transactions')
+    internal_id = models.CharField(max_length=255,blank = False, null=False ,unique=True)
+    folio = models.ForeignKey(Folio, on_delete=models.CASCADE,null=True, blank=True, related_name  = 'transactions')
+    transaction_code = models.ForeignKey(TransactionCode, on_delete=models.CASCADE, null=True, blank=True,related_name  = 'transactions')
+    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE,null=True, blank=True,related_name  = 'transactions')
     guest = models.ForeignKey("accounts.GuestProfile", null=True,blank = True, on_delete=models.SET_NULL, related_name='transactions')
-    company_agent = models.ForeignKey("accounts.Account",null=True,blank = True,  on_delete=models.SET_NULL, related_name='transactions')
+    company = models.ForeignKey("accounts.Account", on_delete=models.SET_NULL, null=True, blank=True, related_name='company_transactions')
+    agent = models.ForeignKey("accounts.Account",on_delete=models.SET_NULL, null=True, blank=True, related_name='agent_transactions')
+    # company_agent = models.ForeignKey("accounts.Account",null=True,blank = True,  on_delete=models.SET_NULL, related_name='transactions')
     passer_by = models.ForeignKey("accounts.PasserBy",null=True,blank = True,  on_delete=models.SET_NULL, related_name='transactions')
-    base_amount = models.DecimalField(max_digits=10, decimal_places=2)
     remarks = models.TextField(null=True, blank= True)
     room = models.ForeignKey(Room, null=True,blank = True, on_delete=models.SET_NULL, related_name='transactions')
     quantity = models.PositiveIntegerField(null= True, blank=True)
     package = models.ForeignKey(Package, null=True, blank = True, on_delete=models.SET_NULL, related_name='transactions')
     rate_code = models.ForeignKey(RateCode, null=True, blank = True, on_delete=models.SET_NULL, related_name='transactions')
     supplement = models.TextField(null=True, blank= True)
-    date = models.DateTimeField()
+    bill_date = models.DateTimeField(null=True, blank= True)
+    transaction_date_time = models.DateTimeField(null=True, blank= True)
     description = models.TextField(null=True, blank= True)
-    discount_amount = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
-    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2,null=True, blank= True)
-    transaction_type = models.CharField(max_length=50, choices = TRANSACTION_TYPE_CHOICES)
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2,default=0)
+    transaction_type = models.CharField(max_length=50, choices = TRANSACTION_TYPE_CHOICES,null=True,blank = True)
     is_deposit = models.BooleanField(default=False)
-    tax_percentage = models.DecimalField(max_digits=5, decimal_places=2,null=True, blank= True)
-    cgst = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
-    sgst = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
-    total = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
-    service_charge_commission_percentage = models.DecimalField(max_digits=5, decimal_places=2,null=True, blank= True)
-    service_charge_commission = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
-    service_charge_commission_tax_percentage = models.DecimalField(max_digits=5, decimal_places=2,null=True, blank= True)
-    service_charge_commission_cgst = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
-    service_charge_commission_sgst = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
-    total_with_service_charge_commission = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
+    tax_percentage = models.DecimalField(max_digits=5, decimal_places=2,default=0)
+    base_amount = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    cgst = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    sgst = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    total = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    service_charge_commission_percentage = models.DecimalField(max_digits=5, decimal_places=2,default=0)
+    service_charge_commission = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    service_charge_commission_tax_percentage = models.DecimalField(max_digits=5, decimal_places=2,default=0)
+    service_charge_commission_cgst = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    service_charge_commission_sgst = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    total_with_service_charge_commission = models.DecimalField(max_digits=10, decimal_places=2,default=0)
     is_service_charge_cancelled = models.BooleanField(default=False)
     is_cancelled = models.BooleanField(default=False)
+    is_moved = models.BooleanField(default=False)
+    is_duplicate = models.BooleanField(default=False)
     pos_bill_number = models.CharField(max_length=255,null=True, blank= True)
     pos_session = models.CharField(max_length=255,null=True, blank= True)
     allowance_transaction = models.ForeignKey('self', null=True, blank = True, on_delete=models.SET_NULL, related_name='transactions')
@@ -1154,13 +1166,16 @@ class Transaction(models.Model):
             if self.total_with_service_charge_commission < 0:
                 raise ValidationError("Total with Service Charge Commission cannot be negative")
 
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.full_clean()
+    #     diff = self.departure_date - self.arrival_date 
+    #     self.nights = diff.days
+    #     super().save(*args, **kwargs)
 
     def __str__(self):
-        return 'Transaction for reservation ID: ' +str(self.id) + ' under Transaction Code: ' + self.transaction_code.transaction_code
-    
+        # return 'Transaction for reservation ID: ' +str(self.id) + ' under Transaction Code: ' + self.transaction_code.transaction_code
+        return 'Transaction for reservation ID:'+ str(self.internal_id)
+
 
 
 
