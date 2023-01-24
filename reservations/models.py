@@ -1021,14 +1021,14 @@ class Folio(models.Model):
     balance = models.DecimalField(max_digits=10, decimal_places=2,default=0)
     room = models.ForeignKey(Room,null=True,blank=True, on_delete=models.SET_NULL, related_name='folios')
     guest = models.ForeignKey("accounts.GuestProfile",null=True, on_delete=models.SET_NULL, related_name='folios')
-    company_agent = models.ForeignKey("accounts.Account", null=True, on_delete=models.SET_NULL, related_name='folios')
+    company_agent = models.ForeignKey("accounts.Account", null=True,blank=True, on_delete=models.SET_NULL, related_name='folios')
     is_settled = models.BooleanField(default=False)
     is_cancelled = models.BooleanField(default=False)
 
-    def clean(self):
-        if self.is_settled:
-            if self.balance != 0:
-                raise ValidationError("Folio cannot be settled without 0 balance")
+    # def clean(self):
+    #     if self.is_settled:
+    #         if self.balance != 0:
+    #             raise ValidationError("Folio cannot be settled without 0 balance")
 
     def save(self, *args, **kwargs):
         self.full_clean()

@@ -846,19 +846,31 @@ def import_reservations(request):
 def import_folios(request):
     file ='mediafiles/import_data/all_guest_folio.csv'
     df = pd.read_csv(file)
-    df = df.drop_duplicates(subset=['Booking ID'])
-    
     for index, row in df.iterrows():
         print(index)
+        print(str(row['Booking ID']))
         # reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
         reservation = Reservation.objects.first()
-        room = Room.objects.get(room_number = row['Room'])
+        if str(row['Room']) == 'nan':
+            None
+        else:
+            room = Room.objects.get(room_number = row['Room'])
+
+        split_string = row['Guest'].split('.')
+        salutation = split_string[0].strip()
+        name = '.'.join(split_string[1:]).strip()
+        if GuestProfile.objects.filter(last_name = name).count()> 1:
+            guest = GuestProfile.objects.filter(last_name = name)[0]
+        else:
+            guest, created = GuestProfile.objects.get_or_create(last_name  = name, salutation = salutation)
         # guest = GuestProfile.objects.get(last_name = row['Last Name'].strip())
 
         if row['Company/Agent']=='Company':
             company_agent  =  Account.objects.get(account_name = row['Company'])
+            # company_agent = Account.objects.first()
         else:
             company_agent  =  Account.objects.get(account_name = row['Agent'])
+            # company_agent = Account.objects.first()
 
         if str(row['Company'])=='nan' and str(row['Agent'])=='nan':
             company_agent = None
