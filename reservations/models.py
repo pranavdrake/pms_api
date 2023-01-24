@@ -272,11 +272,11 @@ class PickupDropDetails(models.Model):
         ('drop', 'Drop'),
     ]
     type = models.CharField(max_length=255, choices=TYPE_CHOICES)
-    date = models.DateField()
-    time = models.TimeField()
-    station_code = models.CharField(max_length=255)
-    carrier_code = models.CharField(max_length=255)
-    transport_type = models.CharField(max_length=255)
+    date = models.DateField(null= True, blank= True)
+    time = models.TimeField(null= True, blank= True)
+    station_code = models.CharField(max_length=255, null= True, blank= True)
+    carrier_code = models.CharField(max_length=255, null= True, blank= True)
+    transport_type = models.CharField(max_length=255, null= True, blank= True)
     remarks = models.TextField(blank = True, null=True)
     history = HistoricalRecords()
     def __str__(self):
@@ -1025,14 +1025,14 @@ class Folio(models.Model):
     is_settled = models.BooleanField(default=False)
     is_cancelled = models.BooleanField(default=False)
 
-    def clean(self):
-        if self.is_settled:
-            if self.balance != 0:
-                raise ValidationError("Folio cannot be settled without 0 balance")
+    # def clean(self):
+    #     if self.is_settled:
+    #         if self.balance != 0:
+    #             raise ValidationError("Folio cannot be settled without 0 balance")
 
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.full_clean()
+    #     super().save(*args, **kwargs)
 
     def __str__(self):
         return 'Folio Number ' +  str(self.folio_number) + ' for Reservation ID: ' + str(self.reservation.id)

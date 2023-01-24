@@ -582,7 +582,7 @@ def import_group_reservations(request):
             }
         )
 
-    return Response({'group reservstions imported' : 'group reservstions imported'})
+    return Response({'group reservations imported' : 'group reservstions imported'})
 
 
 @api_view(['GET'])
@@ -590,7 +590,7 @@ def import_reservations(request):
     file  = 'mediafiles/import_data/all_reservations.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Confirmation Code'])
-    df = df.iloc[3164:]
+    # df = df.iloc[19390:]
 
     # Reservation.objects.all().delete()
     # return Response({'reservations imported':'reservations imported'})
@@ -599,6 +599,7 @@ def import_reservations(request):
        
         print(index)
         print(row['Confirmation Code'])
+
         if str(row['Email'])!='nan':
                
             if GuestProfile.objects.filter(email = row['Email']).count()> 1:
@@ -616,14 +617,16 @@ def import_reservations(request):
 
 
         else:
-            split_string = row['Contact Name'].split('.')
-            salutation = split_string[0].strip()
-            name = '.'.join(split_string[1:]).strip()
-            if GuestProfile.objects.filter(last_name = name).count()> 1:
-                guest = GuestProfile.objects.filter(last_name = name)[0]
+            if row['Contact Name'].find('.')!=-1:
+                split_string = row['Contact Name'].split('.')
+                salutation = split_string[0].strip()
+                name = '.'.join(split_string[1:]).strip()
+                if GuestProfile.objects.filter(last_name = name).count()> 1:
+                    guest = GuestProfile.objects.filter(last_name = name)[0]
+                else:
+                    guest, created = GuestProfile.objects.get_or_create(last_name  = name, salutation = salutation)
             else:
-                guest, created = GuestProfile.objects.get_or_create(last_name  = name, salutation = salutation)
-
+                    guest, created = GuestProfile.objects.get_or_create(last_name  = row['Contact Name'].split(), salutation = 'Mr')
         # guest = GuestProfile.objects.first()
 
         arrival_date  =  datetime.strptime(row['Arrival'],"%d-%b-%Y")
@@ -631,7 +634,10 @@ def import_reservations(request):
         room_type  =  RoomType.objects.get(room_type = row['Room Type'])
         
         if str(row['Selected Room'])!= 'nan':
-            selected_room  =  Room.objects.get(room_number = row['Selected Room'])
+            if str(row['Selected Room']).find(','):
+                selected_room = None
+            else:
+                selected_room  =  Room.objects.get(room_number = row['Selected Room'])
         else:
             selected_room = None
 
@@ -643,6 +649,8 @@ def import_reservations(request):
 
         if str(row['Package'])!= 'nan':
             package  =  Package.objects.get(package_code = str(row['Package']))
+        else:
+            package = None
 
         if str(df['Extra Code'][index]) != 'nan':
             extra_ids = []
@@ -685,15 +693,15 @@ def import_reservations(request):
             company = None
             agent = None
             if(row['Company/Agent']=='Company'):
-                company, created  = Account.objects.get_or_create(account_name  = row['Account Name'])
+                company, created  = Account.objects.get_or_create(account_name  = row['Account Name'], account_type = 'Company')
                 # company = Account.objects.first()
             if(row['Company/Agent']=='Agent'):
-                agent, created = Account.objects.get_or_create(account_name  = row['Agent'])
+                agent, created = Account.objects.get_or_create(account_name  = row['Agent'], account_type = 'Agent')
             
             
-
-        if str(row['Booker'])!= 'nan':
-            booker = Booker.objects.get(name=row['Booker'])
+        if str(row['Booker'])!= 'nan' and str(row['Booker']).strip()!='':
+            print(str(row['Booker']).strip())
+            booker = Booker.objects.get(name=str(row['Booker']).strip())
         else:
             booker = None
         
@@ -702,41 +710,92 @@ def import_reservations(request):
         if row['Pickup Required']!= False:
             if str(row['Pickup Remarks'])!= 'nan':
                 remarks = row['Pickup Remarks']
-        
+            else:
+                remarks = None
             
             if str(row['Pickup date'])!= 'nan':
+                pickup_date  = datetime.strptime(row['Pickup date'],"%d-%b-%Y")
+            else:
+                pickup_date = None
+
+            if str(row['Pickup Time'])!= 'nan':
+                pickup_time  = datetime.strptime(row['Pickup Time'],'%H:%M')
+            else:
+                pickup_time= None
+
+            if str(row['Pickup Station Code'])!= 'nan':
+                pickup_station_code  = row['Pickup Station Code']
+            else:
+                pickup_station_code = None
+
+            if str(row['Pickup Carrier Code'])!= 'nan':
+                pickup_carrier_code = row['Pickup Carrier Code']
+            else:
+                pickup_carrier_code = None
+
+            if str(row['Pickup Transport Type'])!= 'nan':
+                pickup_transport_type  = row['Pickup Transport Type']
+            else:
+                pickup_transport_type = None
+            
                 
 
-                pick_up, created =  PickupDropDetails.objects.get_or_create(
-                    type = 'Pickup',
-                    date = datetime.strptime(row['Pickup date'],"%d-%b-%Y"),
-                    time  = datetime.strptime(row['Pickup Time'], '%H:%M').time(),
-                    station_code  = row['Pickup Station Code'],
-                    carrier_code  = row['Pickup Carrier Code'],
-                    transport_type  = row['Pickup Transport Type'],
-                    defaults={
-                    'remarks'  : remarks
-                    }
-                )
+            pick_up, created =  PickupDropDetails.objects.get_or_create(
+                type = 'Pickup',
+                date = pickup_date,
+                time  = pickup_time,
+                station_code  = pickup_station_code,
+                carrier_code  = pickup_carrier_code,
+                transport_type  = pickup_transport_type,
+                defaults={
+                'remarks'  : remarks
+                }
+            )
         
         drop = None
         if row['Drop Required']!= False:
             if str(row['Drop Remarks'])!= 'nan':
                 remarks = row['Drop Remarks']
+            else:
+                remarks = None
 
             if str(row['Drop Date'])!= 'nan':
+                print(row['Drop Date'])
+                drop_date  = datetime.strptime(row['Drop Date'],"%d-%b-%Y")
+            else:
+                drop_date = None
 
-                drop, created =  PickupDropDetails.objects.get_or_create(
-                    type = 'Drop',
-                    date = datetime.strptime(row['Drop Date'],"%d-%b-%Y"),
-                    time  = datetime.strptime(row['Drop Time'], '%H:%M').time(),
-                    station_code  = row['Drop Station Code'],
-                    carrier_code  = row['Drop Carrier Code'],
-                    transport_type  = row['Drop Transport Type'],
-                    defaults={
-                    'remarks'  : remarks
-                    }
-                )
+            if str(row['Drop Time'])!= 'nan':
+                drop_time  = datetime.strptime(row['Drop Time'],'%H:%M')
+            else:
+                drop_time= None
+
+            if str(row['Drop Station Code'])!= 'nan':
+                drop_station_code  = row['Drop Station Code']
+            else:
+                drop_station_code = None
+
+            if str(row['Drop Carrier Code'])!= 'nan':
+                drop_carrier_code = row['Drop Carrier Code']
+            else:
+                drop_carrier_code = None
+
+            if str(row['Drop Transport Type'])!= 'nan':
+                drop_transport_type  = row['Drop Transport Type']
+            else:
+                drop_transport_type = None
+
+            drop, created =  PickupDropDetails.objects.update_or_create(
+                type = 'Drop',
+                date = drop_date,
+                time  = drop_time,
+                station_code  = drop_station_code,
+                carrier_code  = drop_carrier_code,
+                transport_type  = drop_transport_type,
+                defaults={
+                'remarks'  : remarks
+                }
+            )
                 
         if str(row['Total Discount'])!= 'nan':
             total_discount = row['Total Discount']
@@ -846,14 +905,21 @@ def import_reservations(request):
 def import_folios(request):
     file ='mediafiles/import_data/all_guest_folio.csv'
     df = pd.read_csv(file)
-    df = df.drop_duplicates(subset=['Booking ID'])
     
     for index, row in df.iterrows():
         print(index)
-        # reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
-        reservation = Reservation.objects.first()
-        room = Room.objects.get(room_number = row['Room'])
-        # guest = GuestProfile.objects.get(last_name = row['Last Name'].strip())
+
+        reservation = Reservation.objects.get(booking_id = str(row['Booking ID']).strip())
+
+        if str(row['Room'])!= 'nan':
+            room = Room.objects.get(room_number = row['Room'])
+        else:
+            room = None
+
+        split_string = row['Guest'].split('.')
+        # salutation = split_string[0].strip()
+        name = '.'.join(split_string[1:]).strip()
+        guest = GuestProfile.objects.get(last_name=name)
 
         if row['Company/Agent']=='Company':
             company_agent  =  Account.objects.get(account_name = row['Company'])

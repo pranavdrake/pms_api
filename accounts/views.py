@@ -74,12 +74,14 @@ def import_accounts(request):
 def import_bookers(request):
     file = 'mediafiles/import_data/all_bookers.csv'
     df = pd.read_csv(file)
-    df = df.drop_duplicates(subset=['Company'])
 
 
     for index, row in df.iterrows():
-        print(row['Company'])
-        account = Account.objects.get(account_name = row['Company'])
+        print(index)
+        if str(row['Company'])!= 'nan':
+            account = Account.objects.get(account_name = row['Company'])
+        else:
+            account = None
         # account = Account.objects.first()
 
         booker, created = Booker.objects.update_or_create(
