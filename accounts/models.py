@@ -9,6 +9,7 @@ from datetime import date
 
 class Department(models.Model):
     name = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
 class UserManager(BaseUserManager):

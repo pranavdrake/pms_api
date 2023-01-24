@@ -590,7 +590,7 @@ def import_reservations(request):
     file  = 'mediafiles/import_data/all_reservations.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Confirmation Code'])
-    # df = df.head(100)
+    df = df.iloc[3164:]
 
     # Reservation.objects.all().delete()
     # return Response({'reservations imported':'reservations imported'})
@@ -607,7 +607,12 @@ def import_reservations(request):
                 if GuestProfile.objects.filter(email = row['Email']).exists():
                     guest = GuestProfile.objects.get(email = row['Email'])
                 else:
-                    guest = GuestProfile.objects.get(last_name  = name)
+                    split_string = row['Contact Name'].split('.')
+                    name = '.'.join(split_string[1:]).strip()
+                    if GuestProfile.objects.filter(last_name = name).count()> 1:
+                        guest = GuestProfile.objects.filter(last_name = name)[0]
+                    else:
+                        guest, created = GuestProfile.objects.get_or_create(last_name  = name, salutation = salutation)
 
 
         else:
@@ -698,34 +703,40 @@ def import_reservations(request):
             if str(row['Pickup Remarks'])!= 'nan':
                 remarks = row['Pickup Remarks']
         
-            pick_up, created =  PickupDropDetails.objects.get_or_create(
-                type = 'Pickup',
-                date = datetime.strptime(row['Pickup date'],"%d-%b-%Y"),
-                time  = datetime.strptime(row['Pickup Time'], '%H:%M').time(),
-                station_code  = row['Pickup Station Code'],
-                carrier_code  = row['Pickup Carrier Code'],
-                transport_type  = row['Pickup Transport Type'],
-                defaults={
-                'remarks'  : remarks
-                }
-            )
+            
+            if str(row['Pickup date'])!= 'nan':
+                
+
+                pick_up, created =  PickupDropDetails.objects.get_or_create(
+                    type = 'Pickup',
+                    date = datetime.strptime(row['Pickup date'],"%d-%b-%Y"),
+                    time  = datetime.strptime(row['Pickup Time'], '%H:%M').time(),
+                    station_code  = row['Pickup Station Code'],
+                    carrier_code  = row['Pickup Carrier Code'],
+                    transport_type  = row['Pickup Transport Type'],
+                    defaults={
+                    'remarks'  : remarks
+                    }
+                )
         
         drop = None
         if row['Drop Required']!= False:
             if str(row['Drop Remarks'])!= 'nan':
                 remarks = row['Drop Remarks']
-        
-            drop, created =  PickupDropDetails.objects.get_or_create(
-                type = 'Drop',
-                date = datetime.strptime(row['Drop Date'],"%d-%b-%Y"),
-                time  = datetime.strptime(row['Drop Time'], '%H:%M').time(),
-                station_code  = row['Drop Station Code'],
-                carrier_code  = row['Drop Carrier Code'],
-                transport_type  = row['Drop Transport Type'],
-                defaults={
-                'remarks'  : remarks
-                }
-            )
+
+            if str(row['Drop Date'])!= 'nan':
+
+                drop, created =  PickupDropDetails.objects.get_or_create(
+                    type = 'Drop',
+                    date = datetime.strptime(row['Drop Date'],"%d-%b-%Y"),
+                    time  = datetime.strptime(row['Drop Time'], '%H:%M').time(),
+                    station_code  = row['Drop Station Code'],
+                    carrier_code  = row['Drop Carrier Code'],
+                    transport_type  = row['Drop Transport Type'],
+                    defaults={
+                    'remarks'  : remarks
+                    }
+                )
                 
         if str(row['Total Discount'])!= 'nan':
             total_discount = row['Total Discount']
@@ -838,10 +849,11 @@ def import_folios(request):
     df = df.drop_duplicates(subset=['Booking ID'])
     
     for index, row in df.iterrows():
-
-        reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
+        print(index)
+        # reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
+        reservation = Reservation.objects.first()
         room = Room.objects.get(room_number = row['Room'])
-        guest = GuestProfile.obejects.get(first_name = row['First Name'].strip(), last_name = row['Last Name'].strip())
+        # guest = GuestProfile.objects.get(last_name = row['Last Name'].strip())
 
         if row['Company/Agent']=='Company':
             company_agent  =  Account.objects.get(account_name = row['Company'])
@@ -857,7 +869,7 @@ def import_folios(request):
             reservation = reservation,
             guest = guest,
             defaults={
-                'balance' : row['Balance'],
+                'balance' : Decimal(row['Balance']).quantize(Decimal('0.00')),
                 'company_agent' : company_agent,
                 'is_settled': row['Is Settled'],
                 'is_cancelled':row['Is_Cancelled'],

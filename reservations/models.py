@@ -980,9 +980,9 @@ class Reservation(models.Model):
                             raise ValidationError("The number of rooms are more than the number of available rooms in the inventory for the arrival and departure dates.")
                         current_date += timedelta(days=1)
 
-        if self.adults and self.children and self.number_of_rooms:
-            if self.adults + self.children > 3*self.number_of_rooms:
-                raise ValidationError("The sum of adults and children should be less than or equal to 3 in one room")
+        # if self.adults and self.children and self.number_of_rooms:
+        #     if self.adults + self.children > 3*self.number_of_rooms:
+        #         raise ValidationError("The sum of adults and children should be less than or equal to 3 in one room")
 
         if self.total_discount:
             if self.total_discount < 0:
@@ -1008,8 +1008,8 @@ class Reservation(models.Model):
 
     def save(self, *args, **kwargs):
         self.full_clean()
-        diff = self.departure_date - self.arrival_date 
-        self.nights = diff.days
+        # diff = self.departure_date - self.arrival_date 
+        # self.nights = diff.days
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -1019,7 +1019,7 @@ class Folio(models.Model):
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE,related_name='folios')
     folio_number = models.PositiveIntegerField()
     balance = models.DecimalField(max_digits=10, decimal_places=2,default=0)
-    room = models.ForeignKey(Room,null=True, on_delete=models.SET_NULL, related_name='folios')
+    room = models.ForeignKey(Room,null=True,blank=True, on_delete=models.SET_NULL, related_name='folios')
     guest = models.ForeignKey("accounts.GuestProfile",null=True, on_delete=models.SET_NULL, related_name='folios')
     company_agent = models.ForeignKey("accounts.Account", null=True, on_delete=models.SET_NULL, related_name='folios')
     is_settled = models.BooleanField(default=False)
@@ -1255,8 +1255,8 @@ class DailyDetail(models.Model):
     history = HistoricalRecords()
 
     def clean(self):
-        if self.adults + self.children > 3:
-                raise ValidationError("The sum of Adults and Children should not exceed 3")
+        # if self.adults + self.children > 3:
+        #         raise ValidationError("The sum of Adults and Children should not exceed 3")
         if self.total_rate:
             if self.total_rate < 0:
                 raise ValidationError("Total Rate cannot be negative")
