@@ -63,6 +63,7 @@ admin.site.register(Routing, SimpleHistoryAdmin)
 admin.site.register(Cancellation, SimpleHistoryAdmin)
 admin.site.register(Reinstate, SimpleHistoryAdmin)
 admin.site.register(Tax,SimpleHistoryAdmin)
+admin.site.register(TaxGeneration,SimpleHistoryAdmin)
 # from django.apps import apps
 
 # # Get all models

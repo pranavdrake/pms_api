@@ -9,6 +9,7 @@ from datetime import date
 
 class Department(models.Model):
     name = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
 class UserManager(BaseUserManager):
@@ -61,9 +62,9 @@ class CustomUser(AbstractUser):
 
 class Account(models.Model):
     ACCOUNT_TYPE_CHOICES = [
-        ('company', 'Company'),
-        ('travel_agent', 'Travel Agent'),
-        ('group', 'Group'),
+        ('Company', 'Company'),
+        ('Travel Agent', 'Travel Agent'),
+        ('Group', 'Group'),
     ]
     account_name = models.CharField(max_length=255)
     account_type = models.CharField(max_length=20,null=True, choices=ACCOUNT_TYPE_CHOICES)
@@ -75,7 +76,6 @@ class Account(models.Model):
     state = models.CharField(max_length=50 ,blank = True, null= True)
     city = models.CharField(max_length=50 ,blank = True, null= True)
     postal_code = models.CharField(max_length=20 ,blank = True, null= True)
-    is_active = models.BooleanField(default=True)
     gst_id = models.CharField(max_length=50,blank = True, null= True)
     iata = models.CharField(max_length=50,blank = True, null= True)
     is_btc_approved = models.BooleanField(default=False)
@@ -85,6 +85,7 @@ class Account(models.Model):
     commission = models.ForeignKey(Commission, on_delete=models.SET_NULL, null=True, blank=True, related_name='accounts')
     account_manager = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='account_manager_accounts')
     financial_associate = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='financial_associate_accounts')
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -100,39 +101,35 @@ class VIP(models.Model):
         return  str(self.vip_level) + ' ' + self.vip_type
 
 class GuestProfile(models.Model):
-    # Salutation choices
-    MR = 'Mr.'
-    MS = 'Ms.'
-    MRS = 'Mrs.'
-    DR = 'Dr.'
-    PROF = 'Prof.'
-    CAPT = 'Capt.'
-    WG_CDR = 'Wg Cdr'
-    MAJOR = 'Major'
-    COLONEL = 'Colonel'
+
     SALUTATION_CHOICES = [
-        (MR, 'Mr.'),
-        (MS, 'Ms.'),
-        (MRS, 'Mrs.'),
-        (DR, 'Dr.'),
-        (PROF, 'Prof.'),
-        (CAPT, 'Capt.'),
-        (WG_CDR, 'Wg Cdr'),
-        (MAJOR, 'Major'),
-        (COLONEL, 'Colonel'),
+        ('Mr', 'Mr'),
+        ('Mast', 'Mast'),
+        ('Ms', 'Ms'),
+        ('Mrs', 'Mrs'),
+        ('Dr', 'Dr'),
+        ('Prof', 'Prof'),
+        ('Capt', 'Capt'),
+        ('Wg Cdr', 'Wg Cdr'),
+        ('Major', 'Major'),
+        ('Colonel', 'Colonel'),
     ]
 
-    # Guest Type choices
-    FIT = 'FIT'
-    CORPORATE = 'Corporate'
+    
     GUEST_TYPE_CHOICES = [
-        (FIT, 'FIT'),
-        (CORPORATE, 'Corporate'),
+        ('FIT', 'FIT'),
+        ('Corporate', 'Corporate'),
     ]
 
-    first_name = models.CharField(max_length=255)
+    GUEST_STATUS_CHOICES = [
+        ('In House', 'In House'),
+        ('Out', 'Out'),
+    ]
+
+    first_name = models.CharField(max_length=255,blank=True, null=True)
     last_name = models.CharField(max_length=255)
     salutation = models.CharField(max_length=10, choices=SALUTATION_CHOICES)
+    guest_status = models.CharField( max_length=255,blank = True, null = True ,choices=GUEST_STATUS_CHOICES ,default='Out')
     address_line_1 = models.CharField(max_length=255,blank = True, null = True)
     address_line_2 = models.CharField(max_length=255, blank = True, null = True)
     country = CountryField(blank = True, null = True)
@@ -155,6 +152,7 @@ class GuestProfile(models.Model):
     last_rate = models.ForeignKey(RateCode, on_delete=models.SET_NULL, blank = True, null = True, related_name= 'last_rate_guest_profiles')
     last_visit = models.DateField( blank = True, null = True)
     is_active = models.BooleanField(default=True)
+    is_black_listed = models.BooleanField(default=False)
     history = HistoricalRecords()
 
     def clean(self):
@@ -171,7 +169,11 @@ class GuestProfile(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return  self.first_name + ' ' + self.last_name
+        if self.first_name:
+            return  self.first_name + ' ' + self.last_name
+        else:
+            return  self.last_name
+
 
 class IDDetail(models.Model):
     guest = models.ForeignKey(GuestProfile, on_delete=models.CASCADE, related_name= 'id_details')
@@ -210,7 +212,7 @@ class IDDetail(models.Model):
         return  self.first_name + ' ' + self.last_name
 
 class Booker(models.Model):
-    account= models.ForeignKey(Account,on_delete=models.CASCADE,related_name='bookers')
+    account= models.ForeignKey(Account,on_delete=models.CASCADE,related_name='bookers',null=True)
     name = models.CharField(max_length=255)
     email = models.EmailField(null=True)
     phone_number = models.CharField(max_length=255, blank=True, null=True)
@@ -250,6 +252,7 @@ class VisaDetail(models.Model):
 
 class MembershipType(models.Model):
     membership_type = models.CharField(max_length=255 ,blank = False, null=False,unique=True)
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -257,6 +260,7 @@ class MembershipType(models.Model):
     
 class MembershipLevel(models.Model):
     membership_level = models.CharField(max_length=255 ,blank = False, null=False,unique=True)
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -270,7 +274,8 @@ class Membership (models.Model):
     name_on_card = models.CharField(max_length=255)
     joining_date = models.DateField() 
     expiry_date = models.DateField()
-
+    history = HistoricalRecords()
+    
     def clean(self):
         if self.joining_date > self.expiry_date:
             raise ValidationError("Joining Date cannot be more than Expiry Date")
