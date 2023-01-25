@@ -76,7 +76,6 @@ class Account(models.Model):
     state = models.CharField(max_length=50 ,blank = True, null= True)
     city = models.CharField(max_length=50 ,blank = True, null= True)
     postal_code = models.CharField(max_length=20 ,blank = True, null= True)
-    is_active = models.BooleanField(default=True)
     gst_id = models.CharField(max_length=50,blank = True, null= True)
     iata = models.CharField(max_length=50,blank = True, null= True)
     is_btc_approved = models.BooleanField(default=False)
@@ -86,6 +85,7 @@ class Account(models.Model):
     commission = models.ForeignKey(Commission, on_delete=models.SET_NULL, null=True, blank=True, related_name='accounts')
     account_manager = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='account_manager_accounts')
     financial_associate = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='financial_associate_accounts')
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -152,6 +152,7 @@ class GuestProfile(models.Model):
     last_rate = models.ForeignKey(RateCode, on_delete=models.SET_NULL, blank = True, null = True, related_name= 'last_rate_guest_profiles')
     last_visit = models.DateField( blank = True, null = True)
     is_active = models.BooleanField(default=True)
+    is_black_listed = models.BooleanField(default=False)
     history = HistoricalRecords()
 
     def clean(self):
@@ -251,6 +252,7 @@ class VisaDetail(models.Model):
 
 class MembershipType(models.Model):
     membership_type = models.CharField(max_length=255 ,blank = False, null=False,unique=True)
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -258,6 +260,7 @@ class MembershipType(models.Model):
     
 class MembershipLevel(models.Model):
     membership_level = models.CharField(max_length=255 ,blank = False, null=False,unique=True)
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):

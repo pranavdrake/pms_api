@@ -14,9 +14,20 @@ class Property(models.Model):
     CURRENCY_CHOICES =[(currency.alpha_3, f"{currency.name} ({currency.alpha_3})") for currency in pycountry.currencies]
 
     property_name = models.CharField(max_length=250)
+    property_code = models.CharField(max_length=100, blank=True, null=True)
     country = CountryField()
     currency = models.CharField(max_length=3,choices= CURRENCY_CHOICES)
     address = models.TextField()
+    email = models.EmailField(max_length=250,blank = True, null = True)
+    phone_number = models.CharField(max_length=20,blank = True, null = True)
+    reservation_phone_number = models.CharField(max_length=20,blank = True, null = True)
+    fax = models.CharField(max_length=20,blank = True, null = True)
+    logo = models.FileField(upload_to='logos/',blank = True, null = True)
+    property_type = models.CharField(max_length=20,blank = True, null = True)
+    website = models.URLField(blank = True, null = True)
+    registration_number = models.CharField(max_length=20,blank = True, null = True)
+    business_date = models.DateField(null=True)
+    financial_year = models.CharField(max_length=4,blank = True, null = True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -41,16 +52,45 @@ class Floor(models.Model):
     def __str__(self):
         return str(self.floor) +' ' + self.property.property_name
 
+class PreferenceGroup(models.Model):
+    preference_group = models.CharField(max_length=255, unique = True)
+    description = models.TextField(blank = True, null  =True)
+    is_active  = models.BooleanField(default = True)
+    history = HistoricalRecords()
+    def __str__(self):
+        return self.preference_group  
+
+class Preference(models.Model):
+    preference_group = models.ForeignKey(PreferenceGroup, on_delete=models.CASCADE,related_name='preferences')
+    preference = models.CharField(max_length=255)
+    description = models.TextField(blank = True, null=True)
+    is_active  = models.BooleanField(default = True)
+    history = HistoricalRecords()
+    def __str__(self):
+        return self.preference
+
+class RoomClass(models.Model):
+    property = models.ForeignKey(Property,on_delete=models.CASCADE, related_name= 'room_classes')
+    room_class = models.CharField(max_length=100)
+    is_active  = models.BooleanField(default = True)
+    history = HistoricalRecords()
+
 class RoomType(models.Model):
     property = models.ForeignKey(Property,on_delete=models.CASCADE, related_name= 'room_types')
+    room_class = models.ForeignKey(RoomClass,on_delete=models.CASCADE,null=True,blank=True, related_name= 'room_types')
     room_type = models.CharField(max_length=100)
     max_adults = models.PositiveSmallIntegerField()
     max_children = models.PositiveSmallIntegerField()
     total_number_of_rooms = models.PositiveSmallIntegerField()
+    is_active  = models.BooleanField(default = True)
     history = HistoricalRecords()
 
     def __str__(self):
         return self.room_type + ' ' + self.property.property_name
+
+class RoomImage(models.Model):
+    file = models.FileField(upload_to='files/')
+    history = HistoricalRecords()
 
 class Room(models.Model):
 
@@ -84,6 +124,9 @@ class Room(models.Model):
     room_status = models.CharField(max_length=100, choices=ROOM_STATUS_CHOICES,default='Dirty')
     front_office_status = models.CharField(max_length=100, choices=FRONT_OFFICE_STATUS_CHOICES,default='Vacant')
     reservation_status = models.CharField(max_length=100, choices=RESERVATION_STATUS_CHOICES, default= 'Not Reserved')
+    images = models.ManyToManyField(RoomImage,blank = True)
+    features  = models.ManyToManyField(Preference,blank = True)
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -151,7 +194,10 @@ def validate_max_number_of_overbooked_rooms(value):
 class RoomTypeInventory(models.Model):
     room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE, related_name= 'inventory')
     number_of_available_rooms = models.PositiveSmallIntegerField()
+    number_of_sell_control_rooms = models.PositiveSmallIntegerField(blank = True, null=True)
+    number_of_ood_rooms = models.PositiveSmallIntegerField(blank = True, null=True)
     number_of_overbooked_rooms = models.PositiveSmallIntegerField(validators=[validate_max_number_of_overbooked_rooms])
+    sell_limit = models.PositiveSmallIntegerField(blank = True, null=True)
     date = models.DateField()
     history = HistoricalRecords()
     
@@ -171,7 +217,7 @@ class RoomTypeInventory(models.Model):
 class ReasonGroup(models.Model):
     reason_group = models.CharField(max_length=255, unique= True)
     description = models.TextField(blank = True, null = True )
-    description = models.TextField(blank = True, null = True )
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -181,6 +227,7 @@ class Reason(models.Model):
     reason_group = models.ForeignKey(ReasonGroup, on_delete=models.CASCADE, related_name= 'reasons')
     reason_code = models.CharField(max_length=255, unique= True)
     description = models.TextField(blank = True, null = True)
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -190,6 +237,7 @@ class Group(models.Model):
     group_code = models.CharField(max_length=255, unique= True)
     description = models.TextField(blank = True, null = True)
     cost_center = models.CharField(max_length=255, blank = True, null = True)
+    is_active  = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -199,6 +247,7 @@ class SubGroup(models.Model):
     group = models.ForeignKey(Group,blank = True, null = True, on_delete=models.CASCADE, related_name= 'sub_groups')
     sub_group_code = models.CharField(max_length=255, unique= True)
     description = models.TextField(blank = True, null = True)
+    is_active  = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -219,6 +268,7 @@ class Extra(models.Model):
 
     extra_code = models.CharField(max_length=255)
     description = models.TextField(blank= True, null= True)
+    remarks = models.TextField(blank= True, null= True)
     group = models.ManyToManyField(Group, blank=True)
     sub_group = models.ForeignKey(SubGroup,blank= True, null= True, on_delete=models.SET_NULL)
     type = models.CharField(max_length=255,null=True,blank=True, choices=TYPE_CHOICES)
@@ -226,6 +276,7 @@ class Extra(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     pieces = models.IntegerField(null=True, blank=True)
     trips = models.IntegerField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def clean(self):
@@ -245,26 +296,6 @@ class Extra(models.Model):
 
     def __str__(self):
         return self.extra_code
-
-class Commission(models.Model):
-    commission_code = models.CharField(max_length=255, unique=True)
-    description = models.TextField(blank = True, null  =True)
-    commission_percentage = models.DecimalField(max_digits=5, decimal_places=2)
-    history = HistoricalRecords()
-
-    def clean(self):
-        if(self.commission_percentage):
-            if self.commission_percentage < 0:
-                raise ValidationError("Percentage cannot be negative")
-            elif self.commission_percentage > 100:
-                raise ValidationError("Percentage cannot be more than 100")
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.commission_code
 
 class PickupDropDetails(models.Model):
     TYPE_CHOICES = [
@@ -286,20 +317,6 @@ class PickupDropDetails(models.Model):
         verbose_name  = 'Pickup / Drop Details'
         verbose_name_plural  = 'Pickup / Drop Details'
 
-class PreferenceGroup(models.Model):
-    preference_group = models.CharField(max_length=255, unique = True)
-    description = models.TextField(blank = True, null  =True)
-    history = HistoricalRecords()
-    def __str__(self):
-        return self.preference_group
-
-class Preference(models.Model):
-    preference_group = models.ForeignKey(PreferenceGroup, on_delete=models.CASCADE,related_name='preferences')
-    preference = models.CharField(max_length=255)
-    description = models.TextField(blank = True, null=True)
-    history = HistoricalRecords()
-    def __str__(self):
-        return self.preference
 
 
 class MarketGroup(models.Model):
@@ -403,6 +420,28 @@ class TaxGeneration(models.Model):
     class Meta:
         verbose_name_plural  = 'Taxes Generation'
 
+class Commission(models.Model):
+    commission_code = models.CharField(max_length=255, unique=True)
+    description = models.TextField(blank = True, null  =True)
+    commission_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    tax = models.ManyToManyField(Tax, blank = True)
+    is_active = models.BooleanField(default=True)
+    history = HistoricalRecords()
+
+    def clean(self):
+        if(self.commission_percentage):
+            if self.commission_percentage < 0:
+                raise ValidationError("Percentage cannot be negative")
+            elif self.commission_percentage > 100:
+                raise ValidationError("Percentage cannot be more than 100")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.commission_code
+    
 class TransactionCode(models.Model):
     transaction_code = models.CharField(max_length=255)
     description = models.TextField(blank = True, null=True)
@@ -410,11 +449,10 @@ class TransactionCode(models.Model):
     sub_group = models.ForeignKey(SubGroup, on_delete=models.CASCADE, related_name= 'transaction_codes')
     base_rate = models.DecimalField(max_digits=8, decimal_places=2, null= True, blank = True)
     taxes  = models.ManyToManyField(Tax, blank=True)
-    tax_percentage = models.DecimalField(max_digits=5, decimal_places=2,null= True, blank = True)
     discount_allowed = models.BooleanField(default=False)
     is_allowance = models.BooleanField(default=False)
     allowance_code = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
-    commission_service_charge_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def clean(self):
@@ -443,6 +481,7 @@ class TransactionCode(models.Model):
 class PackageGroup(models.Model):
     package_group = models.CharField(max_length=255, unique= True)
     description = models.TextField(blank= True, null= True)
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -457,10 +496,8 @@ class Package(models.Model):
     begin_sell_date = models.DateField()
     end_sell_date = models.DateField()
     base_price = models.DecimalField(max_digits=8, decimal_places=2,default=0)
-    tax_percentage = models.DecimalField(max_digits=5, decimal_places=2,default=0)
     tax_amount = models.DecimalField(max_digits=8, decimal_places=2,default=0)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2,default=0)
-    is_active = models.BooleanField()
     CALCULATION_RULE_CHOICES = (
     ('Flat Rate', 'Flat Rate'),
     ('Per Adult', 'Per Adult'),
@@ -470,7 +507,7 @@ class Package(models.Model):
     POSTING_RHYTHM_CHOICES = (
     ('Post Every Night', 'Post Every Night'),
     ('Post on Arrival Night', 'Post on Arrival Night'),
-    ('Post on Every X Night Starting Y Night','Post on Every X Night Starting Y Night'),
+    # ('Post on Every X Night Starting Y Night','Post on Every X Night Starting Y Night'),
     ('Post on Certain Nights of the week','Post on Certain Nights of the week'),
     ('Post Last Night', 'Post Last Night'),
     ('Post Every Night Except Arrival Night', 'Post Every Night Except Arrival Night'),
@@ -482,6 +519,7 @@ class Package(models.Model):
     )
     rate_inclusion = models.CharField(max_length=50, choices=RATE_INCLUSION_CHOICES)
     transaction_code = models.ForeignKey(TransactionCode, on_delete=models.CASCADE, related_name='packages')
+    is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def clean(self):
@@ -565,6 +603,7 @@ class RateCode(models.Model):
     discount_percentage = models.DecimalField(decimal_places=2, max_digits=10,blank=True, null= True )
     complementary = models.BooleanField(default = False)
     house_use = models.BooleanField(default = False)
+    is_active  = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def clean(self):
@@ -616,6 +655,7 @@ class PaymentType(models.Model):
     payment_type_code = models.CharField(max_length=255 ,unique=True)
     description = models.TextField(blank= True, null= True)
     transaction_code = models.ForeignKey(TransactionCode,null=True, blank = True, on_delete=models.CASCADE, related_name='PaymentTypes') 
+    is_active  = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -724,6 +764,7 @@ class SharingID(models.Model):
 
 class ReservationType(models.Model):
     reservation_type = models.CharField(max_length=100)
+    is_active  = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -943,6 +984,8 @@ class Reservation(models.Model):
     sub_booking_id = models.CharField(max_length=100,  blank= True, null= True)
     transaction_id = models.TextField(blank= True, null= True)
     voucher_number = models.CharField(max_length=100,  blank= True, null= True)
+    do_not_move  = models.BooleanField(default = False)
+    no_post = models.BooleanField(default = False)
     history  = HistoricalRecords()
 
     def clean(self):
@@ -1085,19 +1128,11 @@ class Transaction(models.Model):
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
     discount_percentage = models.DecimalField(max_digits=5, decimal_places=2,null=True, blank= True)
     transaction_type = models.CharField(max_length=50, choices = TRANSACTION_TYPE_CHOICES)
-    is_deposit = models.BooleanField(default=False)
-    tax_percentage = models.DecimalField(max_digits=5, decimal_places=2,null=True, blank= True)
-    cgst = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
-    sgst = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
     total = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
-    service_charge_commission_percentage = models.DecimalField(max_digits=5, decimal_places=2,null=True, blank= True)
-    service_charge_commission = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
-    service_charge_commission_tax_percentage = models.DecimalField(max_digits=5, decimal_places=2,null=True, blank= True)
-    service_charge_commission_cgst = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
-    service_charge_commission_sgst = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
-    total_with_service_charge_commission = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
-    is_service_charge_cancelled = models.BooleanField(default=False)
+    is_deposit = models.BooleanField(default=False)
     is_cancelled = models.BooleanField(default=False)
+    is_moved = models.BooleanField(default=False)
+    is_duplicate = models.BooleanField(default=False)
     pos_bill_number = models.CharField(max_length=255,null=True, blank= True)
     pos_session = models.CharField(max_length=255,null=True, blank= True)
     allowance_transaction = models.ForeignKey('self', null=True, blank = True, on_delete=models.SET_NULL, related_name='transactions')
@@ -1317,6 +1352,7 @@ class RateSummary(models.Model):
     sub_total = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     total_tax_generated = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    is_posted  = models.BooleanField(default= False)
 
     def clean(self):
         if self.room_tax:

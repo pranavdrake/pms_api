@@ -917,14 +917,23 @@ def import_folios(request):
             room = None
 
         split_string = row['Guest'].split('.')
-        # salutation = split_string[0].strip()
+        salutation = split_string[0].strip()
         name = '.'.join(split_string[1:]).strip()
-        guest = GuestProfile.objects.get(last_name=name)
+        # if GuestProfile.objects.filter(last_name = name).count()> 1:
+        #     guest = GuestProfile.objects.filter(last_name = name)[0]
+        # else:
+        guest = GuestProfile.objects.get(last_name  = name, salutation = salutation)
 
         if row['Company/Agent']=='Company':
-            company_agent  =  Account.objects.get(account_name = row['Company'])
+            if str(row['Company'])!='nan':
+                company_agent  =  Account.objects.get(account_name = row['Company'])
+            else:
+                company_agent =  None
         else:
-            company_agent  =  Account.objects.get(account_name = row['Agent'])
+            if str(row['Agent'])!='nan':
+                company_agent  =  Account.objects.get(account_name = row['Agent'])
+            else:
+                company_agent = None
 
         if str(row['Company'])=='nan' and str(row['Agent'])=='nan':
             company_agent = None
@@ -1017,3 +1026,262 @@ def import_daily_details(request):
     return Response({'daily details imported' : 'daily details imported'})
 
 
+
+
+@api_view(['GET'])
+def import_transactions(request):
+    file  = 'mediafiles/import_data/transactions_test.csv'
+    df = pd.read_csv(file, on_bad_lines='skip')
+    df = df.drop_duplicates(subset=['ID'])
+    df = df.head(80)
+    Transaction.objects.all().delete()
+
+    for index, row in df.iterrows():
+    #     print(str(row['ID']))
+    # return Response({'test': ' test'})
+
+        print(index)
+        # print(str(row['Is Cancelled']))
+        # print(type(row['Is Cancelled']))
+        # print(str(row['Company']))
+        if row['Is Deposit']=='NaN':
+            is_deposit = ''
+        elif row['Is Deposit']==True:
+            is_deposit = True
+        else:
+            is_deposit = False
+
+        if row['Is Deposit']=='NaN':
+            is_service_charge_cancelled = ''
+        elif row['Is Serv Cancelled']==True:
+            is_service_charge_cancelled = True
+        else:
+            is_service_charge_cancelled = False
+
+        # if str(row['Is Cancelled'])=='True':
+        #     is_cancelled = True
+        # else:
+        #     is_cancelled = False  
+
+        if row['Is Cancelled']==True:
+            is_cancelled = True
+        else:
+            is_cancelled = False  
+
+        if row['Is Moved']==True:
+            is_moved = True
+        else:
+            is_moved = False   
+
+        if row['Is Duplicate']==True:
+            is_duplicate = True
+        else:
+            is_duplicate = False    
+
+        if str(row['Company'])=='nan' :
+            company = None
+        else:
+            company = Account.objects.get(account_name = str(row['Company']))
+            # company = company   
+
+        if str(row['Agent'])=='nan' :
+            agent = None
+        else:
+            agent = Account.objects.get(account_name = str(row['Agent']))
+            # agent = agent
+
+        if str(row['Disc Amount'])=='NaN' :
+            discount_amount = 0
+        else:
+            discount_amount = row['Disc Amount']
+
+
+        if str(row['Tax Percent'])== 'nan' :
+            tax_percentage = 0
+        else:
+            tax_percentage = row['Tax Percent']
+
+        if str(row['Amount'])== 'NaN' :
+            base_amount = 0
+        else:
+            base_amount = row['Amount']
+
+        if str(row['CGST'])== 'nan' :
+            cgst = 0
+        else:
+            cgst = row['CGST']
+
+        if str(row['SGST'])== 'nan' :
+            sgst = 0
+        else:
+            sgst = row['SGST']
+
+
+        if str(row['Total'])== 'nan' :
+            total = 0
+        else:
+            total = row['Total']
+
+        if str(row['Service Charge'])== 'nan' :
+            service_charge_commission = 0
+        else:
+            service_charge_commission = row['Service Charge']
+
+        if str(row['Ser Tax Percent'])== 'nan' :
+            service_charge_commission_tax_percentage = 0
+        else:
+            service_charge_commission_tax_percentage = row['Ser Tax Percent']
+
+        if str(row['Ser CGST'])== 'nan' :
+            service_charge_commission_cgst = 0
+        else:
+            service_charge_commission_cgst = row['Ser CGST']
+
+        if str(row['Ser SGST'])== 'nan' :
+            service_charge_commission_sgst = 0
+        else:
+            service_charge_commission_sgst = row['Ser SGST']
+
+        if str(row['Total With Service Charge'])== 'nan' :
+            total_with_service_charge_commission = 0
+        else:
+            total_with_service_charge_commission = row['Total With Service Charge']
+
+        if str(row['Date-Time'])== 'NaN' :
+            transaction_date_time = ''
+        else:
+            transaction_date_time = datetime.strptime(str(row['Date-Time']),"%d-%b-%Y %H:%M:%S")
+            transaction_date_time = transaction_date_time
+
+        if str(row['Bill Date'])== 'nan':
+            bill_date = None
+        else:
+            bill_date = datetime.strptime(str(row['Bill Date']),"%d-%b-%Y %H:%M:%S")
+
+        if str(row['POS Bill Number'])== 'nan' :
+            pos_bill_number = ''
+        else:
+            pos_bill_number = row['POS Bill Number']
+
+        if str(row['POS Session'])== 'nan' :
+            pos_session = ''
+        else:
+            pos_session = row['POS Session']
+
+        if str(row['Type'])== 'nan' :
+            transaction_type = ''
+        else:
+            transaction_type = row['Type']
+
+        if str(row['Disc percentage'])== 'nan' :
+            discount_percentage = 0
+        else:
+            discount_percentage = row['Disc percentage']
+
+        if str(row['Disc Amount'])== 'nan' :
+            discount_amount = 0
+        else:
+            discount_amount = row['Disc Amount']
+
+        if str(row['Remarks'])== 'nan' :
+            remarks = ''
+        else:
+            remarks = row['Remarks']
+
+        if str(row['Supplement'])== 'nan' :
+            supplement = ''
+        else:
+            supplement = row['Supplement']
+
+        if str(row['Room Number'])== 'nan' :
+            room = None
+        else:
+            room = Room.objects.get(room_number = row['Room Number'])
+            room = room
+
+        if str(row['Package'])== 'nan':
+            package = None
+        else:
+            package = Package.objects.get(package_code = row['Package'])
+
+        if str(row['Rate code'])== 'nan':
+            rate_code = None
+        else:
+            rate_code = RateCode.objects.get(rate_code = row['Rate code'])
+
+        if(str(row['Guest Name']))=='nan':
+                guest = None
+        else:
+            split_string = row['Guest Name'].split('.')  
+            salutation = split_string[0].strip()
+            name = '.'.join(split_string[1:]).strip()
+            if GuestProfile.objects.filter(last_name = name).count()> 1:
+                guest = GuestProfile.objects.filter(last_name = name)[0]
+                print(guest)
+            else:
+                guest, created  = GuestProfile.objects.get_or_create(last_name  = name)
+
+        # folio = Folio.objects.get(folio = row['Folio No'])
+        folio = Folio.objects.first()
+        transaction_code=TransactionCode.objects.get(transaction_code = str(row['Transaction Code']))
+        # reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
+        reservation = Reservation.objects.first()
+        # passer_by = PasserBy.objects.get(passer_by = row[' '])
+        transaction, created = Transaction.objects.update_or_create(
+            internal_id = row['ID'],
+            defaults={
+                        'transaction_code' : transaction_code,
+                        'folio' : folio,
+                        'transaction_date_time' : transaction_date_time,
+                        'bill_date' : bill_date,
+                        'reservation' : reservation,
+                        'guest':guest,
+                        'rate_code' : rate_code,
+                        'room' : room,
+                        'package' : package,
+                        'company' : company,
+                        'agent' : agent,
+                        'base_amount' : base_amount,
+                        'remarks' : remarks,
+                        # # 'quantity' : row[''],
+                        'supplement' : supplement,
+                        # # 'description' : row[''],
+                        'discount_amount': discount_amount,
+                        'discount_percentage' : discount_percentage,
+                        'transaction_type' : transaction_type,
+                        'is_deposit' : is_deposit,
+                        'tax_percentage' : tax_percentage,
+                        'cgst': cgst,
+                        'sgst': sgst,
+                        'total': total,
+                        # 'service_charge_commission_percentage' : row[''],
+                        'service_charge_commission' : service_charge_commission,
+                        'service_charge_commission_tax_percentage':service_charge_commission_tax_percentage,
+                        'service_charge_commission_cgst': service_charge_commission_cgst,
+                        'service_charge_commission_sgst' : service_charge_commission_sgst,
+                        'total_with_service_charge_commission' : total_with_service_charge_commission,
+                        'is_service_charge_cancelled' : is_service_charge_cancelled,
+                        'is_cancelled' : is_cancelled,
+                        'is_moved':is_moved,
+                        'is_duplicate': is_duplicate,
+                        'pos_bill_number' : pos_bill_number,
+                        'pos_session' : pos_session,
+                        # 'allowance_transaction' : allowance_transaction,
+                        # invoice :row[''],
+                        # card : row[''],
+
+                        # 'commission_service_charge_percentage' : row[''],
+
+                    })
+
+    return Response({'transactions imported':'transactions imported'})
+
+
+# @api_view(['GET'])
+# def import_transactions(request):
+#     file  = 'mediafiles/import_data/transactions_test.csv'
+#     df = pd.read_csv(file)
+
+#     Transaction.objects.all().delete()
+
+#     return Response({'transactions deleted':'transactions deleted'})
