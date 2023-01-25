@@ -844,13 +844,14 @@ def import_reservations(request):
 
 @api_view(['GET'])
 def import_folios(request):
-    file ='mediafiles/import_data/all_guest_folio.csv'
+    file ='mediafiles/import_data/all_guest_folios.csv'
     df = pd.read_csv(file)
     for index, row in df.iterrows():
         print(index)
         print(str(row['Booking ID']))
-        # reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
+        # reservation = Reservation.objects.get(reservation = row['Booking ID'])
         reservation = Reservation.objects.first()
+        
         if str(row['Room']) == 'nan':
             None
         else:
@@ -866,10 +867,18 @@ def import_folios(request):
         # guest = GuestProfile.objects.get(last_name = row['Last Name'].strip())
 
         if row['Company/Agent']=='Company':
-            company_agent  =  Account.objects.get(account_name = row['Company'])
+            print(str(row['Company']).strip())
+            if str(row['Company']).strip()=='nan':
+                company_agent = None
+            else:
+                company_agent  , created  =  Account.objects.get_or_create(account_name = str(row['Company']).strip(),account_type = 'Company')
             # company_agent = Account.objects.first()
         else:
-            company_agent  =  Account.objects.get(account_name = row['Agent'])
+            print(str(row['Agent']).strip())
+            if str(row['Agent']).strip()=='nan':
+                company_agent = None
+            else:
+                company_agent,created  =  Account.objects.get_or_create(account_name = str(row['Agent']).strip(),account_type = 'Agent')
             # company_agent = Account.objects.first()
 
         if str(row['Company'])=='nan' and str(row['Agent'])=='nan':
