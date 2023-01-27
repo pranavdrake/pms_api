@@ -456,16 +456,16 @@ class TransactionCode(models.Model):
     history = HistoricalRecords()
 
     def clean(self):
-        if(self.tax_percentage):
-            if self.tax_percentage < 0:
-                raise ValidationError("Percentage cannot be negative")
-            elif self.tax_percentage > 100:
-                raise ValidationError("Percentage cannot be more than 100")
-        if(self.commission_service_charge_percentage):
-            if self.commission_service_charge_percentage < 0:
-                raise ValidationError("Percentage cannot be negative")
-            elif self.commission_service_charge_percentage > 100:
-                raise ValidationError("Percentage cannot be more than 100")
+        # if(self.tax_percentage):
+        #     if self.tax_percentage < 0:
+        #         raise ValidationError("Percentage cannot be negative")
+        #     elif self.tax_percentage > 100:
+        #         raise ValidationError("Percentage cannot be more than 100")
+        # if(self.commission_service_charge_percentage):
+        #     if self.commission_service_charge_percentage < 0:
+        #         raise ValidationError("Percentage cannot be negative")
+        #     elif self.commission_service_charge_percentage > 100:
+        #         raise ValidationError("Percentage cannot be more than 100")
 
         if self.base_rate:
             if self.base_rate < 0:
@@ -1110,25 +1110,37 @@ class Transaction(models.Model):
         ('Paid out', 'Paid out')
     ]
 
-    folio = models.ForeignKey(Folio, on_delete=models.CASCADE, related_name  = 'transactions')
+    internal_id  = models.CharField(max_length=20, blank= True, null= True)
+    folio = models.ForeignKey(Folio, on_delete=models.SET_NULL, null=True,blank = True, related_name  = 'transactions')
     transaction_code = models.ForeignKey(TransactionCode, on_delete=models.CASCADE, related_name  = 'transactions')
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, related_name  = 'transactions')
+    reservation = models.ForeignKey(Reservation,null=True, on_delete=models.SET_NULL,blank = True,  related_name  = 'transactions')
     guest = models.ForeignKey("accounts.GuestProfile", null=True,blank = True, on_delete=models.SET_NULL, related_name='transactions')
-    company_agent = models.ForeignKey("accounts.Account",null=True,blank = True,  on_delete=models.SET_NULL, related_name='transactions')
+    company = models.ForeignKey("accounts.Account",null=True,blank = True,  on_delete=models.SET_NULL, related_name='company_transactions')
+    agent = models.ForeignKey("accounts.Account",null=True,blank = True,  on_delete=models.SET_NULL, related_name='agent_transactions')
     passer_by = models.ForeignKey("accounts.PasserBy",null=True,blank = True,  on_delete=models.SET_NULL, related_name='transactions')
-    base_amount = models.DecimalField(max_digits=10, decimal_places=2)
     remarks = models.TextField(null=True, blank= True)
     room = models.ForeignKey(Room, null=True,blank = True, on_delete=models.SET_NULL, related_name='transactions')
     quantity = models.PositiveIntegerField(null= True, blank=True)
     package = models.ForeignKey(Package, null=True, blank = True, on_delete=models.SET_NULL, related_name='transactions')
     rate_code = models.ForeignKey(RateCode, null=True, blank = True, on_delete=models.SET_NULL, related_name='transactions')
     supplement = models.TextField(null=True, blank= True)
+    transaction_type = models.CharField(max_length=50, choices = TRANSACTION_TYPE_CHOICES)
     date = models.DateTimeField()
     description = models.TextField(null=True, blank= True)
+    base_amount = models.DecimalField(max_digits=10, decimal_places=2)
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
     discount_percentage = models.DecimalField(max_digits=5, decimal_places=2,null=True, blank= True)
-    transaction_type = models.CharField(max_length=50, choices = TRANSACTION_TYPE_CHOICES)
-    total = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank= True)
+    cgst = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    sgst = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    tax_percentage = models.DecimalField(max_digits=5, decimal_places=2,default=0)
+    total = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    service_charge_commission_percentage = models.DecimalField(max_digits=5, decimal_places=2,default=0)
+    service_charge_commission = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    service_charge_commission_tax_percentage = models.DecimalField(max_digits=5, decimal_places=2,default=0)
+    service_charge_commission_cgst = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    service_charge_commission_sgst = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    total_with_service_charge_commission = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    is_service_charge_cancelled = models.BooleanField(default=False)
     is_deposit = models.BooleanField(default=False)
     is_cancelled = models.BooleanField(default=False)
     is_moved = models.BooleanField(default=False)
@@ -1141,12 +1153,12 @@ class Transaction(models.Model):
 
     def clean(self):
 
-        if self.base_amount:
-            if self.base_amount < 0:
-                raise ValidationError("Base Amount cannot be negative")
-        if self.discount_amount:
-            if self.discount_amount < 0:
-                raise ValidationError("Discount Amount cannot be negative")
+        # if self.base_amount:
+        #     if self.base_amount < 0:
+        #         raise ValidationError("Base Amount cannot be negative")
+        # if self.discount_amount:
+        #     if self.discount_amount < 0:
+        #         raise ValidationError("Discount Amount cannot be negative")
         if(self.discount_percentage):
             if self.discount_percentage < 0:
                 raise ValidationError("Discount Percentage cannot be negative")
@@ -1157,37 +1169,37 @@ class Transaction(models.Model):
                 raise ValidationError("Tax Percentage cannot be negative")
             elif self.tax_percentage > 100:
                 raise ValidationError("Tax Percentage cannot be more than 100")
-        if self.cgst:
-            if self.cgst < 0:
-                raise ValidationError("CGST cannot be negative")
-        if self.sgst:
-            if self.sgst < 0:
-                raise ValidationError("SGST cannot be negative")
-        if self.total:
-            if self.total < 0:
-                raise ValidationError("Total cannot be negative")
+        # if self.cgst:
+        #     if self.cgst < 0:
+        #         raise ValidationError("CGST cannot be negative")
+        # if self.sgst:
+        #     if self.sgst < 0:
+        #         raise ValidationError("SGST cannot be negative")
+        # if self.total:
+        #     if self.total < 0:
+        #         raise ValidationError("Total cannot be negative")
         if(self.service_charge_commission_percentage):
             if self.service_charge_commission_percentage < 0:
                 raise ValidationError("Service Charge Commission Percentage cannot be negative")
             elif self.service_charge_commission_percentage > 100:
                 raise ValidationError("Service Charge Commission Percentage cannot be more than 100")
-        if self.service_charge_commission:
-            if self.service_charge_commission < 0:
-                raise ValidationError("Service Charge Commission cannot be negative")
+        # if self.service_charge_commission:
+        #     if self.service_charge_commission < 0:
+        #         raise ValidationError("Service Charge Commission cannot be negative")
         if(self.service_charge_commission_tax_percentage):
             if self.service_charge_commission_tax_percentage < 0:
                 raise ValidationError("Service Charge Commission Tax Percentage cannot be negative")
             elif self.service_charge_commission_tax_percentage > 100:
                 raise ValidationError("Service Charge Commission Tax Percentage cannot be more than 100")
-        if self.service_charge_commission_cgst:
-            if self.service_charge_commission_cgst < 0:
-                raise ValidationError("Service Charge Commission CGST cannot be negative")
-        if self.service_charge_commission_sgst:
-            if self.service_charge_commission_sgst < 0:
-                raise ValidationError("Service Charge Commission SGST cannot be negative")
-        if self.total_with_service_charge_commission:
-            if self.total_with_service_charge_commission < 0:
-                raise ValidationError("Total with Service Charge Commission cannot be negative")
+        # if self.service_charge_commission_cgst:
+        #     if self.service_charge_commission_cgst < 0:
+        #         raise ValidationError("Service Charge Commission CGST cannot be negative")
+        # if self.service_charge_commission_sgst:
+        #     if self.service_charge_commission_sgst < 0:
+        #         raise ValidationError("Service Charge Commission SGST cannot be negative")
+        # if self.total_with_service_charge_commission:
+        #     if self.total_with_service_charge_commission < 0:
+        #         raise ValidationError("Total with Service Charge Commission cannot be negative")
 
     def save(self, *args, **kwargs):
         self.full_clean()
