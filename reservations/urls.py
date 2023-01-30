@@ -21,4 +21,5 @@ urlpatterns = [
     path('import-folios/', import_folios),
     path('import-daily-details/', import_daily_details),
     path('import-group-reservations/',import_group_reservations),
+    path('import-transactions/',import_transactions),
 ]

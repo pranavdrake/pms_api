@@ -328,15 +328,15 @@ def import_transaction_codes(request):
         else:
             base_rate = row['Rate']
 
-        if str(row['Commission Percent'])=='nan':
-            commission_service_charge_percentage = 0
-        else:
-            commission_service_charge_percentage = row['Commission Percent']
+        # if str(row['Commission Percent'])=='nan':
+        #     commission_service_charge_percentage = 0
+        # else:
+        #     commission_service_charge_percentage = row['Commission Percent']
 
-        if str(row['Tax Percentage'])=='nan':
-            tax_percentage = 0
-        else:
-            tax_percentage = row['Tax Percentage']
+        # if str(row['Tax Percentage'])=='nan':
+        #     tax_percentage = 0
+        # else:
+        #     tax_percentage = row['Tax Percentage']
 
         is_allowance  = True 
         group  = Group.objects.get(group_code = row['Revoke Group'].strip())
@@ -344,7 +344,16 @@ def import_transaction_codes(request):
         # group  = Group.objects.first()
         # sub_group  = SubGroup.objects.first()
 
-        transaction_code, created = TransactionCode.objects.update_or_create(transaction_code=row['Transaction Code '], group = group, sub_group = sub_group ,defaults={'description': row['Description'], 'base_rate': base_rate,'tax_percentage': tax_percentage,'commission_service_charge_percentage': commission_service_charge_percentage, 'discount_allowed': discount_allowed, 'is_allowance': is_allowance})
+        transaction_code, created = TransactionCode.objects.update_or_create(
+            transaction_code=row['Transaction Code '],
+            group = group, 
+            sub_group = sub_group ,
+            defaults={'description': row['Description'], 
+                    'base_rate': base_rate,
+                    # 'tax_percentage': tax_percentage,
+                    # 'commission_service_charge_percentage': commission_service_charge_percentage, 
+                    'discount_allowed': discount_allowed, 
+                    'is_allowance': is_allowance})
 
     for index, row in df.iterrows():
         if row['Discount Allowed']=='true':
@@ -354,6 +363,7 @@ def import_transaction_codes(request):
 
         is_allowance  = False 
 
+        print(str(row['Transaction Code ']))
         if(TransactionCode.objects.filter(transaction_code =  '8' + str(row['Transaction Code '])).exists()):
             allowance_code  = TransactionCode.objects.get(transaction_code =  '8' + str(row['Transaction Code ']))
         else:
@@ -381,8 +391,8 @@ def import_transaction_codes(request):
         transaction_code, created = TransactionCode.objects.update_or_create(transaction_code=row['Transaction Code '],
           defaults={'description': row['Description'],
            'base_rate': base_rate,
-           'tax_percentage': tax_percentage,
-           'commission_service_charge_percentage': commission_service_charge_percentage, 
+        #    'tax_percentage': tax_percentage,
+        #    'commission_service_charge_percentage': commission_service_charge_percentage, 
            'discount_allowed': discount_allowed, 
             'group' : group,
             'sub_group' : sub_group ,
@@ -903,35 +913,41 @@ def import_reservations(request):
 
 @api_view(['GET'])
 def import_folios(request):
-    file ='mediafiles/import_data/all_guest_folio.csv'
+    file ='mediafiles/import_data/all_guest_folios.csv'
     df = pd.read_csv(file)
     
     for index, row in df.iterrows():
         print(index)
+        print(str(row['Booking ID']).strip())
 
-        reservation = Reservation.objects.get(booking_id = str(row['Booking ID']).strip())
+        if Reservation.objects.filter(booking_id = str(row['Booking ID']).strip()).exists():
+            reservation = Reservation.objects.get(booking_id = str(row['Booking ID']).strip())
+        else:
+            continue
 
         if str(row['Room'])!= 'nan':
             room = Room.objects.get(room_number = row['Room'])
         else:
             room = None
-
+    
+        print(row['Guest'])
         split_string = row['Guest'].split('.')
         salutation = split_string[0].strip()
         name = '.'.join(split_string[1:]).strip()
-        # if GuestProfile.objects.filter(last_name = name).count()> 1:
-        #     guest = GuestProfile.objects.filter(last_name = name)[0]
-        # else:
-        guest = GuestProfile.objects.get(last_name  = name, salutation = salutation)
+
+        if GuestProfile.objects.filter(last_name = name, salutation = salutation).count()> 1:
+            guest = GuestProfile.objects.filter(last_name = name, salutation = salutation)[0]
+        else:
+            guest, created = GuestProfile.objects.get_or_create(last_name  = name, salutation = salutation)
 
         if row['Company/Agent']=='Company':
             if str(row['Company'])!='nan':
-                company_agent  =  Account.objects.get(account_name = row['Company'])
+                company_agent, created  =  Account.objects.get_or_create(account_name = row['Company'], account_type  = 'Company')
             else:
                 company_agent =  None
         else:
             if str(row['Agent'])!='nan':
-                company_agent  =  Account.objects.get(account_name = row['Agent'])
+                company_agent, created  =  Account.objects.get_or_create(account_name = row['Agent'], account_type  = 'Agent')
             else:
                 company_agent = None
 
@@ -1025,43 +1041,19 @@ def import_daily_details(request):
 
     return Response({'daily details imported' : 'daily details imported'})
 
-
-
-
 @api_view(['GET'])
 def import_transactions(request):
     file  = 'mediafiles/import_data/transactions_test.csv'
-    df = pd.read_csv(file, on_bad_lines='skip')
-    df = df.drop_duplicates(subset=['ID'])
-    df = df.head(80)
-    Transaction.objects.all().delete()
-
+    df = pd.read_csv(file)
+    df = df.iloc[16694:]
+    fail_count = 0
     for index, row in df.iterrows():
-    #     print(str(row['ID']))
-    # return Response({'test': ' test'})
-
         print(index)
-        # print(str(row['Is Cancelled']))
-        # print(type(row['Is Cancelled']))
-        # print(str(row['Company']))
-        if row['Is Deposit']=='NaN':
-            is_deposit = ''
-        elif row['Is Deposit']==True:
-            is_deposit = True
-        else:
+
+        if row['Is Deposit']==False:
             is_deposit = False
-
-        if row['Is Deposit']=='NaN':
-            is_service_charge_cancelled = ''
-        elif row['Is Serv Cancelled']==True:
-            is_service_charge_cancelled = True
         else:
-            is_service_charge_cancelled = False
-
-        # if str(row['Is Cancelled'])=='True':
-        #     is_cancelled = True
-        # else:
-        #     is_cancelled = False  
+            is_deposit = True
 
         if row['Is Cancelled']==True:
             is_cancelled = True
@@ -1076,82 +1068,77 @@ def import_transactions(request):
         if row['Is Duplicate']==True:
             is_duplicate = True
         else:
-            is_duplicate = False    
+            is_duplicate = False   
+
+        if row['Is Serv Cancelled']==True:
+            is_service_charge_cancelled = True
+        else:
+            is_service_charge_cancelled = False    
 
         if str(row['Company'])=='nan' :
             company = None
         else:
-            company = Account.objects.get(account_name = str(row['Company']))
-            # company = company   
+            company = Account.objects.get(account_name = str(row['Company']), account_type  = 'Company')
 
         if str(row['Agent'])=='nan' :
             agent = None
         else:
-            agent = Account.objects.get(account_name = str(row['Agent']))
-            # agent = agent
-
-        if str(row['Disc Amount'])=='NaN' :
-            discount_amount = 0
-        else:
-            discount_amount = row['Disc Amount']
-
+            agent = Account.objects.get(account_name = str(row['Agent']), account_type  = 'Agent')
 
         if str(row['Tax Percent'])== 'nan' :
             tax_percentage = 0
         else:
             tax_percentage = row['Tax Percent']
 
-        if str(row['Amount'])== 'NaN' :
+        if str(row['Amount'])== 'nan' :
             base_amount = 0
         else:
-            base_amount = row['Amount']
+            base_amount = Decimal(row['Amount']).quantize(Decimal("0.00"))
 
         if str(row['CGST'])== 'nan' :
             cgst = 0
         else:
-            cgst = row['CGST']
+            cgst = Decimal(row['CGST']).quantize(Decimal("0.00"))
 
         if str(row['SGST'])== 'nan' :
             sgst = 0
         else:
-            sgst = row['SGST']
-
+            sgst = Decimal(row['SGST']).quantize(Decimal("0.00"))
 
         if str(row['Total'])== 'nan' :
             total = 0
         else:
-            total = row['Total']
+            total = Decimal(row['Total']).quantize(Decimal("0.00"))
 
         if str(row['Service Charge'])== 'nan' :
             service_charge_commission = 0
         else:
-            service_charge_commission = row['Service Charge']
+            service_charge_commission = Decimal(row['Service Charge']).quantize(Decimal("0.00"))
 
         if str(row['Ser Tax Percent'])== 'nan' :
             service_charge_commission_tax_percentage = 0
         else:
-            service_charge_commission_tax_percentage = row['Ser Tax Percent']
+            service_charge_commission_tax_percentage = Decimal(row['Ser Tax Percent']).quantize(Decimal("0.00"))
 
         if str(row['Ser CGST'])== 'nan' :
             service_charge_commission_cgst = 0
         else:
-            service_charge_commission_cgst = row['Ser CGST']
+            service_charge_commission_cgst = Decimal(row['Ser CGST']).quantize(Decimal("0.00"))
 
         if str(row['Ser SGST'])== 'nan' :
             service_charge_commission_sgst = 0
         else:
-            service_charge_commission_sgst = row['Ser SGST']
+            service_charge_commission_sgst = Decimal(row['Ser SGST']).quantize(Decimal("0.00"))
 
         if str(row['Total With Service Charge'])== 'nan' :
             total_with_service_charge_commission = 0
         else:
-            total_with_service_charge_commission = row['Total With Service Charge']
+            total_with_service_charge_commission = Decimal(row['Total With Service Charge']).quantize(Decimal("0.00"))
 
-        if str(row['Date-Time'])== 'NaN' :
+        if str(row['Date-Time'])== 'nan' :
             transaction_date_time = ''
         else:
             transaction_date_time = datetime.strptime(str(row['Date-Time']),"%d-%b-%Y %H:%M:%S")
-            transaction_date_time = transaction_date_time
 
         if str(row['Bill Date'])== 'nan':
             bill_date = None
@@ -1163,25 +1150,23 @@ def import_transactions(request):
         else:
             pos_bill_number = row['POS Bill Number']
 
-        if str(row['POS Session'])== 'nan' :
-            pos_session = ''
-        else:
-            pos_session = row['POS Session']
-
         if str(row['Type'])== 'nan' :
             transaction_type = ''
         else:
-            transaction_type = row['Type']
+            if row['Type']=='RoundOff':
+                transaction_type = 'Round off'
+            else:
+                transaction_type = row['Type']
 
         if str(row['Disc percentage'])== 'nan' :
             discount_percentage = 0
         else:
-            discount_percentage = row['Disc percentage']
+            discount_percentage = Decimal(row['Disc percentage']).quantize(Decimal("0.00"))
 
         if str(row['Disc Amount'])== 'nan' :
             discount_amount = 0
         else:
-            discount_amount = row['Disc Amount']
+            discount_amount = Decimal(row['Disc Amount']).quantize(Decimal("0.00"))
 
         if str(row['Remarks'])== 'nan' :
             remarks = ''
@@ -1197,7 +1182,6 @@ def import_transactions(request):
             room = None
         else:
             room = Room.objects.get(room_number = row['Room Number'])
-            room = room
 
         if str(row['Package'])== 'nan':
             package = None
@@ -1215,25 +1199,48 @@ def import_transactions(request):
             split_string = row['Guest Name'].split('.')  
             salutation = split_string[0].strip()
             name = '.'.join(split_string[1:]).strip()
-            if GuestProfile.objects.filter(last_name = name).count()> 1:
-                guest = GuestProfile.objects.filter(last_name = name)[0]
-                print(guest)
+            if GuestProfile.objects.filter(last_name = name, salutation = salutation).count()> 1:
+                guest = GuestProfile.objects.filter(last_name = name, salutation = salutation)[0]
             else:
-                guest, created  = GuestProfile.objects.get_or_create(last_name  = name)
+                guest, created  = GuestProfile.objects.get_or_create(last_name  = name, salutation = salutation)
 
-        # folio = Folio.objects.get(folio = row['Folio No'])
-        folio = Folio.objects.first()
+
+        print(str(row['Confirmation Code']))
+
+        if str(row['Confirmation Code'])=='nan':
+            reservation = None
+        elif Reservation.objects.filter(booking_id = str(int(row['Confirmation Code'])).strip()).exists():
+            reservation = Reservation.objects.get(booking_id = str(int(row['Confirmation Code'])).strip())
+        else:
+            print('failed')
+            fail_count+=1
+            continue
+        
+
+        if Folio.objects.filter(folio_number = row['Folio No'], reservation = reservation).count()>1:
+            folio = Folio.objects.filter(folio_number = row['Folio No'], reservation = reservation)[0]
+        else:
+            if reservation == None:
+                folio = None
+            else:
+                if  Folio.objects.filter(folio_number = row['Folio No'], reservation = reservation).exists():
+                    folio = Folio.objects.get(folio_number = row['Folio No'], reservation = reservation)
+                else:
+                    print('failed')
+                    fail_count+=1
+                    continue
+
+
         transaction_code=TransactionCode.objects.get(transaction_code = str(row['Transaction Code']))
-        # reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
-        reservation = Reservation.objects.first()
-        # passer_by = PasserBy.objects.get(passer_by = row[' '])
+
+
+
         transaction, created = Transaction.objects.update_or_create(
-            internal_id = row['ID'],
+            internal_id = str(row['ID']),
             defaults={
                         'transaction_code' : transaction_code,
                         'folio' : folio,
-                        'transaction_date_time' : transaction_date_time,
-                        'bill_date' : bill_date,
+                        'date' : transaction_date_time,
                         'reservation' : reservation,
                         'guest':guest,
                         'rate_code' : rate_code,
@@ -1243,9 +1250,7 @@ def import_transactions(request):
                         'agent' : agent,
                         'base_amount' : base_amount,
                         'remarks' : remarks,
-                        # # 'quantity' : row[''],
                         'supplement' : supplement,
-                        # # 'description' : row[''],
                         'discount_amount': discount_amount,
                         'discount_percentage' : discount_percentage,
                         'transaction_type' : transaction_type,
@@ -1254,7 +1259,6 @@ def import_transactions(request):
                         'cgst': cgst,
                         'sgst': sgst,
                         'total': total,
-                        # 'service_charge_commission_percentage' : row[''],
                         'service_charge_commission' : service_charge_commission,
                         'service_charge_commission_tax_percentage':service_charge_commission_tax_percentage,
                         'service_charge_commission_cgst': service_charge_commission_cgst,
@@ -1265,15 +1269,9 @@ def import_transactions(request):
                         'is_moved':is_moved,
                         'is_duplicate': is_duplicate,
                         'pos_bill_number' : pos_bill_number,
-                        'pos_session' : pos_session,
-                        # 'allowance_transaction' : allowance_transaction,
-                        # invoice :row[''],
-                        # card : row[''],
-
-                        # 'commission_service_charge_percentage' : row[''],
-
                     })
 
+    print(fail_count)
     return Response({'transactions imported':'transactions imported'})
 
 
