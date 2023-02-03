@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 from django_countries.fields import CountryField
-from reservations.models import RateCode, Commission, Room, Preference, MarketCode, Source, Reservation
+from reservations.models import RateCode, Commission, Room, Preference, MarketCode, Source, Reservation, RoomClass
 from django.core.exceptions import ValidationError
 from simple_history.models import HistoricalRecords
 from datetime import date
@@ -70,7 +70,7 @@ class Account(models.Model):
     account_type = models.CharField(max_length=20,null=True, choices=ACCOUNT_TYPE_CHOICES)
     email = models.EmailField(blank = True, null= True)
     phone_number = models.CharField(max_length=20,blank = True, null= True)
-    address_line_1 = models.CharField(max_length=255 ,blank = True, null= True)
+    address_line_1 = models.CharField(max_length=255, blank= True, null= True)
     address_line_2 = models.CharField(max_length=255,blank = True, null= True)
     country = CountryField(blank = True, null= True)
     state = models.CharField(max_length=50 ,blank = True, null= True)
@@ -266,7 +266,7 @@ class MembershipLevel(models.Model):
     def __str__(self):
         return  self.membership_level
 
-class Membership (models.Model):
+class Membership(models.Model):
     guest = models.ForeignKey("accounts.GuestProfile", on_delete=models.CASCADE,related_name='guest_profiles')
     membership_type = models.ForeignKey(MembershipType, on_delete=models.CASCADE,related_name='membership_types')
     membership_level = models.ForeignKey(MembershipLevel, on_delete=models.CASCADE,related_name='membership_levels')
@@ -325,6 +325,7 @@ class PasserBy(models.Model):
     email = models.EmailField(blank = True, null = True)
     market_code = models.ForeignKey(MarketCode,blank = True, null = True, on_delete=models.SET_NULL, related_name='passers_by')
     source_code = models.ForeignKey(Source,blank = True, null = True, on_delete=models.SET_NULL, related_name='passers_by')
+    room_class = models.ForeignKey(RoomClass,blank = True, null = True, on_delete=models.SET_NULL, related_name='passers_by')
     history = HistoricalRecords()
    
     def __str__(self):
