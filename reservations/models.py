@@ -675,37 +675,7 @@ class RoomMove(models.Model):
     def __str__(self):
         return self.from_room
 
-class AdjustTransaction(models.Model):
-    ADJUST_BY = [
-    ('percentage', 'Percentage'),
-    ('amount', 'Amount'),
-    ]
-    adjust_by = models.CharField(max_length=100, choices=ADJUST_BY, blank=False, null= False)
-    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    reason = models.ForeignKey(Reason,on_delete=models.CASCADE, related_name='adjust_Transaction')
-    reason_text = models.TextField(blank=True, null=True)
-    reference = models.ForeignKey("accounts.CustomUser",on_delete=models.CASCADE, related_name='adjust_Transaction_user',default='')
-    history = HistoricalRecords()
-    
-    def clean(self):
 
-        if self.amount:
-            if self.amount < 0:
-                raise ValidationError("Amount cannot be negative")
-
-        if(self.percentage):
-            if self.percentage < 0:
-                raise ValidationError("Percentage cannot be negative")
-            elif self.percentage > 100:
-                raise ValidationError("Percentage cannot be more than 100")
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
-    
-    def __str__(self):
-        return self.adjust_by
 
 class TicketCategory(models.Model):
     ticket_category_code = models.CharField(max_length=255, unique= True)
@@ -929,7 +899,7 @@ class Reservation(models.Model):
         ('Phone', 'Phone'),
         ('Walk-in', 'Walk-in'),
         ('House use', 'House use'),
-        ('Hotel Reservation Office', 'Hotel Reservation Office'),
+        ('Hotel Reservation Office', 'Hotel Reservation O(ffice'),
         ('EMAIL', 'EMAIL'),
         ('ONLINE', 'ONLINE'),
     )
@@ -1209,7 +1179,38 @@ class Transaction(models.Model):
         return 'Transaction for reservation ID: ' +str(self.id) + ' under Transaction Code: ' + self.transaction_code.transaction_code
     
 
+class AdjustTransaction(models.Model):
+    ADJUST_BY = [
+    ('percentage', 'Percentage'),
+    ('amount', 'Amount'),
+    ]
+    adjust_transaction = models.ForeignKey(Transaction ,on_delete=models.CASCADE, related_name='adjust_Transaction_user')
+    adjust_by = models.CharField(max_length=100, choices=ADJUST_BY, blank=False, null= False)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    reason = models.ForeignKey(Reason,on_delete=models.CASCADE, related_name='adjust_Transaction')
+    reason_text = models.TextField(blank=True, null=True)
+    reference = models.ForeignKey("accounts.CustomUser",on_delete=models.CASCADE, related_name='adjust_Transaction_user',default='')
+    history = HistoricalRecords()
+    
+    def clean(self):
 
+        if self.amount:
+            if self.amount < 0:
+                raise ValidationError("Amount cannot be negative")
+
+        if(self.percentage):
+            if self.percentage < 0:
+                raise ValidationError("Percentage cannot be negative")
+            elif self.percentage > 100:
+                raise ValidationError("Percentage cannot be more than 100")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+    
+    def __str__(self):
+        return self.adjust_by
 
 class TaxTransaction(models.Model):
 
@@ -1334,6 +1335,7 @@ class DocumentType(models.Model):
 class Document(models.Model):
     document_type = models.ForeignKey(DocumentType, on_delete=models.CASCADE,related_name='documents')
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE,related_name='documents')
+    room = models.ForeignKey(Room, on_delete=models.CASCADE,related_name='documents') 
     invoice = models.ForeignKey(Invoice,null=True,blank=True, on_delete=models.SET_NULL,related_name='documents')
     document = models.FileField(upload_to='documents/',null=True)
     history = HistoricalRecords()
@@ -1533,6 +1535,21 @@ class Forex(models.Model):
     class Meta:
         verbose_name_plural = 'Forex'
 
+class SplitTransaction(models.Model):
+    TYPE_CHOICES = [
+        ('percentage', 'Percentage'),
+        ('amount', 'Amount'),
+    ]
+    transaction = models.ForeignKey(Transaction,on_delete=models.CASCADE,related_name='fixed_charges')
+    split_by = models.CharField(max_length=100,choices=TYPE_CHOICES)
+    percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    split_amount = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    split_amount_with_tax = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+
+    def __str__(self):
+        return 'Split by Transaction: ' + str(self.transaction.id)
+
 class FixedCharge(models.Model):
 
     FREQUENCY_CHOICES = [
@@ -1544,6 +1561,7 @@ class FixedCharge(models.Model):
         ('yearly','Yearly') 
     ]   
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE,related_name='fixed_charges')
+    block_code = models.ForeignKey(GroupReservation, null=True, blank=True,on_delete=models.CASCADE,related_name='fixed_charges')
     guest = models.ForeignKey("accounts.GuestProfile", null=True, on_delete=models.SET_NULL,related_name='fixed_charges')
     frequency =  models.CharField(max_length=100,choices=FREQUENCY_CHOICES)
     begin_date  = models.DateField()
