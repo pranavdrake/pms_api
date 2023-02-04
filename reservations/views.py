@@ -214,8 +214,8 @@ def import_forexes(request):
             remarks=row['Remarks']
 
         room = Room.objects.get(room_number = row['Room No'].strip())
-        #reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
-        #guest = GuestProfile.obejects.get(first_name = row['First Name'].strip(), last_name = row['Last Name'])
+        reservation = Reservation.objects.get(reservation = row['Booking ID'].strip())
+        # guest = GuestProfile.obejects.get(first_name = row['First Name'].strip(), last_name = row['Last Name'])
         forex, created = Forex.objects.update_or_create(
             room = room,  #certificate No.
             # reservation = reservation,
@@ -254,60 +254,6 @@ def import_extra(request):
             }
         )
     return Response({'Extra Data imported':'extra data imported'})
-
-@api_view(['GET'])
-def import_package_group(request):
-    file  = 'mediafiles/import_data/package_group.csv'
-    df = pd.read_csv(file)
-    df = df.drop_duplicates(subset=['Package Group'])
-
-    for index, row in df.iterrows():
-        package_group, created = PackageGroup.objects.update_or_create(
-            package_group=row['Package Group'], 
-            defaults={'description': row['Description'],})
-
-    return Response({'package groups imported':'Package groups imported'})
-
-
-@api_view(['GET'])
-def import_package(request):
-    file  = 'mediafiles/import_data/all_packages.csv'
-    df = pd.read_csv(file)
-    df = df.drop_duplicates(subset=['Package Code'])
-
-    for index, row in df.iterrows():
-        begin_sell_date = datetime.strptime(row['Begin Sell Date'],"%d-%b-%Y")
-        end_sell_date= datetime.strptime(row['End Sell Date'],"%d-%b-%Y")
-
-        if row['status'] == 'Active':
-            is_active = True
-        else:
-            is_active = False
-
-        # package_group = PackageGroup.objects.get(package_group = row['Package Group'])
-        package_group = PackageGroup.objects.first()
-        
-        transaction_code = TransactionCode.objects.get(transaction_code = row['Transaction Code'])
-        # transaction_code  = TransactionCode.objects.first()
-
-        package, created = Package.objects.update_or_create( 
-            package_group = package_group,
-            package_code = row['Package Code'],
-            defaults={'description': row['Description'],
-            'transaction_code' : transaction_code, 
-            'begin_sell_date' : begin_sell_date,
-            'end_sell_date' : end_sell_date,
-            'base_price' : row['Price'],
-            'tax_percentage' : row['Tax Percentage'],
-            # 'tax_amount' : row[''],
-            # 'total_amount' : row[''],
-            'calculation_rule' : row['calculation Rule '],
-            'posting_rhythm' : row['Posting Rhythm'],
-            'rate_inclusion' : row['Rate Inclusion'],
-            'is_active' : is_active
-            })
-            
-    return Response({'package imported':'Package imported'})
 
 @api_view(['GET'])
 def import_transaction_codes(request):
@@ -374,15 +320,15 @@ def import_transaction_codes(request):
         else:
             base_rate = row['Rate']
 
-        if str(row['Commission Percent'])=='nan':
-            commission_service_charge_percentage = 0
-        else:
-            commission_service_charge_percentage = row['Commission Percent']
+        # if str(row['Commission Percent'])=='nan':
+        #     commission_service_charge_percentage = 0
+        # else:
+        #     commission_service_charge_percentage = row['Commission Percent']
 
-        if str(row['Tax Percentage'])=='nan':
-            tax_percentage = 0
-        else:
-            tax_percentage = row['Tax Percentage']
+        # if str(row['Tax Percentage'])=='nan':
+        #     tax_percentage = 0
+        # else:
+        #     tax_percentage = row['Tax Percentage']
 
         group  = Group.objects.get(group_code = row['Group'].strip())
         sub_group  = SubGroup.objects.get(sub_group_code = row['Sub Group'].strip())
@@ -400,6 +346,63 @@ def import_transaction_codes(request):
            'is_allowance': is_allowance})
 
     return Response({'transaction codes imported':'transaction codes imported'})
+
+
+@api_view(['GET'])
+def import_package_group(request):
+    file  = 'mediafiles/import_data/package_group.csv'
+    df = pd.read_csv(file)
+    df = df.drop_duplicates(subset=['Package Group'])
+
+    for index, row in df.iterrows():
+        package_group, created = PackageGroup.objects.update_or_create(
+            package_group=row['Package Group'], 
+            defaults={'description': row['Description'],})
+
+    return Response({'package groups imported':'Package groups imported'})
+
+
+@api_view(['GET'])
+def import_package(request):
+    file  = 'mediafiles/import_data/all_packages.csv'
+    df = pd.read_csv(file)
+    df = df.drop_duplicates(subset=['Package Code'])
+
+    for index, row in df.iterrows():
+        begin_sell_date = datetime.strptime(row['Begin Sell Date'],"%d-%b-%Y")
+        end_sell_date= datetime.strptime(row['End Sell Date'],"%d-%b-%Y")
+
+        if row['status'] == 'Active':
+            is_active = True
+        else:
+            is_active = False
+
+        # package_group = PackageGroup.objects.get(package_group = row['Package Group'])
+        package_group = PackageGroup.objects.first()
+        
+        transaction_code = TransactionCode.objects.get(transaction_code = row['Transaction Code'])
+        # transaction_code  = TransactionCode.objects.first()
+
+        package, created = Package.objects.update_or_create( 
+            package_group = package_group,
+            package_code = row['Package Code'],
+            defaults={
+            'description': row['Description'],
+            'transaction_code' : transaction_code, 
+            'begin_sell_date' : begin_sell_date,
+            'end_sell_date' : end_sell_date,
+            'base_price' : row['Price'],
+            # 'tax_percentage' : row['Tax Perce ntage'],
+            # 'tax_amount' : row[''],
+            # 'total_amount' : row[''],
+            'calculation_rule' : row['calculation Rule '],
+            'posting_rhythm' : row['Posting Rhythm'],
+            'rate_inclusion' : row['Rate Inclusion'],
+            'is_active' : is_active
+            })
+            
+    return Response({'package imported':'Package imported'})
+
 
 @api_view(['GET'])
 def import_rate_codes(request):
@@ -501,7 +504,7 @@ def import_group_reservations(request):
     df = df.drop_duplicates(subset=['Block Code'])    #unique column name to subset ?...
 
     for index, row in df.iterrows():
-
+        print(index)
         if str(row['Group Name'])=='nan':
 
             group_name = None
@@ -514,12 +517,15 @@ def import_group_reservations(request):
         else:
             payment_type , created = PaymentType.objects.get_or_create(payment_type_code= row['Payment'])
             # payment_type = PaymentType.objects.first()
+        print(str(row['Company']).strip())
 
         if str(row['Company'])=='nan':
             company=None
         else:
-            company = Account.objects.get(account_name= row['Company'])
-            # company = Account.objects.first()
+            if Account.objects.filter(account_name= row['Company']).count()>1:
+                company = Account.objects.filter(account_name= row['Company'].strip(), account_type = 'Company')[0]
+            else:
+                company , created = Account.objects.get_or_create(account_name= str(row['Company']).strip(), account_type = 'Company')
 
         if str(row['Agent'])=='nan':
             travel_agent = None        
@@ -600,7 +606,7 @@ def import_reservations(request):
     file  = 'mediafiles/import_data/all_reservations.csv'
     df = pd.read_csv(file)
     df = df.drop_duplicates(subset=['Confirmation Code'])
-    # df = df.iloc[19390:]
+    df = df.iloc[19818:]
 
     # Reservation.objects.all().delete()
     # return Response({'reservations imported':'reservations imported'})
@@ -703,10 +709,17 @@ def import_reservations(request):
             company = None
             agent = None
             if(row['Company/Agent']=='Company'):
-                company, created  = Account.objects.get_or_create(account_name  = row['Account Name'], account_type = 'Company')
+                if Account.objects.filter(account_name  = row['Account Name'], account_type = 'Company').count()>1:
+                    company = Account.objects.filter(account_name  = row['Account Name'], account_type = 'Company')[0]
+                else:
+                    company, created  = Account.objects.get_or_create(account_name  = row['Account Name'], account_type = 'Company')
                 # company = Account.objects.first()
+                
             if(row['Company/Agent']=='Agent'):
-                agent, created = Account.objects.get_or_create(account_name  = row['Agent'], account_type = 'Agent')
+                if Account.objects.filter(account_name  = row['Agent'], account_type = 'Agent').count()>1:
+                    agent = Account.objects.filter(account_name  = row['Agent'], account_type = 'Agent')[0]
+                else:
+                    agent, created = Account.objects.get_or_create(account_name  = row['Agent'], account_type = 'Agent')
             
             
         if str(row['Booker'])!= 'nan' and str(row['Booker']).strip()!='':
@@ -915,7 +928,7 @@ def import_reservations(request):
 def import_folios(request):
     file ='mediafiles/import_data/all_guest_folios.csv'
     df = pd.read_csv(file)
-    
+    df  = df.iloc[17946:]
     for index, row in df.iterrows():
         print(index)
         print(str(row['Booking ID']).strip())
@@ -941,13 +954,22 @@ def import_folios(request):
             guest, created = GuestProfile.objects.get_or_create(last_name  = name, salutation = salutation)
 
         if row['Company/Agent']=='Company':
+
             if str(row['Company'])!='nan':
-                company_agent, created  =  Account.objects.get_or_create(account_name = row['Company'], account_type  = 'Company')
+                if Account.objects.filter(account_name  = row['Company'], account_type = 'Company').count()>1:
+                    company_agent = Account.objects.filter(account_name  = row['Company'], account_type = 'Company')[0]
+                else:
+                     company_agent, created  =  Account.objects.get_or_create(account_name = row['Company'], account_type  = 'Company')
             else:
                 company_agent =  None
+                
         else:
+
             if str(row['Agent'])!='nan':
-                company_agent, created  =  Account.objects.get_or_create(account_name = row['Agent'], account_type  = 'Agent')
+                if Account.objects.filter(account_name  = row['Agent'], account_type = 'Agent').count()>1:
+                    company_agent = Account.objects.filter(account_name  = row['Agent'], account_type = 'Agent')[0]
+                else:
+                     company_agent, created  =  Account.objects.get_or_create(account_name = row['Agent'], account_type  = 'Agent')
             else:
                 company_agent = None
 
@@ -975,10 +997,19 @@ def import_daily_details(request):
     file = 'mediafiles/import_data/all_daily_details.csv'
     df = pd.read_csv(file)
     # df = df.drop_duplicates(subset=['Bookings']) #unique columns?.........
-
+    # df =df.iloc[87525:]
     for index, row in df.iterrows():
+        print(index)
+        print(row['Bookings'])
 
-        if row['Disc Amt'] =='nan':
+       
+        if str(row['Bookings'])=='nan':
+            print('no res')
+            continue
+        else:
+            reservation = Reservation.objects.get(booking_id = str(int(row['Bookings'])))  
+
+        if str(row['Disc Amt']) =='nan':
             discount_amount = 0
         else:
             discount_amount = row['Disc Amt']
@@ -988,27 +1019,27 @@ def import_daily_details(request):
         else:
             market_code = MarketCode.objects.get(market_code = row['Market'].split('-')[0].strip())
 
-        if row['Bookings']=='nan':
-            reservation= None
-        else:
-            reservation = Reservation.objects.get(booking_id = row['Bookings'])  
 
         if str(row['Room Type'])=='nan':
             room_type=None
         else:
             room_type = RoomType.objects.get(room_type = row['Room Type'])
 
-        if row['Rate Code']=='nan':
+        if str(row['Rate Code'])=='nan':
             rate_code=None
         else:
             rate_code = RateCode.objects.get(rate_code = row['Rate Code'] )
 
-        if row['Room'] == 'nan':
+        if str(row['Room']) == 'nan':
             room = None
         else:
-            room = Room.objects.get(room_number = row['Room'])            
+            room_number = str(row['Selected Room']).strip("[]")
+            room_number = str(room_number).strip('""')
+            room = Room.objects.get(room_number = int(room_number))            
 
-        if row['package']=='nan':
+
+
+        if str(row['package'])=='nan':
             package = None
         else:
             package = Package.objects.get(package_code = row['package'])            
@@ -1017,6 +1048,11 @@ def import_daily_details(request):
             source=None
         else:
             source = Source.objects.get(source_code= row['Source'])
+
+        if str(row['Rate Amount'])=='nan':
+            total_rate = 0
+        else:
+             total_rate  = Decimal(row['Rate Amount']).quantize(Decimal("0.00"))
 
         daily_detail ,created = DailyDetail.objects.update_or_create(
 
@@ -1029,8 +1065,8 @@ def import_daily_details(request):
                 'room':room,
                 'rate_code':rate_code,
                 'room_type' : room_type,
-                'market_code':market_code,
-                'total_rate' : row['Rate Amount'],
+                'market':market_code,
+                'total_rate' : total_rate,
                 'adults' : row['Adults'],
                 'children' : row['Child'],
                 'discount_amount' : discount_amount,

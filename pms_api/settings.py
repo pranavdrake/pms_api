@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-25%^@3jnx_jcco!2b7-m70#%imwt=f$-lg+2c1p2u^@9x4b4#$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = "accounts.CustomUser" 
 
@@ -89,12 +89,27 @@ WSGI_APPLICATION = 'pms_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+DATABASES = {  
+    'default': {  
+        'ENGINE': 'django.db.backends.mysql',  
+        'NAME': 'pms',  
+        'USER': 'pmsnew',  
+        'PASSWORD': 'oterra123',  
+        'HOST': '103.89.8.28',  
+        'PORT': '3306',  
+        'OPTIONS': {  
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'ssl_mode': 'DISABLED',
+        }  
+    }  
+}  
 
 REST_FRAMEWORK = {
     'DATETIME_FORMAT': '%d/%m/%y %H:%M',

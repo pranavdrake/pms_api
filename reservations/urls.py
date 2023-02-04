@@ -12,6 +12,7 @@ urlpatterns = [
     path('import-source-codes/', import_source_codes),
     path('import-rate-classes/', import_rate_classes),
     path('import-rate-categories/', import_rate_categories),
+    path('import-rate-codes/', import_rate_codes),
     path('import-forexes/', import_forexes),
     path('import-transaction-codes/', import_transaction_codes),
     path('import-extra/',import_extra),

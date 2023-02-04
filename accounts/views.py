@@ -7,14 +7,19 @@ from django.apps import apps
 from datetime import datetime
 from django_countries import countries
 import re
-
+ 
 # Create your views here.
 
 @api_view(['GET'])
 def import_accounts(request):
     file  = 'mediafiles/import_data/all_accounts.csv'
     df = pd.read_csv(file)
-    df = df.drop_duplicates(subset=['Account Name'])
+    # df = df.drop_duplicates(subset=['Account Name'])
+    # df = df.iloc[]
+    # print(df.shape[0])
+
+    # return Response({'account imported':'account imported'})
+
     for index, row in df.iterrows():
         print(index)
         if str(row['Email'])=='nan':
@@ -54,6 +59,8 @@ def import_accounts(request):
         else:
             rate_code = RateCode.objects.get(rate_code= row['Rate setup - Rate code'])
 
+        print(row['Address'])
+
         account_name, created = Account.objects.update_or_create(
         account_name=row['Account Name'],
         account_type = account_type,
@@ -79,7 +86,10 @@ def import_bookers(request):
     for index, row in df.iterrows():
         print(index)
         if str(row['Company'])!= 'nan':
-            account = Account.objects.get(account_name = row['Company'])
+            if Account.objects.filter(account_name = row['Company']).count()>1:
+                Account.objects.filter(account_name = row['Company'])[0]
+            else:
+                account = Account.objects.get(account_name = row['Company'])
         else:
             account = None
         # account = Account.objects.first()
@@ -97,6 +107,7 @@ def import_bookers(request):
 def import_guests(request):
     file  = 'mediafiles/import_data/all_guests.csv'
     df = pd.read_csv(file)
+    df = df.iloc[23400:]
     # print(dict(countries))
     # email = 'thejo.k.@naturalremedies.com'
 
@@ -212,7 +223,6 @@ def import_guests(request):
 
         if str(row['Source']) == 'Simple Guest':
             continue
-
 
         guest, created = GuestProfile.objects.update_or_create(
         last_name = name,
